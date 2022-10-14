@@ -1,28 +1,37 @@
 package com.LMStudy.app;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import com.LMStudy.app.student.StudentHome;
+import com.LMStudy.app.teacher.TeacherHome;
 
 
 /**
  * Launch activity--handles field initialization and settings retrieval, and launches the Student or Teacher UI.
  */
 public class MainActivity extends AppCompatActivity {
+   private SharedPreferences userSettings = getSharedPreferences(this.getPackageName(),Context.MODE_PRIVATE);
+   private Intent launchTarget;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_main);
 
-      // check for stored settings
+      if(userSettings.getBoolean("isTeacher",false)) {
+         launchTarget = new Intent(this, TeacherHome.class);
+      }
 
+      else if(userSettings.getBoolean("isStudent",false)) {
+         launchTarget = new Intent(this, StudentHome.class);
+      }
 
-      // if stored settings exist, load them
-
-      // launch StudentHome or TeacherHome, depending on user settings
-
-      // or launch Setup dialogue, where settings can be input
-
+      else {
+         //launch first-time setup dialogue
+      }
    }
 
 
