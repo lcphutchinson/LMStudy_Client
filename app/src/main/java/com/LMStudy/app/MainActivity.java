@@ -13,7 +13,7 @@ import com.LMStudy.app.teacher.TeacherHome;
  * Launch activity--handles field initialization and settings retrieval, and launches the Student or Teacher UI.
  */
 public class MainActivity extends AppCompatActivity {
-   private SharedPreferences userSettings = getSharedPreferences(this.getPackageName(),Context.MODE_PRIVATE);
+   //private SharedPreferences userSettings = this.getSharedPreferences("LMStudyPrefs", MODE_PRIVATE);
    private Intent launchTarget;
 
    @Override
@@ -21,17 +21,21 @@ public class MainActivity extends AppCompatActivity {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_main);
 
-      if(userSettings.getBoolean("isTeacher",false)) {
-         launchTarget = new Intent(this, TeacherHome.class);
-      }
+      //if(userSettings.getBoolean("isTeacher",false)) {
+      //   launchTarget = new Intent(this, TeacherHome.class);
+      //}
 
-      else if(userSettings.getBoolean("isStudent",false)) {
-         launchTarget = new Intent(this, StudentHome.class);
-      }
+      //else if(userSettings.getBoolean("isStudent",false)) {
+      //   launchTarget = new Intent(this, StudentHome.class);
+      //}
 
-      else {
+      //else {
          //launch first-time setup dialogue
-      }
+      //}
+
+      // temporary: force StudentHome launch
+      launchTarget = new Intent(this, StudentHome.class);
+      this.startActivity(launchTarget);
    }
 
 
