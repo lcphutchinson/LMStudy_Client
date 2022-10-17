@@ -50,7 +50,7 @@ public class StudentHome extends AppCompatActivity {
 
       assignmentArrayList = assignmentItems.convertToArrayList();
 
-      System.out.println(assignmentItems.getNumElements());
+      //System.out.println(assignmentItems.getNumElements());
 
       profilePicture = (ImageView) findViewById(R.id.profile_icon);
       //profilePicture.setImageResource(R.drawable.my_image);
@@ -154,9 +154,11 @@ public class StudentHome extends AppCompatActivity {
 
       AssignmentItem assignmentItem = new AssignmentItem(assignment.getCourseInfo(),
               assignment.getAssignmentType(), assignment.getAssignmentName(), assignment.getDueDate());
-         assignmentItemsList.add(assignmentItem);
+      assignmentItemsList.add(assignmentItemsList.size(),assignmentItem);
 
-      int index = assignmentArrayList.indexOf(assignmentItem);
+      int index = assignmentItemsList.size()-1;
+      System.out.println("Index of item: " + index);
+      System.out.println("Size of array: " + assignmentItemsList.size());
       studentHomeAdapter.notifyItemInserted(index);
    }
 }
