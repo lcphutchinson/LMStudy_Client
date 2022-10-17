@@ -59,12 +59,13 @@ public class StudentHome extends AppCompatActivity {
       refreshButton = (Button) findViewById(R.id.refresh_Btn);
       addAssignmentBtn = (Button) findViewById(R.id.addAssignment_Btn);
 
-//      for (int i = 0; i < assignmentArrayList.size(); i++) {
-//         AssignmentItem assignmentItem = new AssignmentItem(assignmentArrayList.get(i).getCourseInfo(),
-//                 assignmentArrayList.get(i).getAssignmentType(), assignmentArrayList.get(i).getAssignmentName(),
-//                 assignmentArrayList.get(i).getDueDate());
-//         assignmentItemsList.add(assignmentItem);
-//      }
+      /* Multi-line comments are fun!
+      for (int i = 0; i < assignmentArrayList.size(); i++) {
+         AssignmentItem assignmentItem = new AssignmentItem(assignmentArrayList.get(i).getCourseInfo(),
+                 assignmentArrayList.get(i).getAssignmentType(), assignmentArrayList.get(i).getAssignmentName(),
+                 assignmentArrayList.get(i).getDueDate());
+         assignmentItemsList.add(assignmentItem);
+      } */
 
       studentHomeAdapter = new RecyclerAdapter(this, assignmentItemsList);
       rcSchedule.setAdapter(studentHomeAdapter);
@@ -100,6 +101,7 @@ public class StudentHome extends AppCompatActivity {
             // which view you pass in doesn't matter, it is only used for the window token
             popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
 
+            /*
             // dismiss the popup window when touched
             popupView.setOnTouchListener(new View.OnTouchListener() {
                @Override
@@ -108,6 +110,7 @@ public class StudentHome extends AppCompatActivity {
                   return true;
                }
             });
+            */
 
             newAssignmentName = popupView.findViewById(R.id.newAssignmentName_input);
             newAssignmentType = popupView.findViewById(R.id.newAssignmentType_input);
@@ -129,10 +132,12 @@ public class StudentHome extends AppCompatActivity {
 
                   Assignment newAssignment = new Assignment(courseInfo, assignmentName, assignmentType, ldtDueDate);
 
-//                  assignmentItems.addToQueue(newAssignment);
-//                  assignmentItemsList.add(new AssignmentItem(newAssignment.getCourseInfo(),
-//                          newAssignment.getAssignmentType(), newAssignment.getAssignmentName(),
-//                          newAssignment.getDueDate()));
+                  /* Multi-line comments are neat!
+                  assignmentItems.addToQueue(newAssignment);
+                  assignmentItemsList.add(new AssignmentItem(newAssignment.getCourseInfo(),
+                          newAssignment.getAssignmentType(), newAssignment.getAssignmentName(),
+                          newAssignment.getDueDate()));
+                  */
 
                   insertSingleItem(newAssignment);
 

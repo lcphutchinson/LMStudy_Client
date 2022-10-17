@@ -1,10 +1,12 @@
 package com.LMStudy.app;
 
 
+import android.content.Context;
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import com.LMStudy.app.io.SyncService;
+import com.LMStudy.app.localdb.dbService;
 import com.LMStudy.app.student.StudentHome;
 import org.conscrypt.Conscrypt;
 
@@ -22,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_main);
+
 
       //if(userSettings.getBoolean("isTeacher",false)) {
       //   launchTarget = new Intent(this, TeacherHome.class);
