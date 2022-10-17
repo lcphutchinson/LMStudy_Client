@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import com.LMStudy.app.io.SyncService;
 import com.LMStudy.app.student.StudentHome;
 import com.LMStudy.app.teacher.TeacherHome;
 
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
       //}
 
       // temporary: force StudentHome launch
+
       launchTarget = new Intent(this, StudentHome.class);
       this.startActivity(launchTarget);
    }

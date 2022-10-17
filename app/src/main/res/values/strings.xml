@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">LMStudy</string>
+    <string name="server_url">http://cs431-12.cs.rutgers.edu:594</string>
 </resources>
