@@ -1,6 +1,7 @@
 package com.LMStudy.app.structures;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.TreeSet;
 
 /**
@@ -14,11 +15,11 @@ public class WorkQueue{
 
    /**
     * User's work queue
-    * @param userId Assigned ID of user as received from Canvas.
+    * //@param userId Assigned ID of user as received from Canvas.
     */
-   public WorkQueue(long userId) {
-      items = new TreeSet<>();
-      this.userId = userId;
+   public WorkQueue() {
+      items = new TreeSet<Assignment>();
+      //this.userId = userId;
    }
 
    public TreeSet<Assignment> getWorkQueue() {
@@ -39,6 +40,10 @@ public class WorkQueue{
       return false;
    }
 
+   public int getNumElements() {
+      return items.size();
+   }
+
    public Assignment getFirstAssignment() {
       if (items.isEmpty() != true) {
          return items.first();
@@ -53,12 +58,16 @@ public class WorkQueue{
       }
    }
 
+   public ArrayList<Assignment> convertToArrayList() {
+      return new ArrayList<Assignment>(items);
+   }
+
    /**
     * Testing basic work queue functions
     * @param args Input arguments
     */
    public static void main(String[] args) {
-      WorkQueue itemsList = new WorkQueue(1);
+      WorkQueue itemsList = new WorkQueue();
       LocalDateTime firstDate = LocalDateTime.of(2022, 11, 03, 11, 59);
       LocalDateTime secondDate = LocalDateTime.of(2022, 10, 31, 11, 59);
       Assignment assignment1 = new Assignment("English", "First_Essay", "Essay", firstDate);
