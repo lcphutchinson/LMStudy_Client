@@ -9,11 +9,11 @@ import java.util.Date;
  * Minimal scheduling unit--later we'll write extending subclasses with more details
  */
 public class WorkItem implements Comparable<WorkItem>,Serializable {
-   private static final String USER_DEFINED_CC = "00";
-   private String name;
-   private Integer priority; //strictly internal, for sorting
-   private Boolean complete = false;
-   private Date dueDate;
+   protected static final String USER_DEFINED_CC = "00";
+   protected String name;
+   protected Integer priority; //strictly internal, for sorting
+   protected Boolean complete = false;
+   protected Date dueDate;
 
    public WorkItem(String name, Date dueDate){
       this.name = name;
