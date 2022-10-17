@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">LMStudy</string>
     <string name="your_schedule_title">Your Schedule</string>
+    <string name="ret_user_settings">Retrieving User Settings</string>
+    <string name="launching">Launching LMStudy</string>
 </resources>
