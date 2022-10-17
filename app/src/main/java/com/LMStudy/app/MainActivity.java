@@ -1,13 +1,14 @@
 package com.LMStudy.app;
 
-import android.content.Context;
+
 import android.content.Intent;
-import android.content.SharedPreferences;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import com.LMStudy.app.io.SyncService;
 import com.LMStudy.app.student.StudentHome;
-import com.LMStudy.app.teacher.TeacherHome;
+import org.conscrypt.Conscrypt;
+
+import java.security.Security;
 
 
 /**
@@ -35,6 +36,9 @@ public class MainActivity extends AppCompatActivity {
       //}
 
       // temporary: force StudentHome launch
+
+      //SyncService syncService = SyncService.getInstance();
+      //syncService.isAvailable();
 
       launchTarget = new Intent(this, StudentHome.class);
       this.startActivity(launchTarget);
