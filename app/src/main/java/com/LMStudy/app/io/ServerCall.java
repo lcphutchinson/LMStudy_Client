@@ -1,66 +1,39 @@
 package com.LMStudy.app.io;
 
-import okhttp3.Headers;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-
 import javax.net.ssl.*;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.X509Certificate;
 
 /**
- * Https Communications thread object for launching server calls (Not currently functioning)
+ * Example Https communications object for early development. Can be used to confirm server connection.
  */
 public class ServerCall implements Runnable {
-   private static final String SERVER_URL = "https://cs431-12.cs.rutgers.edu:5940";
-
-   private final OkHttpClient caller = new OkHttpClient();
+   private static final String SERVER_URL = "https://cs431-12.cs.rutgers.edu:5490";
+   private static final Integer TIMEOUT_VAL = 2000;
    private Object response = false;
 
    @Override
    public void run() {
-
-      Request call = new Request.Builder()
-         .url(SERVER_URL)
-         .build();
-
       try {
-         Response response = caller.newCall(call).execute();
-
-         Headers responseHeaders = response.headers();
-         for(int i=0; i < responseHeaders.size(); i++){
-            System.out.println(responseHeaders.name(i) + ": " + responseHeaders.value(i));
-         }
-
-         System.out.println(response.body().string());
-      }
-      catch(IOException e) {
-         e.printStackTrace();
-      }
-
-/*      try {
          HttpsURLConnection serverLink = (HttpsURLConnection) new URL(SERVER_URL).openConnection();
-
+         serverLink.setHostnameVerifier((s, sslSession) -> s.contains("cs.rutgers.edu"));
          serverLink.setConnectTimeout(TIMEOUT_VAL);
+
+         //for now, just connect
          serverLink.connect();
 
+         //and print out the header field (should be "OK")
          System.out.println(serverLink.getResponseMessage());
          serverLink.disconnect();
-      }
-      catch (IOException e) {
-         e.printStackTrace();
+
+      } catch (IOException e) {
+         if(e instanceof SocketTimeoutException) System.out.println("Connection Attempt Failed");
          System.out.println(e.getMessage());
       }
-*/
-
    }
 
+   //Example response retrieval method
    public Object getResponse() {
       return this.response;
    }

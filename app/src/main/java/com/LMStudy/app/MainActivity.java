@@ -1,21 +1,14 @@
 package com.LMStudy.app;
 
-
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import com.LMStudy.app.io.SyncService;
-import com.LMStudy.app.localdb.WorkDB;
-import com.LMStudy.app.localdb.dbService;
 import com.LMStudy.app.structures.WorkFlow;
 import com.LMStudy.app.student.StudentHome;
 import com.LMStudy.app.teacher.TeacherHome;
-import org.conscrypt.Conscrypt;
-
-import java.security.Security;
 
 
 /**
@@ -23,7 +16,6 @@ import java.security.Security;
  */
 public class MainActivity extends AppCompatActivity {
    //private SharedPreferences userSettings = this.getSharedPreferences("LMStudyPrefs", MODE_PRIVATE);
-   private dbService loadService = new dbService();
    private Intent launchTarget;
 
    TextView banner;
@@ -36,10 +28,6 @@ public class MainActivity extends AppCompatActivity {
       banner = findViewById(R.id.banner);
 
       try {
-         WorkDB.getInstance(this);
-         loadService.startLoad();
-
-         Thread.sleep(500);
          banner.setText(R.string.ret_user_settings);
 
          SharedPreferences userSettings = this.getSharedPreferences("LMStudy_Prefs", MODE_PRIVATE);
@@ -55,7 +43,8 @@ public class MainActivity extends AppCompatActivity {
          Thread.sleep(500);
          banner.setText(R.string.launching);
 
-         WorkFlow.getInstance().loadDBItems(loadService.getWorkFlow());
+         SyncService caller = SyncService.getInstance();
+         caller.isAvailable();
 
          //temporary: force StudentHome launch
          launchTarget = new Intent(this, StudentHome.class);
