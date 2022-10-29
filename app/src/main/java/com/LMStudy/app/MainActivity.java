@@ -1,5 +1,6 @@
 package com.LMStudy.app;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.widget.TextView;
@@ -22,6 +23,7 @@ import com.LMStudy.app.student.StudentHome;
  */
 public class MainActivity extends AppCompatActivity {
    private final SyncService caller = SyncService.getInstance();
+   private Context context;
    private Intent launchTarget;
 
 
@@ -29,22 +31,19 @@ public class MainActivity extends AppCompatActivity {
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_main);
+      context = this;
 
       //SyncService caller = SyncService.getInstance();
       //caller.isAvailable();
 
       // check for stored settings
-
-
       // if stored settings exist, load them
-
       // launch StudentHome or TeacherHome, depending on user settings
-
       // or launch Setup dialogue, where settings can be input
 
       TextView username = findViewById(R.id.username_i);
       TextView password = findViewById(R.id.password_i);
-      Button loginBtn = (Button) findViewById(R.id.login_btn);
+      Button loginBtn = findViewById(R.id.login_btn);
 
       loginBtn.setOnClickListener(new View.OnClickListener() {
          @Override
@@ -54,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
                // if LMStudy id -> database linked to canvas lms api id -> role = student, go to user's student home
                Intent toStudentHome = new Intent(view.getContext(), StudentHome.class);
                setContentView(R.layout.activity_student_home);
+               context.startActivity(new Intent(context,StudentHome.class));
                Toast.makeText(MainActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
             }
             else if (username.getText().toString().equals("")){
@@ -69,12 +69,9 @@ public class MainActivity extends AppCompatActivity {
       });
 
          //temporary: force StudentHome launch
-         launchTarget = new Intent(this, StudentHome.class);
-         this.startActivity(launchTarget);
+         //launchTarget = new Intent(this, StudentHome.class);
+         //this.startActivity(launchTarget);
 
-      } catch (InterruptedException e) {
-         e.printStackTrace();
-      }
    }
 
 
