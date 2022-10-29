@@ -9,6 +9,12 @@ import com.LMStudy.app.io.SyncService;
 import com.LMStudy.app.structures.WorkQueue;
 import com.LMStudy.app.student.StudentHome;
 import com.LMStudy.app.teacher.TeacherHome;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.LMStudy.app.student.StudentHome;
 
 
 /**
@@ -19,32 +25,48 @@ public class MainActivity extends AppCompatActivity {
    private Intent launchTarget;
 
 
-   TextView banner;
-
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_main);
-      banner = findViewById(R.id.banner);
 
-      try {
-         banner.setText(R.string.ret_user_settings);
+      //SyncService caller = SyncService.getInstance();
+      //caller.isAvailable();
 
-         SharedPreferences userSettings = this.getSharedPreferences("LMStudy_Prefs", MODE_PRIVATE);
+      // check for stored settings
 
-         if (userSettings.getBoolean("isTeacher", false)) {
-            launchTarget = new Intent(this, TeacherHome.class);
+
+      // if stored settings exist, load them
+
+      // launch StudentHome or TeacherHome, depending on user settings
+
+      // or launch Setup dialogue, where settings can be input
+
+      TextView username = findViewById(R.id.username_i);
+      TextView password = findViewById(R.id.password_i);
+      Button loginBtn = (Button) findViewById(R.id.login_btn);
+
+      loginBtn.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View view) {
+            // arbitrary login info: username = "username1" and password = "password1"
+            if (username.getText().toString().equals("username1") && password.getText().toString().equals("password1")) {
+               // if LMStudy id -> database linked to canvas lms api id -> role = student, go to user's student home
+               Intent toStudentHome = new Intent(view.getContext(), StudentHome.class);
+               setContentView(R.layout.activity_student_home);
+               Toast.makeText(MainActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
+            }
+            else if (username.getText().toString().equals("")){
+               Toast.makeText(MainActivity.this, "Input a username", Toast.LENGTH_SHORT).show();
+            }
+            else if (password.getText().toString().equals("")) {
+               Toast.makeText(MainActivity.this, "Input a password", Toast.LENGTH_SHORT).show();
+            }
+            else {
+               Toast.makeText(MainActivity.this, "Username and/or password incorrect", Toast.LENGTH_SHORT).show();
+            }
          }
-
-         else if (userSettings.getBoolean("isStudent", false)) {
-            launchTarget = new Intent(this, StudentHome.class);
-         }
-
-         Thread.sleep(500);
-         banner.setText(R.string.launching);
-
-         //SyncService caller = SyncService.getInstance();
-         //caller.isAvailable();
+      });
 
          //temporary: force StudentHome launch
          launchTarget = new Intent(this, StudentHome.class);
