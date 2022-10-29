@@ -19,8 +19,7 @@ import java.util.TreeSet;
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder> {
 
     private Context context;
-
-    List<AssignmentItem> itemsList = new ArrayList<>();
+    List<AssignmentItem> itemsList;
 
     public RecyclerAdapter(Context context, List<AssignmentItem> itemsList) {
         this.context = context;

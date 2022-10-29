@@ -1,16 +1,12 @@
 package com.LMStudy.app.io;
 
 /**
- * Https communications manager; launches and processes server calls. (Not currently functioning)
+ * Https communications manager;
  */
 public class SyncService {
    private ServerCall caller = new ServerCall();
 
    public static SyncService instance = new SyncService();
-
-   private SyncService() {
-      //Security.insertProviderAt(Conscrypt.newProvider(), 1);
-   }
 
    public static SyncService getInstance(){
       return instance;

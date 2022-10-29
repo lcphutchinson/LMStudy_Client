@@ -33,15 +33,18 @@ import java.util.TreeSet;
  */
 public class StudentHome extends AppCompatActivity {
 
-   private WorkQueue assignmentItems = new WorkQueue();
-   List<Assignment> assignmentArrayList;
-   List<AssignmentItem> assignmentItemsList = new ArrayList<>();
-   RecyclerAdapter studentHomeAdapter;
+   private final WorkQueue queueLink = WorkQueue.getInstance();
+   private List<AssignmentItem> items;
 
-   RecyclerView rcSchedule;
-   ImageView profilePicture;
-   Button refreshButton, addAssignmentBtn, confirmAssignmentBtn;
-   TextView newAssignmentName, newAssignmentType, newAssignmentCourseInfo, newAssignmentDueDate;
+   private RecyclerAdapter studentHomeAdapter;
+   private RecyclerView rcSchedule;
+   private ImageView profilePicture;
+   private Button refreshButton, addAssignmentBtn, confirmAssignmentBtn;
+   private TextView newAssignmentName, newAssignmentType, newAssignmentCourseInfo, newAssignmentDueDate;
+
+   private WorkQueue assignmentItems = WorkQueue.getInstance();
+
+   List<Assignment> assignmentArrayList;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
@@ -50,115 +53,91 @@ public class StudentHome extends AppCompatActivity {
 
       assignmentArrayList = assignmentItems.convertToArrayList();
 
-      //System.out.println(assignmentItems.getNumElements());
-
-      profilePicture = (ImageView) findViewById(R.id.profile_icon);
-      //profilePicture.setImageResource(R.drawable.my_image);
-
+      profilePicture = findViewById(R.id.profile_icon);
       rcSchedule = findViewById(R.id.rcView_Schedule);
-      refreshButton = (Button) findViewById(R.id.refresh_Btn);
-      addAssignmentBtn = (Button) findViewById(R.id.addAssignment_Btn);
+      refreshButton = findViewById(R.id.refresh_Btn);
+      addAssignmentBtn = findViewById(R.id.addAssignment_Btn);
 
-      /* Multi-line comments are fun!
-      for (int i = 0; i < assignmentArrayList.size(); i++) {
-         AssignmentItem assignmentItem = new AssignmentItem(assignmentArrayList.get(i).getCourseInfo(),
-                 assignmentArrayList.get(i).getAssignmentType(), assignmentArrayList.get(i).getAssignmentName(),
-                 assignmentArrayList.get(i).getDueDate());
-         assignmentItemsList.add(assignmentItem);
-      } */
-
-      studentHomeAdapter = new RecyclerAdapter(this, assignmentItemsList);
-      rcSchedule.setAdapter(studentHomeAdapter);
+      setDisplay();
       rcSchedule.setLayoutManager(new LinearLayoutManager(this));
 
       /**
        * Refreshes the student home activity.
        */
-      refreshButton.setOnClickListener(new View.OnClickListener() {
-         @Override
-         public void onClick(View view) {
-            finish();
-            startActivity(getIntent());
-         }
+      refreshButton.setOnClickListener(view -> {
+         finish();
+         startActivity(getIntent());
       });
 
-      addAssignmentBtn.setOnClickListener(new View.OnClickListener() {
-         @Override
-         public void onClick(View view) {
+      addAssignmentBtn.setOnClickListener(view -> {
 
-            // inflate the layout of the popup window
-            LayoutInflater inflater = (LayoutInflater)
-                    getSystemService(LAYOUT_INFLATER_SERVICE);
-            View popupView = inflater.inflate(R.layout.assignment_popup, null);
+         // inflate the layout of the popup window
+         LayoutInflater inflater = (LayoutInflater)
+                 getSystemService(LAYOUT_INFLATER_SERVICE);
+         View popupView = inflater.inflate(R.layout.assignment_popup, null);
 
-            // create the popup window
-            int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-            int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-            boolean focusable = true; // lets taps outside the popup also dismiss it
-            final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+         // create the popup window
+         int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+         boolean focusable = true; // lets taps outside the popup also dismiss it
+         final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
 
-            // show the popup window
-            // which view you pass in doesn't matter, it is only used for the window token
-            popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+         // show the popup window
+         // which view you pass in doesn't matter, it is only used for the window token
+         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
 
-            /*
-            // dismiss the popup window when touched
-            popupView.setOnTouchListener(new View.OnTouchListener() {
-               @Override
-               public boolean onTouch(View v, MotionEvent event) {
-                  popupWindow.dismiss();
-                  return true;
-               }
-            });
-            */
+         // dismiss the popup window when touched
+         popupView.setOnTouchListener((v, event) -> {
+            popupWindow.dismiss();
+            return true;
+         });
 
-            newAssignmentName = popupView.findViewById(R.id.newAssignmentName_input);
-            newAssignmentType = popupView.findViewById(R.id.newAssignmentType_input);
-            newAssignmentCourseInfo = popupView.findViewById(R.id.newAssignmentCourseInfo_input);
-            newAssignmentDueDate = popupView.findViewById(R.id.newDueDate_input);
-            confirmAssignmentBtn = popupView.findViewById(R.id.confirm_assignment_Btn);
+         newAssignmentName = popupView.findViewById(R.id.newAssignmentName_input);
+         newAssignmentType = popupView.findViewById(R.id.newAssignmentType_input);
+         newAssignmentCourseInfo = popupView.findViewById(R.id.newAssignmentCourseInfo_input);
+         newAssignmentDueDate = popupView.findViewById(R.id.newDueDate_input);
+         confirmAssignmentBtn = popupView.findViewById(R.id.confirm_assignment_Btn);
 
-            confirmAssignmentBtn.setOnClickListener(new View.OnClickListener() {
-               @Override
-               public void onClick(View view) {
-                  String assignmentName = newAssignmentName.getText().toString();
-                  String assignmentType = newAssignmentType.getText().toString();
-                  String courseInfo = newAssignmentCourseInfo.getText().toString();
-                  String dueDate = newAssignmentDueDate.getText().toString();
+         confirmAssignmentBtn.setOnClickListener(view1 -> {
+            String assignmentName = newAssignmentName.getText().toString();
+            String assignmentType = newAssignmentType.getText().toString();
+            String courseInfo = newAssignmentCourseInfo.getText().toString();
+            String dueDate = newAssignmentDueDate.getText().toString();
 
-                  String[] partitionDate = dueDate.split("/");
-                  LocalDateTime ldtDueDate = LocalDateTime.of(Integer.parseInt(partitionDate[2]),
-                          Integer.parseInt(partitionDate[0]), Integer.parseInt(partitionDate[1]), 23, 59);
+            String[] partitionDate = dueDate.split("/");
+            LocalDateTime ldtDueDate = LocalDateTime.of(Integer.parseInt(partitionDate[2]),
+                    Integer.parseInt(partitionDate[0]), Integer.parseInt(partitionDate[1]), 23, 59);
 
-                  Assignment newAssignment = new Assignment(courseInfo, assignmentName, assignmentType, ldtDueDate);
+            Assignment newAssignment = new Assignment(courseInfo, assignmentName, assignmentType, ldtDueDate);
 
-                  /* Multi-line comments are neat!
-                  assignmentItems.addToQueue(newAssignment);
-                  assignmentItemsList.add(new AssignmentItem(newAssignment.getCourseInfo(),
-                          newAssignment.getAssignmentType(), newAssignment.getAssignmentName(),
-                          newAssignment.getDueDate()));
-                  */
+            queueLink.addToQueue(newAssignment);
+            setDisplay();
 
-                  insertSingleItem(newAssignment);
-
-                  Toast.makeText(getBaseContext(), "Assignment successfully added", Toast.LENGTH_SHORT).show();
-                  popupWindow.dismiss();
-               }
-            });
-         }
+            Toast.makeText(getBaseContext(), "Assignment successfully added", Toast.LENGTH_SHORT).show();
+            popupWindow.dismiss();
+         });
       });
    }
 
-   private void insertSingleItem(Assignment assignment) {
-      assignmentItems.addToQueue(assignment);
+   /**
+    * Repopulates the RecyclerView based on the underlying AssignmentList.
+    */
+   private void setDisplay() {
+      items = new ArrayList<>();
+      queueLink.getWorkQueue().forEach(task -> {
+         items.add(generateItem(task));
+      });
+      studentHomeAdapter = new RecyclerAdapter(this, items);
+      rcSchedule.setAdapter(studentHomeAdapter);
+   }
 
-      AssignmentItem assignmentItem = new AssignmentItem(assignment.getCourseInfo(),
-              assignment.getAssignmentType(), assignment.getAssignmentName(), assignment.getDueDate());
-      assignmentItemsList.add(assignmentItemsList.size(),assignmentItem);
-
-      int index = assignmentItemsList.size()-1;
-      System.out.println("Index of item: " + index);
-      System.out.println("Size of array: " + assignmentItemsList.size());
-      studentHomeAdapter.notifyItemInserted(index);
+   private AssignmentItem generateItem(Assignment a) {
+      AssignmentItem item = new AssignmentItem(
+         a.getCourseInfo(),
+         a.getAssignmentType(),
+         a.getAssignmentName(),
+         a.getDueDate()
+      );
+      return item;
    }
 }

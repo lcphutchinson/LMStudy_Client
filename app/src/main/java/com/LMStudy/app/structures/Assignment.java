@@ -36,6 +36,17 @@ public class Assignment implements Comparable<Assignment> {
         assignedTimeBlocks = INITIAL_TIMEBLOCK;
     }
 
+    /**
+     * Empty constructor for testing--generates a generic assignment
+     */
+    public Assignment(){
+        this.courseInfo = "CS 431";
+        this.assignmentName = "Sprint 3";
+        this.priority = INITIAL_PRIORITY;
+        this.assignmentType = "Sprint";
+        this.dueDate = LocalDateTime.now();
+    }
+
     // May delete any unnecessary get functions
     public String getCourseInfo() {
         return courseInfo;

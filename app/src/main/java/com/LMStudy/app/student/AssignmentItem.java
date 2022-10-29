@@ -57,4 +57,9 @@ public class AssignmentItem implements Serializable {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy @ HH:mm");
         return dueDate.format(formatter);
     }
+
+
+    public String toString() {
+        return this.assignmentName;
+    }
 }

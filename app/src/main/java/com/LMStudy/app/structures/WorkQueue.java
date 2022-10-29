@@ -11,15 +11,21 @@ public class WorkQueue{
    private TreeSet<Assignment> items;
    private long userId;
 
-   //private WorkQueue instance = new WorkQueue();
+   private static WorkQueue instance = new WorkQueue();
 
    /**
     * User's work queue
     * //@param userId Assigned ID of user as received from Canvas.
     */
-   public WorkQueue() {
+   private WorkQueue() {
       items = new TreeSet<Assignment>();
+      //example assignment for testing
+      items.add(new Assignment());
       //this.userId = userId;
+   }
+
+   public static WorkQueue getInstance() {
+      return instance;
    }
 
    public TreeSet<Assignment> getWorkQueue() {
@@ -59,7 +65,7 @@ public class WorkQueue{
    }
 
    public ArrayList<Assignment> convertToArrayList() {
-      return new ArrayList<Assignment>(items);
+      return new ArrayList<>(items);
    }
 
    /**
@@ -67,17 +73,17 @@ public class WorkQueue{
     * @param args Input arguments
     */
    public static void main(String[] args) {
-      WorkQueue itemsList = new WorkQueue();
       LocalDateTime firstDate = LocalDateTime.of(2022, 11, 03, 11, 59);
       LocalDateTime secondDate = LocalDateTime.of(2022, 10, 31, 11, 59);
       Assignment assignment1 = new Assignment("English", "First_Essay", "Essay", firstDate);
       Assignment assignment2 = new Assignment("Math", "Practice_Set1", "HW", secondDate);
       Assignment assignment3 = new Assignment("CS", "Project 1", "Project", secondDate);
       assignment3.changePriority(6);
-      itemsList.addToQueue(assignment1);
-      itemsList.addToQueue(assignment2);
-      itemsList.addToQueue(assignment3);
+      instance.addToQueue(assignment1);
+      instance.addToQueue(assignment2);
+      instance.addToQueue(assignment3);
 
-      itemsList.getAllAssignments();
+      instance.getAllAssignments();
+
    }
 }

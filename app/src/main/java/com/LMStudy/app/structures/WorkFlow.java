@@ -23,7 +23,6 @@ public class WorkFlow {
       return items.toArray(new WorkItem[0]);
    }
 
-
    //there is room here for a method that marks an item complete, using an index input--if that proves useful for the UI
 
 }
