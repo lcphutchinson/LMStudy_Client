@@ -1,13 +1,8 @@
 package com.LMStudy.app.io;
 
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.JsonReader;
-import android.util.JsonWriter;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONStringer;
-import org.json.JSONTokener;
 
 import javax.net.ssl.*;
 import java.io.*;
@@ -15,7 +10,6 @@ import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.stream.Collectors;
 
 /**
  * Example Https communications object for early development. Can be used to confirm server connection.
@@ -44,9 +38,12 @@ public class ServerCall implements Runnable {
          serverLink.setRequestProperty("Accept", "application/json");
 
          //Dispatch
+         System.out.println(request);
          byte[] output = request.toString().getBytes(StandardCharsets.UTF_8);
          OutputStream dispatcher = new BufferedOutputStream(serverLink.getOutputStream());
          dispatcher.write(output);
+         dispatcher.flush();
+         dispatcher.close();
 
          //Prep response for reading
          BufferedReader receiver = new BufferedReader(
@@ -72,7 +69,6 @@ public class ServerCall implements Runnable {
             }
          }
 
-         receiver.close();
          serverLink.disconnect();
 
       } catch (IOException e) {
