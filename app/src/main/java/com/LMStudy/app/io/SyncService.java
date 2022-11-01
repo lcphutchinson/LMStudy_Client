@@ -17,6 +17,7 @@ public class SyncService {
    private ServerCall caller;
    private JSONObject request;
    private SharedPreferences userPrefs;
+   private final Object lock = new Object();
 
    public static SyncService instance = new SyncService();
 
@@ -107,7 +108,9 @@ public class SyncService {
       call.start();
 
       try {
-         Thread.currentThread().wait();
+         while (caller.getResponse() == null){
+            Thread.sleep(50); //note: fix this later.
+         }
       } catch(InterruptedException e) {
          e.printStackTrace();
       }

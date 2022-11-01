@@ -83,8 +83,6 @@ public class ServerCall implements Runnable {
          else e.printStackTrace();
       } catch (JSONException j) {
          j.printStackTrace();
-      } finally {
-         Thread.currentThread().notify();
       }
    }
 

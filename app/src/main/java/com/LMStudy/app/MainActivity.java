@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
       context = this;
 
       SharedPreferences userPrefs = this.getApplicationContext().getSharedPreferences("userPrefs",MODE_PRIVATE);
+      userPrefs.edit().remove("userToken").commit(); //Temporary fix for testing Login function
       caller.setPreferences(userPrefs);
 
       //If the user has a saved auth token for our server, skip login.
@@ -55,6 +56,27 @@ public class MainActivity extends AppCompatActivity {
       Button loginBtn = findViewById(R.id.login_btn);
 
       loginBtn.setOnClickListener(view -> {
+         String user = username.getText().toString();
+         String pw = password.getText().toString();
+         if (user.isEmpty() || pw.isEmpty()){
+            Toast.makeText(MainActivity.this, "Username & Password Required", Toast.LENGTH_SHORT).show();
+         }
+         else {
+            Boolean login = caller.login(user,pw);
+            if(login == null) {
+               Toast.makeText(MainActivity.this, "Connection Error", Toast.LENGTH_SHORT).show();
+            }
+            else if(login) {
+               Toast.makeText(MainActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
+               //force student login
+               launchTarget = new Intent(this, StudentHome.class);
+               this.startActivity(launchTarget);
+            }
+            else {
+               Toast.makeText(MainActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
+            }
+         }
+         /*
          // arbitrary login info: username = "username1" and password = "password1"
          if (username.getText().toString().equals("username1") && password.getText().toString().equals("password1")) {
             // if LMStudy id -> database linked to canvas lms api id -> role = student, go to user's student home
@@ -72,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
          else {
             Toast.makeText(MainActivity.this, "Username and/or password incorrect", Toast.LENGTH_SHORT).show();
          }
+         */
       });
 
          //temporary: force StudentHome launch
