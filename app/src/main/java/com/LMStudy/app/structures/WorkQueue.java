@@ -2,6 +2,7 @@ package com.LMStudy.app.structures;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeSet;
 
 /**
@@ -30,6 +31,10 @@ public class WorkQueue{
 
    public TreeSet<Assignment> getWorkQueue() {
       return items;
+   }
+
+   public void populate(List<Assignment> input){
+      input.forEach(item -> items.add(item));
    }
 
    public boolean addToQueue(Assignment assignment) {

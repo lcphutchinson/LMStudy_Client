@@ -23,8 +23,9 @@ import com.LMStudy.app.student.StudentHome;
  */
 public class MainActivity extends AppCompatActivity {
    private final SyncService caller = SyncService.getInstance();
-   private Context context;
+   private final WorkQueue queue = WorkQueue.getInstance();
    private Intent launchTarget;
+   private Context context;
 
 
    @Override
@@ -33,8 +34,16 @@ public class MainActivity extends AppCompatActivity {
       setContentView(R.layout.activity_main);
       context = this;
 
-      //SyncService caller = SyncService.getInstance();
-      //caller.isAvailable();
+      SharedPreferences userPrefs = this.getApplicationContext().getSharedPreferences("userPrefs",MODE_PRIVATE);
+      caller.setPreferences(userPrefs);
+
+      //If the user has a saved auth token for our server, skip login.
+      if(userPrefs.contains("userToken")) {
+         queue.populate(caller.pullAll());
+         launchTarget = (userPrefs.getBoolean("isTeacher", false))
+            ? new Intent(this, TeacherHome.class)
+            : new Intent(this, StudentHome.class);
+      }
 
       // check for stored settings
       // if stored settings exist, load them
