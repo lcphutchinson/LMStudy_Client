@@ -48,6 +48,29 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         return itemsList.size();
     }
 
+    public void removeAt(int position) {
+        itemsList.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, itemsList.size());
+    }
+
+    public String getItemName(int position) {
+        return itemsList.get(position).getAssignmentName();
+    }
+
+    public String getItemType(int position) {
+        return itemsList.get(position).getAssignmentType();
+    }
+
+    public String getItemCourse(int position) {
+        return itemsList.get(position).getCourseInfo();
+    }
+
+    public String getItemDueDate(int position) {
+        return itemsList.get(position).getDueDate();
+    }
+
+
     public class MyViewHolder extends RecyclerView.ViewHolder{
 
         private TextView assignment_name, assignment_type, course_info, due_date;
