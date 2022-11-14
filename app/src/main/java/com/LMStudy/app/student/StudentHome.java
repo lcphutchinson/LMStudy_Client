@@ -54,7 +54,6 @@ public class StudentHome extends AppCompatActivity {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_student_home);
 
-
       profilePicture = findViewById(R.id.profile_icon);
       rcSchedule = findViewById(R.id.assignment_work_queue);
       refreshButton = findViewById(R.id.refresh_Btn);
@@ -64,19 +63,13 @@ public class StudentHome extends AppCompatActivity {
       setDisplay();
       rcSchedule.setLayoutManager(new LinearLayoutManager(this));
 
-//      if (queueLink.getFirstAssignment() == null) {
-//         currentAssignment.setText("Schedule is empty!");
-//      }
-//      else {
-//         currentAssignment.setText(queueLink.getFirstAssignment().toString());
-//      }
-
       rcSchedule.addOnItemTouchListener(new RecyclerItemClickListener(getApplicationContext(),
               rcSchedule, new RecyclerItemClickListener.OnItemClickListener() {
 
          @Override
          public void onItemClick(View view, int position) {
             // inflate the layout of the popup window
+
             LayoutInflater inflater = (LayoutInflater)
                     getSystemService(LAYOUT_INFLATER_SERVICE);
             View popupView = inflater.inflate(R.layout.assignment_info_popup, null);
@@ -102,7 +95,7 @@ public class StudentHome extends AppCompatActivity {
             assignmentAssigneeText = popupView.findViewById(R.id.assigneeName);
             assignmentAssigneeInfo = popupView.findViewById(R.id.assigneeName_txt);
             assignmentTypeText = popupView.findViewById(R.id.assignmentType);
-            assignmentTypeText = popupView.findViewById(R.id.assignmentType_txt);
+            assignmentTypeInfo = popupView.findViewById(R.id.assignmentType_txt);
             assignmentCourseText = popupView.findViewById(R.id.course_txt);
             assignmentCourseInfo = popupView.findViewById(R.id.courseName_txt);
             assignmentDueDateText = popupView.findViewById(R.id.dueDateInfo_title);
@@ -111,14 +104,22 @@ public class StudentHome extends AppCompatActivity {
             removeAssignmentBtn = popupView.findViewById(R.id.rmvAssignment_btn);
 
             assignmentNameInfo.setText(studentHomeAdapter.getItemName(position));
-            //assignmentTypeInfo.setText(studentHomeAdapter.getItemType(position));
+            assignmentTypeInfo.setText(studentHomeAdapter.getItemType(position));
             assignmentCourseInfo.setText(studentHomeAdapter.getItemCourse(position));
             assignmentDueDateInfo.setText(studentHomeAdapter.getItemDueDate(position));
 
             completeAssignmentBtn.setOnClickListener(view1 -> {
-               studentHomeAdapter.removeAt(position);
+               Assignment item = new Assignment(studentHomeAdapter.getItemCourse(position),
+                       studentHomeAdapter.getItemName(position),
+                       studentHomeAdapter.getItemType(position),
+                       studentHomeAdapter.getItemDueDate(position));
 
-               //removal logic for "COMPLETED" and update recycler view
+               queueLink.removeFromQueue(item);
+
+               setDisplay();
+
+               // removal logic for "COMPLETED" and update recycler view
+               // add assignment somewhere using triggers
 
                Toast.makeText(getBaseContext(), "Assignment completed", Toast.LENGTH_SHORT).show();
                popupWindow.dismiss();
@@ -153,21 +154,19 @@ public class StudentHome extends AppCompatActivity {
 
                yesButton.setOnClickListener(view3 -> {
                   //removal logic and update recycler view
-                  studentHomeAdapter.removeAt(position);
+                  //studentHomeAdapter.removeAt(position);
 
-//                  String assignmentName = assignmentNameInfo.getText().toString();
-//                  String assignmentType = assignmentTypeInfo.getText().toString();
-//                  String courseInfo = assignmentCourseInfo.getText().toString();
-//                  String dueDate = assignmentDueDateInfo.getText().toString();
-//
-//                  String[] partitionDate = dueDate.split("-");
-//                  LocalDateTime ldtDueDate = LocalDateTime.of(Integer.parseInt(partitionDate[2]),
-//                          Integer.parseInt(partitionDate[0]), Integer.parseInt(partitionDate[1]), 23, 59);
-//
-//                  Assignment newAssignment = new Assignment(courseInfo, assignmentName, assignmentType, ldtDueDate);
-//
-//                  queueLink.removeFromQueue(newAssignment);
-//                  setDisplay();
+                  String assignmentName = assignmentNameInfo.getText().toString();
+                  String assignmentType = assignmentTypeInfo.getText().toString();
+                  String courseInfo = assignmentCourseInfo.getText().toString();
+                  String dueDate = assignmentDueDateInfo.getText().toString();
+
+                  Assignment newAssignment = new Assignment(courseInfo, assignmentName, assignmentType, dueDate);
+
+                  queueLink.removeFromQueue(newAssignment);
+                  setDisplay();
+
+                  // add assignment somewhere using triggers
 
                   Toast.makeText(getBaseContext(), "Assignment successfully removed", Toast.LENGTH_SHORT).show();
                   popupWindow1.dismiss();
@@ -285,9 +284,7 @@ public class StudentHome extends AppCompatActivity {
       });
 
       studentHomeAdapter = new RecyclerAdapter(this, items);
-      studentHomeAdapter.getItemCount();
       rcSchedule.setAdapter(studentHomeAdapter);
-      studentHomeAdapter.notifyDataSetChanged();
 
       if (items.size() == 0) {
          currentAssignment.setText("Schedule is empty!");

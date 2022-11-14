@@ -142,52 +142,61 @@ public class WorkQueue{
 
       if (assignment.getPriority() >= 10) {
          if (priority10.contains(assignment)) {
-            removedSuccessfully = priority10.add(assignment);
+            removedSuccessfully = priority10.remove(assignment);
          }
       }
       if (assignment.getPriority() >= 9) {
          if (priority9.contains(assignment)) {
-            removedSuccessfully = priority9.add(assignment);
+            priority9.remove(assignment);
+            if (removedSuccessfully == false) removedSuccessfully = true;
          }
       }
       if (assignment.getPriority() >= 8) {
          if (priority8.contains(assignment)) {
-            removedSuccessfully = priority8.add(assignment);
+            priority8.remove(assignment);
+            if (removedSuccessfully == false) removedSuccessfully = true;
          }
       }
       if (assignment.getPriority() >= 7) {
          if (priority7.contains(assignment)) {
-            removedSuccessfully = priority7.add(assignment);
+            priority7.remove(assignment);
+            if (removedSuccessfully == false) removedSuccessfully = true;
          }
       }
       if (assignment.getPriority() >= 6) {
          if (priority6.contains(assignment)) {
-            removedSuccessfully = priority6.add(assignment);
+            priority6.remove(assignment);
+            if (removedSuccessfully == false) removedSuccessfully = true;
          }
       }
       if (assignment.getPriority() >= 5) {
          if (priority5.contains(assignment)) {
-            removedSuccessfully = priority5.add(assignment);
+            priority5.remove(assignment);
+            if (removedSuccessfully == false) removedSuccessfully = true;
          }
       }
       if (assignment.getPriority() >= 4) {
          if (priority4.contains(assignment)) {
-            removedSuccessfully = priority4.add(assignment);
+            priority4.remove(assignment);
+            if (removedSuccessfully == false) removedSuccessfully = true;
          }
       }
       if (assignment.getPriority() >= 3) {
          if (priority3.contains(assignment)) {
-            removedSuccessfully = priority3.add(assignment);
+            priority3.remove(assignment);
+            if (removedSuccessfully == false) removedSuccessfully = true;
          }
       }
       if (assignment.getPriority() >= 2) {
          if (priority2.contains(assignment)) {
-            removedSuccessfully = priority2.add(assignment);
+            priority2.remove(assignment);
+            if (removedSuccessfully == false) removedSuccessfully = true;
          }
       }
       if (assignment.getPriority() >= 1) {
          if (priority1.contains(assignment)) {
-            removedSuccessfully = priority1.add(assignment);
+            priority1.remove(assignment);
+            if (removedSuccessfully == false) removedSuccessfully = true;
          }
       }
 
