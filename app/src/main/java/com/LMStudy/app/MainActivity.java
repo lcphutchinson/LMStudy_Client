@@ -19,7 +19,7 @@ import com.LMStudy.app.student.StudentHome;
 
 
 /**
- * Launch activity--handles field initialization and settings retrieval, and launches the Student or Teacher UI.
+ * Launch activity--handles field initialization and settings retrieval, and launches the Student or Teacher UI.2
  */
 public class MainActivity extends AppCompatActivity {
    private final SyncService caller = SyncService.getInstance();
@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
       SharedPreferences userPrefs = this.getApplicationContext().getSharedPreferences("userPrefs",MODE_PRIVATE);
       userPrefs.edit().remove("userToken").commit(); //Temporary fix for testing Login function
       caller.setPreferences(userPrefs);
-
+/*
       //If the user has a saved auth token for our server, skip login.
       if(userPrefs.contains("userToken")) {
          queue.populate(caller.pullAll());
@@ -94,12 +94,12 @@ public class MainActivity extends AppCompatActivity {
          else {
             Toast.makeText(MainActivity.this, "Username and/or password incorrect", Toast.LENGTH_SHORT).show();
          }
-         */
-      });
 
+      });
+*/
          //temporary: force StudentHome launch
-         //launchTarget = new Intent(this, StudentHome.class);
-         //this.startActivity(launchTarget);
+         launchTarget = new Intent(this, StudentHome.class);
+         this.startActivity(launchTarget);
 
    }
 

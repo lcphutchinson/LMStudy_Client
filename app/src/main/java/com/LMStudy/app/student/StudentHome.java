@@ -19,7 +19,6 @@ import com.LMStudy.app.R;
 import com.LMStudy.app.structures.Assignment;
 import com.LMStudy.app.structures.WorkQueue;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +28,10 @@ import java.util.List;
 public class StudentHome extends AppCompatActivity {
 
    private final WorkQueue queueLink = WorkQueue.getInstance();
-   private List<AssignmentItem> items;
+//   private List<AssignmentItem> items;
+   private List<Assignment> items;
+
+   private TextView currentAssignment;
 
    private RecyclerAdapter studentHomeAdapter;
    private RecyclerView rcSchedule;
@@ -45,24 +47,29 @@ public class StudentHome extends AppCompatActivity {
    private TextView confirmRemovalText;
    private Button yesButton, noButton;
 
-   private WorkQueue assignmentItems = WorkQueue.getInstance();
-
-   List<Assignment> assignmentArrayList;
+   ArrayList<Assignment> assignmentArrayList;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_student_home);
 
-      assignmentArrayList = assignmentItems.convertToArrayList();
 
       profilePicture = findViewById(R.id.profile_icon);
-      rcSchedule = findViewById(R.id.rcView_Schedule);
+      rcSchedule = findViewById(R.id.assignment_work_queue);
       refreshButton = findViewById(R.id.refresh_Btn);
       addAssignmentBtn = findViewById(R.id.addAssignment_Btn);
+      currentAssignment = findViewById(R.id.current_assignment_text);
 
       setDisplay();
       rcSchedule.setLayoutManager(new LinearLayoutManager(this));
+
+//      if (queueLink.getFirstAssignment() == null) {
+//         currentAssignment.setText("Schedule is empty!");
+//      }
+//      else {
+//         currentAssignment.setText(queueLink.getFirstAssignment().toString());
+//      }
 
       rcSchedule.addOnItemTouchListener(new RecyclerItemClickListener(getApplicationContext(),
               rcSchedule, new RecyclerItemClickListener.OnItemClickListener() {
@@ -224,11 +231,11 @@ public class StudentHome extends AppCompatActivity {
             String courseInfo = newAssignmentCourseInfo.getText().toString();
             String dueDate = newAssignmentDueDate.getText().toString();
 
-            String[] partitionDate = dueDate.split("/");
-            LocalDateTime ldtDueDate = LocalDateTime.of(Integer.parseInt(partitionDate[2]),
-                    Integer.parseInt(partitionDate[0]), Integer.parseInt(partitionDate[1]), 23, 59);
+//            String[] partitionDate = dueDate.split("/");
+//            LocalDateTime ldtDueDate = LocalDateTime.of(Integer.parseInt(partitionDate[2]),
+//                    Integer.parseInt(partitionDate[0]), Integer.parseInt(partitionDate[1]), 23, 59);
 
-            Assignment newAssignment = new Assignment(courseInfo, assignmentName, assignmentType, ldtDueDate);
+            Assignment newAssignment = new Assignment(courseInfo, assignmentName, assignmentType, dueDate);
 
             queueLink.addToQueue(newAssignment);
             setDisplay();
@@ -241,18 +248,57 @@ public class StudentHome extends AppCompatActivity {
 
    /**
     * Repopulates the RecyclerView based on the underlying AssignmentList.
+    * Gets each item from the work queue with hardcoded priority but will change to array of
+    * priority queues later.
     */
    private void setDisplay() {
       items = new ArrayList<>();
-      queueLink.getWorkQueue().forEach(task -> {
+      queueLink.getWorkQueue(10).forEach(task -> {
          items.add(generateItem(task));
       });
+      queueLink.getWorkQueue(9).forEach(task -> {
+         items.add(generateItem(task));
+      });
+      queueLink.getWorkQueue(8).forEach(task -> {
+         items.add(generateItem(task));
+      });
+      queueLink.getWorkQueue(7).forEach(task -> {
+         items.add(generateItem(task));
+      });
+      queueLink.getWorkQueue(6).forEach(task -> {
+         items.add(generateItem(task));
+      });
+      queueLink.getWorkQueue(5).forEach(task -> {
+         items.add(generateItem(task));
+      });
+      queueLink.getWorkQueue(4).forEach(task -> {
+         items.add(generateItem(task));
+      });
+      queueLink.getWorkQueue(3).forEach(task -> {
+         items.add(generateItem(task));
+      });
+      queueLink.getWorkQueue(2).forEach(task -> {
+         items.add(generateItem(task));
+      });
+      queueLink.getWorkQueue(1).forEach(task -> {
+         items.add(generateItem(task));
+      });
+
       studentHomeAdapter = new RecyclerAdapter(this, items);
+      studentHomeAdapter.getItemCount();
       rcSchedule.setAdapter(studentHomeAdapter);
+      studentHomeAdapter.notifyDataSetChanged();
+
+      if (items.size() == 0) {
+         currentAssignment.setText("Schedule is empty!");
+      }
+      else {
+         currentAssignment.setText(items.get(0).toString());
+      }
    }
 
-   private AssignmentItem generateItem(Assignment a) {
-      AssignmentItem item = new AssignmentItem(
+   private Assignment generateItem(Assignment a) {
+      Assignment item = new Assignment(
          a.getCourseInfo(),
          a.getAssignmentType(),
          a.getAssignmentName(),
