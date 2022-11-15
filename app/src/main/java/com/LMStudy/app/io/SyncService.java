@@ -2,6 +2,7 @@ package com.LMStudy.app.io;
 
 import android.content.SharedPreferences;
 import com.LMStudy.app.structures.Assignment;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.time.LocalDateTime;
@@ -47,10 +48,12 @@ public class SyncService {
    }
 
    public List<Assignment> pullAll() {
+      request = new JSONObject();
       caller = new ServerCall();
       try {
          request.put(ACTION_FLAG, "PULL");
-         request.put("userToken", userPrefs.getString("userToken", ""));
+         request.put("token", userPrefs.getString("userToken", ""));
+         request.put("role", userPrefs.getString("role", ""));
       } catch(JSONException j) {
          j.printStackTrace();
       }
@@ -64,16 +67,20 @@ public class SyncService {
             if (chunk instanceof String) {
                try {
                   String jsonString = (String) chunk;
-                  JSONObject json = new JSONObject(jsonString);
-                  String name = json.getString("name");
-                  String[] dateStrings = json.getString("due").split("/");
-                  LocalDateTime due = LocalDateTime.of(
-                     Integer.parseInt(dateStrings[1]),
-                     Integer.parseInt(dateStrings[2]),
-                     Integer.parseInt(dateStrings[0]),
-                     23, 59
-                  );
-                  results.add(new Assignment("DBtest", name, "Synced", due));
+                  System.out.println(jsonString);
+                  JSONArray json = new JSONArray(jsonString);
+                  for (int i = 0; i < json.length(); i++) {
+                     JSONArray j = json.getJSONArray(i);
+                     String course = j.getString(0);
+                     String id = j.getString(1);
+                     String name = j.getString(2);
+                     String type = j.getString(3);
+                     String due = j.getString(4);
+                     Integer priority = j.getInt(5);
+                     Integer hours = j.getInt(6);
+                     Integer progress = j.getInt(7);
+                     results.add(new Assignment(course, name, type, due));
+                  }
                } catch (JSONException j) {
                   j.printStackTrace();
                }
@@ -92,7 +99,7 @@ public class SyncService {
          request.put(ACTION_FLAG, "PUSH");
          request.put("userToken", userPrefs.getString("userToken", ""));
          request.put("name", a.getAssignmentName());
-         request.put("due", DateTimeFormatter.ofPattern("yyyy-MM-dd").format(a.getDueDate()));
+         request.put("due", a.getDueDate());
       } catch (JSONException j) {
          j.printStackTrace();
       }
