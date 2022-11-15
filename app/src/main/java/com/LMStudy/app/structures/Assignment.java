@@ -1,5 +1,7 @@
 package com.LMStudy.app.structures;
 
+import android.widget.TextView;
+
 import com.LMStudy.app.structures.AssignmentType;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -144,6 +146,10 @@ public class Assignment implements Comparable<Assignment> {
      * @param args
      */
     public static void main (String[] args) {
-        System.out.println("DUE DATE:\n(COURSE NAME)");
+        Assignment assignment = new Assignment("Course Info", "This is the very very long assignment name!", "Assignment", "11/25/2022");
+        System.out.println(assignment.getAssignmentName());
+        System.out.println(assignment.getAssignmentType());
+        System.out.println(assignment.getCourseInfo());
+        System.out.println(assignment.getDueDate());
     }
 }

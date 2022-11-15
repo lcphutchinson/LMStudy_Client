@@ -16,6 +16,9 @@
                 android:name=".teacher.TeacherHome"
                 android:exported="true"/>
         <activity
+                android:name=".teacher.TeacherAssignmentHome"
+                android:exported="true"/>
+        <activity
                 android:name=".student.StudentHome"
                 android:exported="true"/>
         <activity

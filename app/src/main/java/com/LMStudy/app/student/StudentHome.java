@@ -15,6 +15,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.LMStudy.app.AccountActivity;
 import com.LMStudy.app.R;
 import com.LMStudy.app.structures.Assignment;
 import com.LMStudy.app.structures.WorkQueue;
@@ -33,7 +34,7 @@ public class StudentHome extends AppCompatActivity {
 
    private TextView currentAssignment;
 
-   private RecyclerAdapter studentHomeAdapter;
+   private AccountActivity.RecyclerAdapter studentHomeAdapter;
    private RecyclerView rcSchedule;
    private ImageView profilePicture;
    private Button refreshButton, addAssignmentBtn, confirmAssignmentBtn;
@@ -63,8 +64,8 @@ public class StudentHome extends AppCompatActivity {
       setDisplay();
       rcSchedule.setLayoutManager(new LinearLayoutManager(this));
 
-      rcSchedule.addOnItemTouchListener(new RecyclerItemClickListener(getApplicationContext(),
-              rcSchedule, new RecyclerItemClickListener.OnItemClickListener() {
+      rcSchedule.addOnItemTouchListener(new AccountActivity.RecyclerItemClickListener(getApplicationContext(),
+              rcSchedule, new AccountActivity.RecyclerItemClickListener.OnItemClickListener() {
 
          @Override
          public void onItemClick(View view, int position) {
@@ -283,7 +284,7 @@ public class StudentHome extends AppCompatActivity {
          items.add(generateItem(task));
       });
 
-      studentHomeAdapter = new RecyclerAdapter(this, items);
+      studentHomeAdapter = new AccountActivity.RecyclerAdapter(this, items);
       rcSchedule.setAdapter(studentHomeAdapter);
 
       if (items.size() == 0) {
@@ -297,8 +298,8 @@ public class StudentHome extends AppCompatActivity {
    private Assignment generateItem(Assignment a) {
       Assignment item = new Assignment(
          a.getCourseInfo(),
-         a.getAssignmentType(),
          a.getAssignmentName(),
+         a.getAssignmentType(),
          a.getDueDate()
       );
       return item;
