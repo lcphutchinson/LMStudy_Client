@@ -72,7 +72,11 @@ public class WorkQueue{
     * @param input
     */
    public void populate(List<Assignment> input){
-      input.forEach(item -> priority1.add(item));
+
+      input.forEach(item -> {
+         priority1.add(item);
+         System.out.println("Populate() Added: " + item.toString());
+      });
    }
 
    /**
