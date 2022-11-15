@@ -3,7 +3,7 @@ package com.LMStudy.app.structures;
 /**
  * Data unit for tracking enrolled courses. Referenced by Drop Operations.
  */
-public class Course {
+public class NewCourse {
    private static final String SELF_ASSIGNED = "SELF";
    private String id;
    private String name;
@@ -13,7 +13,7 @@ public class Course {
     * "Slow" Constructor for new Course creation. Used with setCodes().
     * @param name A display name for the course.
     */
-   public Course(String name) {
+   public NewCourse(String name) {
       this.id = "";
       this.name = name;
       this.pw = "";
@@ -25,7 +25,7 @@ public class Course {
     * @param name A display name for this course
     * @param pw A password for joining this course as administrator
     */
-   public Course(String id, String name, String pw) {
+   public NewCourse(String id, String name, String pw) {
       this.id = id;
       this.name = name;
       this.pw = pw;
