@@ -1,5 +1,6 @@
 package com.LMStudy.app.structures;
 
+import com.LMStudy.app.structures.AssignmentType;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -10,14 +11,14 @@ import java.time.format.DateTimeFormatter;
 public class Assignment implements Comparable<Assignment> {
 
     private static final int INITIAL_PRIORITY = 2;
-    private static final int INITIAL_TIMEBLOCK = 1; //hours set for assignment per session
+    private static final int INITIAL_TIMEBLOCK = 60; //minutes set for assignment per session
 
     private String courseInfo; // go to canvas to get course number
     private String assignmentName;
     private int priority; // priority is between 1-10
     private String assignmentType; // create an assignment enum
     //private Date dueDate; // convert to Date class
-    private LocalDateTime dueDate;
+    private String dueDate;
     private int assignedTimeBlocks; // for student
 
     /**
@@ -27,12 +28,39 @@ public class Assignment implements Comparable<Assignment> {
      * @param assignmentType Assignment type (normal, exam, project, etc.)
      * @param dueDate Due date of assignment
      */
-    public Assignment(String courseInfo, String assignmentName, String assignmentType, LocalDateTime dueDate) {
+    public Assignment(String courseInfo, String assignmentName, String assignmentType, String dueDate) {
         this.courseInfo = courseInfo;
         this.assignmentName = assignmentName;
-        priority = INITIAL_PRIORITY;
-        this.assignmentType = assignmentType;
-        this.dueDate = dueDate;
+
+        switch (assignmentType) { // no default case because it'll be prevented using listview
+            case "Assignment":
+                priority = AssignmentType.ASSIGNMENT.getPriority();
+                this.assignmentType = AssignmentType.ASSIGNMENT.getName();
+                assignedTimeBlocks = AssignmentType.ASSIGNMENT.getTimeInMinutes();
+                break;
+            case "Project":
+                priority = AssignmentType.PROJECT.getPriority();
+                this.assignmentType = AssignmentType.PROJECT.getName();
+                assignedTimeBlocks = AssignmentType.PROJECT.getTimeInMinutes();
+                break;
+            case "Exam":
+                priority = AssignmentType.EXAM.getPriority();
+                this.assignmentType = AssignmentType.EXAM.getName();
+                assignedTimeBlocks = AssignmentType.EXAM.getTimeInMinutes();
+                break;
+            case "Study Session":
+                priority = AssignmentType.STUDY_SESSION.getPriority();
+                this.assignmentType = AssignmentType.STUDY_SESSION.getName();
+                assignedTimeBlocks = AssignmentType.STUDY_SESSION.getTimeInMinutes();
+                break;
+            case "Personal Time":
+                priority = AssignmentType.PERSONAL_TIME.getPriority();
+                this.assignmentType = AssignmentType.PERSONAL_TIME.getName();
+                assignedTimeBlocks = AssignmentType.PERSONAL_TIME.getTimeInMinutes();
+                break;
+        }
+
+        this.dueDate = dueDate; // app prompts for date with list views instead of text view
         assignedTimeBlocks = INITIAL_TIMEBLOCK;
     }
 
@@ -44,7 +72,7 @@ public class Assignment implements Comparable<Assignment> {
         this.assignmentName = "Sprint 3";
         this.priority = INITIAL_PRIORITY;
         this.assignmentType = "Sprint";
-        this.dueDate = LocalDateTime.now();
+        this.dueDate = LocalDateTime.now().toString();
     }
 
     // May delete any unnecessary get functions
@@ -64,7 +92,12 @@ public class Assignment implements Comparable<Assignment> {
         return assignmentType;
     }
 
-    public LocalDateTime getDueDate() {
+    /**
+     * Getter method that returns the due date of an assignment.
+     * @return assignment's due date.
+     */
+    public String getDueDate() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy @ HH:mm");
         return dueDate;
     }
 
@@ -81,7 +114,7 @@ public class Assignment implements Comparable<Assignment> {
      * Changes the due date of the assignment. Available only to teachers.
      * @param dueDate Due date of assignment.
      */
-    public void changeDueDate(LocalDateTime dueDate) {
+    public void changeDueDate(String dueDate) {
         this.dueDate = dueDate;
     }
 

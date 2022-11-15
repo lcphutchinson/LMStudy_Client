@@ -45,10 +45,49 @@
                 android:theme="?attr/actionBarTheme"
                 app:maxButtonHeight="80dp" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rcView_Schedule"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="600dp">
+                android:layout_height="135dp"
+                android:layout_margin="15dp"
+                android:background="@drawable/gradient_background">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/nextAssignmentTV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Current Assignment:"
+                        android:textColor="#000000"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.502"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.064" />
+
+                    <TextView
+                        android:id="@+id/current_assignment_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="TextView"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/nextAssignmentTV" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </FrameLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/assignment_work_queue"
+                android:layout_width="match_parent"
+                android:layout_height="436dp">
 
             </androidx.recyclerview.widget.RecyclerView>
 

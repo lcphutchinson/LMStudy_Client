@@ -1,5 +1,6 @@
 package com.LMStudy.app.student;
 
+import com.LMStudy.app.structures.Assignment;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,9 +20,10 @@ import java.util.TreeSet;
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder> {
 
     private Context context;
-    List<AssignmentItem> itemsList;
+    //List<AssignmentItem> itemsList;
+    List<Assignment> itemsList;
 
-    public RecyclerAdapter(Context context, List<AssignmentItem> itemsList) {
+    public RecyclerAdapter(Context context, List<Assignment> itemsList) {
         this.context = context;
         this.itemsList = itemsList;
     }
