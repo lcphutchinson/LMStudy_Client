@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".teacher.TeacherHome">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".teacher.TeacherHome">
 
     <Button
         android:id="@+id/t_addAssignment_Btn"
@@ -24,7 +24,7 @@
         android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/t_toolbar1"
+            android:id="@+id/t_toolbar3"
             android:layout_width="match_parent"
             android:layout_height="69dp"
             android:background="@color/black"
@@ -33,14 +33,14 @@
             app:maxButtonHeight="80dp" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/t_course_list"
+            android:id="@+id/t_course_assignment_list"
             android:layout_width="match_parent"
             android:layout_height="598dp">
 
         </androidx.recyclerview.widget.RecyclerView>
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/t_toolbar2"
+            android:id="@+id/t_toolbar4"
             _toTopOf="parent"
             android:layout_width="match_parent"
             android:layout_height="66dp"
@@ -50,7 +50,7 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/t_profile_icon"
+        android:id="@+id/t_course_profile_icon"
         android:layout_width="74dp"
         android:layout_height="69dp"
         android:layout_marginStart="4dp"
@@ -59,7 +59,7 @@
         app:srcCompat="@drawable/default_icon" />
 
     <TextView
-        android:id="@+id/t_your_courses"
+        android:id="@+id/t_course_name_list"
         android:layout_width="276dp"
         android:layout_height="68dp"
         android:layout_marginRight="30sp"
@@ -67,7 +67,7 @@
         android:forceHasOverlappingRendering="true"
         android:includeFontPadding="false"
         android:paddingTop="18dp"
-        android:text="Course List"
+        android:text="[Course] Work"
         android:textAlignment="viewEnd"
         android:textAllCaps="true"
         android:textColor="#FFFFFF"

@@ -98,7 +98,11 @@ public class MainActivity extends AppCompatActivity {
       });
 */
          //temporary: force StudentHome launch
-         launchTarget = new Intent(this, StudentHome.class);
+//         launchTarget = new Intent(this, StudentHome.class);
+//         this.startActivity(launchTarget);
+
+         //temporary: force Teacher Home launch
+         launchTarget = new Intent(this, TeacherHome.class);
          this.startActivity(launchTarget);
 
    }
