@@ -3,7 +3,7 @@ package com.LMStudy.app;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.widget.TextView;
+import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import com.LMStudy.app.io.SyncService;
@@ -11,9 +11,7 @@ import com.LMStudy.app.structures.WorkQueue;
 import com.LMStudy.app.student.StudentHome;
 import com.LMStudy.app.teacher.TeacherHome;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.LMStudy.app.student.StudentHome;
 
@@ -22,6 +20,7 @@ import com.LMStudy.app.student.StudentHome;
  * Launch activity--handles field initialization and settings retrieval, and launches the Student or Teacher UI.2
  */
 public class MainActivity extends AppCompatActivity {
+   private static final String DEBUGROLE = "STUDENT";
    private final SyncService caller = SyncService.getInstance();
    private final WorkQueue queue = WorkQueue.getInstance();
    private Intent launchTarget;
@@ -34,16 +33,29 @@ public class MainActivity extends AppCompatActivity {
       setContentView(R.layout.activity_main);
       context = this;
 
+      //DEBUG Login Automation
       SharedPreferences userPrefs = this.getApplicationContext().getSharedPreferences("userPrefs",MODE_PRIVATE);
-      userPrefs.edit().remove("userToken").commit(); //Temporary fix for testing Login function
-      caller.setPreferences(userPrefs);
-/*
+      userPrefs.edit().putString("role", DEBUGROLE).commit();
+      if(DEBUGROLE.equals("TEACHER")) {
+         userPrefs.edit().putString("userToken", "token4").commit();
+         launchTarget = new Intent(this, TeacherHome.class);
+      } else if (DEBUGROLE.equals("STUDENT")){
+         userPrefs.edit().putString("userToken", "token1").commit();
+         launchTarget = new Intent(this, StudentHome.class);
+      } else {
+         userPrefs.edit().remove("userToken").commit(); //Manual Mode
+      }
+         caller.setPreferences(userPrefs);
+
       //If the user has a saved auth token for our server, skip login.
       if(userPrefs.contains("userToken")) {
          queue.populate(caller.pullAll());
+
+         /*
          launchTarget = (userPrefs.getBoolean("isTeacher", false))
             ? new Intent(this, TeacherHome.class)
             : new Intent(this, StudentHome.class);
+         */
       }
 
       // check for stored settings
@@ -95,14 +107,9 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "Username and/or password incorrect", Toast.LENGTH_SHORT).show();
          }
 
-      });
-*/
-         //temporary: force StudentHome launch
-//         launchTarget = new Intent(this, StudentHome.class);
-//         this.startActivity(launchTarget);
+          */
 
-         //temporary: force Teacher Home launch
-         launchTarget = new Intent(this, TeacherHome.class);
+      });
          this.startActivity(launchTarget);
 
    }

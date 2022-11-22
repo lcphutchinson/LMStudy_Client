@@ -2,6 +2,7 @@ package com.LMStudy.app.io;
 
 import android.content.SharedPreferences;
 import com.LMStudy.app.structures.Assignment;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.time.LocalDateTime;
@@ -29,6 +30,12 @@ public class SyncService {
       this.userPrefs = userPrefs;
    }
 
+   /**
+    * Calling method for login action: loads a userToken into preferences
+    * @param username username input from login screen
+    * @param pw password input from login screen
+    * @return A boolean indicating successful login.
+    */
    public Boolean login(String username, String pw) {
       caller = new ServerCall();
       request = new JSONObject();
@@ -46,11 +53,17 @@ public class SyncService {
       else return null;
    }
 
+   /**
+    * Calling method for pulling user assignments. Used by both user roles.
+    * @return A list of Assignments associated with this user.
+    */
    public List<Assignment> pullAll() {
+      request = new JSONObject();
       caller = new ServerCall();
       try {
          request.put(ACTION_FLAG, "PULL");
-         request.put("userToken", userPrefs.getString("userToken", ""));
+         request.put("token", userPrefs.getString("userToken", ""));
+         request.put("role", userPrefs.getString("role", ""));
       } catch(JSONException j) {
          j.printStackTrace();
       }
@@ -64,16 +77,20 @@ public class SyncService {
             if (chunk instanceof String) {
                try {
                   String jsonString = (String) chunk;
-                  JSONObject json = new JSONObject(jsonString);
-                  String name = json.getString("name");
-                  String[] dateStrings = json.getString("due").split("/");
-                  LocalDateTime due = LocalDateTime.of(
-                     Integer.parseInt(dateStrings[1]),
-                     Integer.parseInt(dateStrings[2]),
-                     Integer.parseInt(dateStrings[0]),
-                     23, 59
-                  );
-                  results.add(new Assignment("DBtest", name, "Synced", due));
+                  System.out.println("Server Payload:\n" + jsonString);
+                  JSONArray json = new JSONArray(jsonString);
+                  for (int i = 0; i < json.length(); i++) {
+                     JSONArray j = json.getJSONArray(i);
+                     String course = j.getString(0);
+                     String id = j.getString(1);
+                     String name = j.getString(2);
+                     String type = j.getString(3);
+                     String due = j.getString(4);
+                     Integer priority = j.getInt(5);
+                     Integer hours = j.getInt(6);
+                     Integer progress = j.getInt(7);
+                     results.add(new Assignment(course, name, type, due));
+                  }
                } catch (JSONException j) {
                   j.printStackTrace();
                }
@@ -84,21 +101,60 @@ public class SyncService {
       else return null;
    }
 
+   /**
+    * Calling method for terminating course membership. Used by both roles.
+    * @param courseId String code used for identifying courses.
+    */
+   public void dropCourse(String courseId) {
+
+   }
+
+   /**
+    * Calling method for custom assignment submission. Used by both users
+    * @param a:
+    */
    public void push(Assignment a) {
       caller = new ServerCall();
       request = new JSONObject();
 
       try {
-         request.put(ACTION_FLAG, "PUSH");
-         request.put("userToken", userPrefs.getString("userToken", ""));
-         request.put("name", a.getAssignmentName());
-         request.put("due", DateTimeFormatter.ofPattern("yyyy-MM-dd").format(a.getDueDate()));
+         switch(userPrefs.getString("role","")) {
+            case "TEACHER": {
+               request.put(ACTION_FLAG, "PUBLISH");
+               request.put("course", a.getCourseInfo());
+            }
+            case "STUDENT": {
+               request.put(ACTION_FLAG, "PUSH");
+            }
+            request.put("item", packItem(a));
+         }
+
       } catch (JSONException j) {
          j.printStackTrace();
       }
 
       Object response = getResponse();
       // later If(response instanceof Boolean) etc etc. This won't be a void function then.
+   }
+
+
+   /**
+    * Utility method for processing a single assignment for transmission
+    * @param a an Assignment for packing
+    * @return a JSONObject containing the input assignment.
+    */
+   private JSONObject packItem(Assignment a) {
+      JSONObject item = new JSONObject();
+      try {
+         item.put("name", a.getAssignmentName());
+         item.put("type", a.getAssignmentType());
+         item.put("due", a.getDueDate());
+         item.put("priority", a.getPriority());
+         item.put("hours", 0); //replace when Assignment has an hours field.
+      } catch (JSONException j) {
+         j.printStackTrace();
+      }
+      return item;
    }
 
    private Object getResponse() {

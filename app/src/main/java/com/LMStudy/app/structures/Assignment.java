@@ -45,6 +45,7 @@ public class Assignment implements Comparable<Assignment> {
                 this.assignmentType = AssignmentType.PROJECT.getName();
                 assignedTimeBlocks = AssignmentType.PROJECT.getTimeInMinutes();
                 break;
+            case "test": //temporary compatibility thing
             case "Exam":
                 priority = AssignmentType.EXAM.getPriority();
                 this.assignmentType = AssignmentType.EXAM.getName();
