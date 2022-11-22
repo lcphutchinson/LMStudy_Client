@@ -20,7 +20,7 @@ import com.LMStudy.app.student.StudentHome;
  * Launch activity--handles field initialization and settings retrieval, and launches the Student or Teacher UI.2
  */
 public class MainActivity extends AppCompatActivity {
-   private static final String DEBUGROLE = "STUDENT"; //"TEACHER";
+   private static final String DEBUGROLE = "STUDENT";
    private final SyncService caller = SyncService.getInstance();
    private final WorkQueue queue = WorkQueue.getInstance();
    private Intent launchTarget;
