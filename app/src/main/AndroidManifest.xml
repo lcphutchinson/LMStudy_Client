@@ -16,10 +16,23 @@
                 android:name=".teacher.TeacherHome"
                 android:exported="true"/>
         <activity
+                android:name=".ItemsList"
+                android:exported="true"/>
+        <activity
                 android:name=".teacher.TeacherAssignmentHome"
                 android:exported="true"/>
         <activity
                 android:name=".student.StudentHome"
+                android:exported="true"/>
+        <activity
+                android:name=".student.StudentMenu"
+                android:exported="true"/>
+        <activity
+                android:name=".SharedMenu"
+                android:theme="@style/Theme.AppCompat.Dialog.Alert"
+                android:exported="true"/>
+        <activity
+                android:name=".teacher.TeacherMenu"
                 android:exported="true"/>
         <activity
                 android:name=".MainActivity"
