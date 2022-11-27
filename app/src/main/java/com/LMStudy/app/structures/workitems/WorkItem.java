@@ -1,4 +1,6 @@
-package com.LMStudy.app.structures;
+package com.LMStudy.app.structures.workitems;
+
+import com.LMStudy.app.structures.NewCourse;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -131,6 +133,8 @@ public abstract class WorkItem implements Comparable<WorkItem>{
       return this.dueDate;
    }
 
+   public Integer getPriority() { return this.priority; }
+
    /**
     * Getter for prioritization data, used for comparisons
     * @return the priority, hours, and progress values for this item, as an array.
@@ -148,7 +152,7 @@ public abstract class WorkItem implements Comparable<WorkItem>{
     * @param date A date for classification
     * @return an Integer value representing the date's priority tier.
     */
-   public Integer getPriorityTier(Date date) {
+   protected Integer getPriorityTier(Date date) {
          Long timeLeft = date.getTime() - benchmark.getTime();
          Long daysLeft = TimeUnit.DAYS.convert(timeLeft,TimeUnit.MILLISECONDS);
          if (daysLeft < 3) return daysLeft.intValue();
@@ -157,18 +161,42 @@ public abstract class WorkItem implements Comparable<WorkItem>{
    }
 
    /**
+    * Calculates an expected workload for this workitem, based on hours and progress fields.
+    * @return a float indicating remaining expected hours.
+    */
+   protected float getRealHoursLeft() {
+      if (this.hours == 0) return this.hours;
+      else {
+         float realProgress = (this.progress / 100) * this.hours;
+         return this.hours - realProgress;
+      }
+   }
+
+   /**
+    * Custom toString for displaying a WorkItem on the Student Menu
+    * @return A stylized string containing this WorkItem's fields.
+    */
+   @Override
+   public String toString() {
+      return "(" + this.course.toString() + ") "
+         + this.name + "\n"
+         + "Due: " + this.due + "\n"
+         + "Progress: " + this.progress + "/" + this.hours;
+   }
+
+   /**
     * Custom equals() for the WorkItem class. Uses ID or Course and Name as comparators.
-    * @param obj
-    * @return
+    * @param obj the Object to be compared
+    * @return a boolean indicating successful matching.
     */
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof WorkItem) {
          WorkItem item = (WorkItem) obj;
-         if(this.id == "") {
-            return (this.course == item.getCourse() && this.name == item.getName());
+         if(this.id.isEmpty()) {
+            return this.course.equals(item.getCourse()) && this.name.equals(item.getName());
          }
-         return this.id == item.getIID();
+         return this.id.equals(item.getIID());
       }
       else return false;
    }
@@ -181,5 +209,31 @@ public abstract class WorkItem implements Comparable<WorkItem>{
    @Override
    public int compareTo(WorkItem item) {
       return getPriorityTier(this.dueDate) - getPriorityTier(item.getRealDate());
+   }
+
+   /**
+    * Helper method for CompareTo--returns a compareTo result based on priority, workload,
+    * or item id, with descending priority.
+    * @param item a WorkItem to compare against.
+    * @return an integer representing scheduling priority.
+    */
+   protected int typeMatchedCompare(WorkItem item) {
+      int comparedPriorities = this.priority - item.getPriority();
+      if (comparedPriorities != 0) return comparedPriorities;
+      int comparedWorkloads = this.compareWorkload(item);
+      if (comparedWorkloads != 0) return comparedWorkloads;
+      else return this.id.compareTo(item.getIID());
+   }
+
+   /**
+    * Helper method for typeMatchedCompare()--returns a compareTo result based on expected workload
+    * @param item a WorkItem to compare against
+    * @return an integer representing scheduling priority
+    */
+   protected int compareWorkload (WorkItem item) {
+      float comparedWorkLoads = this.getRealHoursLeft() - item.getRealHoursLeft();
+      if (comparedWorkLoads < 0) return -1;
+      else if (comparedWorkLoads > 0) return 1;
+      else return 0;
    }
 }
