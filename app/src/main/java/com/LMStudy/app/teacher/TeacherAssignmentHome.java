@@ -12,12 +12,16 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.DatePicker;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 
 import com.LMStudy.app.AccountActivity;
 import com.LMStudy.app.R;
@@ -27,6 +31,7 @@ import com.LMStudy.app.structures.WorkQueue;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -40,7 +45,7 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
 
     private Button addAssignmentBtn, confirmAssignmentBtn;
 
-    private TextView newAssignmentName;
+    private TextView newAssignmentName, dateView;
 
     private Spinner newAssignmentTypeSpinner, newAssignmentCourseSpinner, newAssignmentDueDateMonthSpinner,
             newAssignmentDueDateDaySpinner, newAssignmentDueDateYearSpinner;
@@ -48,6 +53,24 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
     private TextView assignmentNameText, assignmentNameInfo, assignmentAssigneeText, assignmentAssigneeInfo,
             assignmentTypeText, assignmentTypeInfo, assignmentCourseText, assignmentCourseInfo,
             assignmentDueDateText, assignmentDueDateInfo, assignmentNotesText, assignmentNotesInfo;
+
+    private DatePicker datePicker;
+    private Calendar calendar;
+    private int year, month, day;
+
+    private DatePickerDialog.OnDateSetListener myDateListener = new
+        DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker arg0,
+                                  int arg1, int arg2, int arg3) {
+                // TODO Auto-generated method stub
+                // arg1 = year
+                // arg2 = month
+                // arg3 = day
+                showDate(arg1, arg2+1, arg3);
+            }
+        };
+
     private Button removeAssignmentBtn;
 
     private TextView confirmRemovalText;
@@ -188,7 +211,7 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
             LayoutInflater inflater = (LayoutInflater)
                     getSystemService(LAYOUT_INFLATER_SERVICE);
             // View popupView = inflater.inflate(R.layout.add_assignment_popup_revised, null);
-            View popupView = inflater.inflate(R.layout.assignment_popup, null);
+            View popupView = inflater.inflate(R.layout.teacher_add_assignment_popup_revised, null);
 
             // create the popup window
             int width = LinearLayout.LayoutParams.WRAP_CONTENT;
@@ -205,25 +228,27 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
                 popupWindow.dismiss();
                 return true;
             });
-
+/*
             newAssignmentName = popupView.findViewById(R.id.newAssignmentName_input);
             TextView newAssignmentType = popupView.findViewById(R.id.newAssignmentType_input);
             TextView newAssignmentCourseInfo = popupView.findViewById(R.id.newAssignmentCourseInfo_input);
             TextView newAssignmentDueDate = popupView.findViewById(R.id.newDueDate_input);
             confirmAssignmentBtn = popupView.findViewById(R.id.confirm_assignment_Btn);
-
-            /*
+*/
+            // SPINNER
             newAssignmentName = popupView.findViewById(R.id.r_newAssignmentName_input);
             newAssignmentTypeSpinner = popupView.findViewById(R.id.assignment_type_spinner);
             newAssignmentCourseSpinner = popupView.findViewById(R.id.course_spinner);
-            newAssignmentDueDateMonthSpinner = popupView.findViewById(R.id.month_spinner);
-            newAssignmentDueDateDaySpinner = popupView.findViewById(R.id.day_spinner);
-            newAssignmentDueDateYearSpinner = popupView.findViewById(R.id.year_spinner);
-            confirmAssignmentBtn = popupView.findViewById(R.id.r_confirm_assignment_Btn);
 
-            /**
-             * Will fix this next sprint
-             */
+            dateView = (TextView) popupView.findViewById(R.id.dateText);
+            calendar = Calendar.getInstance();
+            year = calendar.get(Calendar.YEAR);
+
+            month = calendar.get(Calendar.MONTH);
+            day = calendar.get(Calendar.DAY_OF_MONTH);
+            showDate(year, month+1, day);
+
+            confirmAssignmentBtn = popupView.findViewById(R.id.r_confirm_assignment_Btn);
 
             /*
             newAssignmentTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
@@ -241,52 +266,38 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
                 }
             });
             */
-/*
+
             for (Course c : courseList) {
                 courseNameList.add(c.getCourseName());
             }
 
             ArrayAdapter<CharSequence> typeAdapter = ArrayAdapter.createFromResource(this, R.array.assignment_types, android.R.layout.simple_spinner_item);
             ArrayAdapter<String> courseAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, courseNameList);
-            ArrayAdapter<CharSequence> monthAdapter = ArrayAdapter.createFromResource(this, R.array.assignment_types, android.R.layout.simple_spinner_item);
-            ArrayAdapter<CharSequence> dayAdapter = ArrayAdapter.createFromResource(this, R.array.assignment_types, android.R.layout.simple_spinner_item);
-            ArrayAdapter<CharSequence> yearAdapter = ArrayAdapter.createFromResource(this, R.array.assignment_types, android.R.layout.simple_spinner_item);
 
             typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
             courseAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
-            monthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
-            dayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
-            yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
-*/
+
+            newAssignmentTypeSpinner.setAdapter(typeAdapter);
+            newAssignmentCourseSpinner.setAdapter(courseAdapter);
+
+            newAssignmentCourseSpinner.setSelection(courseNameList.indexOf(courseName));
+
             confirmAssignmentBtn.setOnClickListener(view1 -> {
-                /*String assignmentName = newAssignmentName.getText().toString();
+                String assignmentName = newAssignmentName.getText().toString();
                 String assignmentType = newAssignmentTypeSpinner.getSelectedItem().toString();
                 String courseInfo = newAssignmentCourseSpinner.getSelectedItem().toString();
-                String dueDate = newAssignmentDueDateMonthSpinner.getSelectedItem().toString() +
-                        newAssignmentDueDateDaySpinner.getSelectedItem().toString() +
-                        newAssignmentDueDateYearSpinner.getSelectedItem().toString();*/
-
-                String assignmentName = newAssignmentName.getText().toString();
-                String assignmentType = newAssignmentType.getText().toString();
-                String courseInfo = newAssignmentCourseInfo.getText().toString();
-                String dueDate = newAssignmentDueDate.getText().toString();
-
-//            String[] partitionDate = dueDate.split("/");
-//            LocalDateTime ldtDueDate = LocalDateTime.of(Integer.parseInt(partitionDate[2]),
-//                    Integer.parseInt(partitionDate[0]), Integer.parseInt(partitionDate[1]), 23, 59);
+                String dueDate = dateView.getText().toString();
 
                 Assignment newAssignment = new Assignment(courseInfo, assignmentName, assignmentType, dueDate);
 
                 courseAssignmentList.add(newAssignment);
 
-/*
-                int courseIndex = courseList.indexOf(newAssignmentCourseSpinner.getSelectedItem().toString());
+                int courseIndex = courseNameList.indexOf(courseInfo);
                 courseList.get(courseIndex).getAssignmentList().add(newAssignment);
 
+                /*if (courseInfo.equals(courseName))
+                    setDisplay();*/
 
-                if (courseInfo.equals(courseName))
-                    setDisplay();
-*/
                 setDisplay();
 
                 Toast.makeText(getBaseContext(), "Assignment successfully added", Toast.LENGTH_SHORT).show();
@@ -302,5 +313,32 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
         teacherAssignmentAdapter = new AccountActivity.RecyclerAdapter(this, courseAssignmentList);
         rcAssignmentList.setAdapter(teacherAssignmentAdapter);
 
+    }
+
+    /**
+     * Displays due date
+     * @param year due date year
+     * @param month due date month
+     * @param day due date day
+     */
+    private void showDate(int year, int month, int day) {
+        dateView.setText(new StringBuilder().append(day).append("/")
+                .append(month).append("/").append(year));
+    }
+
+    @SuppressWarnings("deprecation")
+    public void setDate(View view) {
+        showDialog(999);
+        Toast.makeText(getApplicationContext(), "ca", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        // TODO Auto-generated method stub
+        if (id == 999) {
+            return new DatePickerDialog(this,
+                    myDateListener, year, month, day);
+        }
+        return null;
     }
 }
