@@ -3,15 +3,32 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Data Desktop/IDEA Projects/LMStudy/app/src/main/res/drawable/ergo_button.xml" value="0.203125" />
+        <entry key="..\:/Data Desktop/IDEA Projects/LMStudy/app/src/main/res/layout/activity_course_list.xml" value="0.184375" />
         <entry key="..\:/Data Desktop/IDEA Projects/LMStudy/app/src/main/res/layout/activity_main.xml" value="0.35280797101449274" />
         <entry key="..\:/Data Desktop/IDEA Projects/LMStudy/app/src/main/res/layout/activity_student_home.xml" value="0.35280797101449274" />
+        <entry key="..\:/Data Desktop/IDEA Projects/LMStudy/app/src/main/res/layout/activity_student_menu.xml" value="0.36666666666666664" />
         <entry key="..\:/Data Desktop/IDEA Projects/LMStudy/app/src/main/res/layout/activity_teacher_assignment_home.xml" value="0.36666666666666664" />
         <entry key="..\:/Data Desktop/IDEA Projects/LMStudy/app/src/main/res/layout/activity_teacher_home.xml" value="0.35280797101449274" />
+        <entry key="..\:/Data Desktop/IDEA Projects/LMStudy/app/src/main/res/layout/activity_teacher_menu.xml" value="0.184375" />
+        <entry key="..\:/Data Desktop/IDEA Projects/LMStudy/app/src/main/res/layout/assignment_info_popup.xml" value="0.36666666666666664" />
         <entry key="..\:/Data Desktop/IDEA Projects/LMStudy/app/src/main/res/layout/assignment_popup.xml" value="0.18802083333333333" />
+        <entry key="..\:/Data Desktop/IDEA Projects/LMStudy/app/src/main/res/layout/course_assignment_list_activity.xml" value="0.18541666666666667" />
+        <entry key="..\:/Data Desktop/IDEA Projects/LMStudy/app/src/main/res/layout/course_row_view.xml" value="0.18541666666666667" />
         <entry key="..\:/Data Desktop/IDEA Projects/LMStudy/app/src/main/res/layout/row_view.xml" value="0.18802083333333333" />
+        <entry key="..\:/Data Desktop/IDEA Projects/LMStudy/app/src/main/res/layout/shared_list.xml" value="0.184375" />
+        <entry key="..\:/Data Desktop/IDEA Projects/LMStudy/app/src/main/res/layout/shared_menu.xml" value="0.365625" />
         <entry key="..\:/Data Desktop/IDEA Projects/LMStudy/app/src/main/res/xml/network_security_config.xml" value="0.18802083333333333" />
-        <entry key="app/src/main/res/layout/activity_teacher_assignment_home.xml" value="0.18" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.22135416666666666" />
+        <entry key="app/src/main/res/layout/activity_student_home.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_teacher_assignment_home.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_teacher_home.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/assignment_info_popup.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/assignment_popup.xml" value="0.14628623188405798" />
+        <entry key="app/src/main/res/layout/assignment_row_view.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/course_assignment_list_activity.xml" value="0.14628623188405798" />
+        <entry key="app/src/main/res/layout/course_row_view.xml" value="0.14628623188405798" />
+        <entry key="app/src/main/res/layout/remove_assignment_popup.xml" value="0.14628623188405798" />
       </map>
     </option>
   </component>

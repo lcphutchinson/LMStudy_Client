@@ -1,4 +1,34 @@
 <resources>
+    <string name="StudentLogo">LMStudy Student v1.0</string>
+    <string name="next_label">Our Next Recommendation:</string>
+    <string name="default_next">--</string>
+    <string name="default_forecast">No Assignments to Complete</string>
+    <string name="forecast_prefix">You have % items due\u0020</string>
+    <string name="forecast_suffix1">today</string>
+    <string name="forecast_suffix2">in % days</string>
+    <string name="default_menuTitle">TITLE</string>
+    <string name="default_menuItem">ITEM</string>
+    <string name="LMS_menuTitle">LMS Management</string>
+    <string name="Course_menuTitle">Course Management</string>
+    <string name="Settings_menuTitle">User Settings</string>
+    <string name="item_list">See Full WorkFlow</string>
+    <string name="item_select">Work On This</string>
+    <string name="item_complete">Complete</string>
+    <string name="lms_canvasLogin">Login with Canvas</string>
+    <string name="course_list">My Courses</string>
+    <string name="course_default">No Courses</string>
+    <string name="course_add">Join A Course</string>
+    <string name="course_confirm_unenroll">Confirm End Enrollment</string>
+    <string name="course_unenroll_prefix">Withdraw From Course\u0020</string>
+    <string name="settings_forecast">Forecast:\u0020</string>
+    <string name="TeacherLogo">LMStudy Teacher v.1.0</string>
+    <string name="course_show">Show Workload</string>
+    <string name="course_show_id">Show Course Code</string>
+    <string name="course_show_pw">Show Admin Code</string>
+    <string name="course_drop">Drop Course</string>
+    <string name="course_open">Open a Course</string>
+
+
     <string name="app_name">LMStudy</string>
     <string name="your_schedule_title">Your Schedule</string>
     <string name="ret_user_settings">Retrieving User Settings</string>
