@@ -33,7 +33,7 @@
     <string name="admin_prompt">Enter An Admin pw</string>
     <string name="select_courses">Select Courses to Use</string>
     <string name="single_input_default">-- Text --</string>
-
+    <string name="login_mode_switch">I am a Teacher/TA</string>
 
     <string name="app_name">LMStudy</string>
     <string name="your_schedule_title">Your Schedule</string>
@@ -41,6 +41,8 @@
     <string name="launching">Launching LMStudy</string>
     <string name="sign_in_title">Sign In</string>
     <string name="login_caps">LOGIN</string>
+    <string name="or">or</string>
+    <string name="signup_caps">SIGN UP</string>
     <string name="create_account">Create a new account</string>
     <string name="forgot_password">Forgot Password?</string>
     <string name="default_txt">Default</string>

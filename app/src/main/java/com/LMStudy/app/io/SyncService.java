@@ -2,11 +2,13 @@ package com.LMStudy.app.io;
 
 import android.content.SharedPreferences;
 import com.LMStudy.app.structures.Assignment;
+import com.LMStudy.app.structures.NewCourse;
+import com.LMStudy.app.structures.WorkFlow;
+import com.LMStudy.app.structures.workitems.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +20,7 @@ public class SyncService {
    private ServerCall caller;
    private JSONObject request;
    private SharedPreferences userPrefs;
-   private final Object lock = new Object();
+   WorkFlow flowLink = WorkFlow.getInstance();
 
    public static SyncService instance = new SyncService();
 
@@ -28,6 +30,29 @@ public class SyncService {
 
    public void setPreferences(SharedPreferences userPrefs){
       this.userPrefs = userPrefs;
+   }
+
+   /**
+    * Calling method for Signup Action: loads a userToken into preferences if successful
+    * @param username username input from the login screen
+    * @param pw password input from the login screen
+    * @return a boolean indicating successful account creation
+    */
+   public Boolean signup(String username, String pw) {
+      caller = new ServerCall();
+      request = new JSONObject();
+
+      try {
+         request.put(ACTION_FLAG, "SIGNUP");
+         request.put("username", username);
+         request.put("password", pw);
+      } catch (JSONException j) {
+         j.printStackTrace();
+      }
+
+      Object response = getResponse();
+      if (response instanceof Boolean) return (Boolean) response;
+      else return null;
    }
 
    /**
@@ -54,10 +79,53 @@ public class SyncService {
    }
 
    /**
-    * Calling method for pulling user assignments. Used by both user roles.
-    * @return A list of Assignments associated with this user.
+    * Calling method for pulling user courses. Used by both user roles
+    * @return A List of Courses Associated with this user
     */
-   public List<Assignment> pullAll() {
+   public List<NewCourse> pullCourses() {
+      request = new JSONObject();
+      caller = new ServerCall();
+      try {
+         request.put(ACTION_FLAG, "CPULL");
+         request.put("token", userPrefs.getString("userToken", ""));
+         request.put("role", userPrefs.getString("role", ""));
+      } catch (JSONException j) {
+         j.printStackTrace();
+      }
+
+      Object response = this.getResponse();
+      if (response instanceof Object[]) {
+         ArrayList<NewCourse> results = new ArrayList<>();
+         Object[] chunks = (Object[]) response;
+
+         for (Object chunk : chunks) {
+            if (chunk instanceof String) {
+               try {
+                  String jsonString = (String) chunk;
+                  System.out.println("Server Payload: \n" + jsonString);
+                  JSONArray json = new JSONArray(jsonString);
+                  for (int i = 0; i < json.length(); i++) {
+                     JSONArray j = json.getJSONArray(i);
+                     String id = j.getString(0);
+                     String name = j.getString(1);
+                     String pw = j.getString(2);
+                     results.add(new NewCourse(id, name, pw));
+                  }
+               } catch (JSONException j) {
+                  j.printStackTrace();
+               }
+            }
+         }
+         return results;
+      }
+      else return null;
+   }
+
+   /**
+    * Calling method for pulling user assignments. Used by both user roles.
+    * @return A list of WorkItems associated with this user.
+    */
+   public List<WorkItem> pullItems() {
       request = new JSONObject();
       caller = new ServerCall();
       try {
@@ -70,7 +138,7 @@ public class SyncService {
 
       Object response = this.getResponse();
       if (response instanceof Object[]) {
-         ArrayList<Assignment> results = new ArrayList<>();
+         ArrayList<WorkItem> results = new ArrayList<>();
          Object[] chunks = (Object[]) response;
 
          for (Object chunk : chunks) {
@@ -89,7 +157,25 @@ public class SyncService {
                      Integer priority = j.getInt(5);
                      Integer hours = j.getInt(6);
                      Integer progress = j.getInt(7);
-                     results.add(new Assignment(course, name, type, due));
+
+                     switch(type) {
+                        case "homework":
+                           results.add(new Homework(
+                              flowLink.getCourseById(course), id, name, due, priority, hours, progress));
+                           break;
+                        case "quiz":
+                           results.add(new Quiz(
+                              flowLink.getCourseById(course), id, name, due, priority, hours, progress));
+                           break;
+                        case "project":
+                           results.add(new Project(
+                              flowLink.getCourseById(course), id, name, due, priority, hours, progress));
+                           break;
+                        case "exam":
+                           results.add(new Exam(
+                              flowLink.getCourseById(course), id, name, due, priority, hours, progress));
+                           break;
+                     }
                   }
                } catch (JSONException j) {
                   j.printStackTrace();
@@ -162,10 +248,9 @@ public class SyncService {
       caller.setPreferences(userPrefs);
       Thread call = new Thread(caller);
       call.start();
-
       try {
          while (caller.getResponse() == null){
-            Thread.sleep(50); //note: fix this later.
+            Thread.sleep(10); //note: fix this later.
          }
       } catch(InterruptedException e) {
          e.printStackTrace();

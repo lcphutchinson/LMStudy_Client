@@ -157,7 +157,7 @@ public class TeacherMenu extends AppCompatActivity {
       } else {
          courses.forEach(course -> {
             TextView view = new TextView(context);
-            view.setText(view.toString());
+            view.setText(course.toString());
             view.setOnClickListener(getCourseListener(course));
             views.add(view);
          });
@@ -166,7 +166,7 @@ public class TeacherMenu extends AppCompatActivity {
       TextView[] courseItems = new TextView[len];
       for(int i = 0; i < len; i++) courseItems[i] = views.get(i);
       ArrayAdapter<TextView> listAdapter =
-         new ArrayAdapter(this, android.R.layout.select_dialog_item, courseItems) {
+         new ArrayAdapter<TextView>(this, android.R.layout.select_dialog_item, courseItems) {
          @Override
          public View getView(int position, View convertView, ViewGroup parent){
             TextView item = courseItems[position];

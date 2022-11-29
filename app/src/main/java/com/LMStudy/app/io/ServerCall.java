@@ -54,12 +54,18 @@ public class ServerCall implements Runnable {
          );
 
          switch (request.getString(SyncService.ACTION_FLAG)) {
+            case "SIGNUP": {
+               String userToken = receiver.readLine();
+               userPrefs.edit().putString("userToken", userToken).apply();
+               response = (serverLink.getResponseCode() == HttpURLConnection.HTTP_CREATED);
+            }
             case "LOGIN": {
                String userToken = receiver.readLine();
                userPrefs.edit().putString("userToken", userToken).apply();
                response = (serverLink.getResponseCode() == HttpURLConnection.HTTP_OK);
                break;
             }
+            case "CPULL":
             case "PULL": {
                response = receiver.lines().toArray();
                break;
@@ -69,7 +75,6 @@ public class ServerCall implements Runnable {
                break;
             }
          }
-
          serverLink.disconnect();
 
       } catch (IOException e) {

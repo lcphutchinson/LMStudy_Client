@@ -4,6 +4,7 @@ import com.LMStudy.app.structures.workitems.WorkItem;
 
 import java.util.Date;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -36,6 +37,12 @@ public class WorkFlow {
    }
 
    public List<NewCourse> getCourseList() { return courses; }
+
+   public NewCourse getCourseById(String id) {
+      int len = this.courses.size();
+      for(int i=0;i<len;i++) if (courses.get(i).getData()[1].equals(id)) return courses.get(i);
+      throw new NoSuchElementException();
+   }
 
    public WorkItem getFirst() { return items.first(); }
 
