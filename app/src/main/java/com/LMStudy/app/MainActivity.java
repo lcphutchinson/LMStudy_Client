@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
             this, "Username & Password Required", Toast.LENGTH_SHORT).show();
          else {
             Boolean signup = caller.signup(user, pw);
+            System.out.println(signup);
             if (signup == null) Toast.makeText(
                this, "Connection Error", Toast.LENGTH_SHORT).show();
             else if (signup) {
@@ -86,6 +87,9 @@ public class MainActivity extends AppCompatActivity {
       String userRole = userPrefs.getString("role", "");
       if(userRole.equals("STUDENT")) launchTarget = new Intent(this, StudentMenu.class);
       if(userRole.equals("TEACHER")) launchTarget = new Intent( this, TeacherMenu.class);
+      launchTarget.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+      launchTarget.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
       startActivity(launchTarget);
+      finish();
    }
 }

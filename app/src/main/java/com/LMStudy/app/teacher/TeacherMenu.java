@@ -3,9 +3,7 @@ package com.LMStudy.app.teacher;
 import android.app.AlertDialog;
 import android.content.*;
 import android.os.Bundle;
-import android.util.TypedValue;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import com.LMStudy.app.CanvasConnect;
@@ -21,7 +19,9 @@ public class TeacherMenu extends AppCompatActivity {
    private static final int LMS_MENU = 1;
    private static final int COURSE_MENU = 2;
    private static final int SETTINGS_MENU = 3;
+   ArrayList<NewCourse> courses;
    private String savedInput;
+
 
    //subMenu1 LMS Menu
    private TextView lms_canvasLogin;
@@ -88,8 +88,9 @@ public class TeacherMenu extends AppCompatActivity {
       };
    }
 
-   private View.OnClickListener getCourseListener(NewCourse course) {
+   private void focusCourse (NewCourse course) {
       String menuTitle = course.toString();
+
       TextView show_course = new TextView(context);
       show_course.setText(R.string.course_show);
       show_course.setOnClickListener(new View.OnClickListener() {
@@ -101,8 +102,8 @@ public class TeacherMenu extends AppCompatActivity {
 
       TextView show_id = new TextView(context);
       show_id.setText(R.string.course_show_id);
-      show_id.setOnClickListener(click -> {
-         AlertDialog.Builder idDisplay = new AlertDialog.Builder(click.getContext());
+      show_id.setOnClickListener(view -> {
+         AlertDialog.Builder idDisplay = new AlertDialog.Builder(SharedMenu.getContext());
          idDisplay.setTitle(R.string.course_show_id);
          idDisplay.setMessage(course.getData()[1]);
          idDisplay.setPositiveButton(android.R.string.copy, (dialogInterface, i) -> {
@@ -110,14 +111,13 @@ public class TeacherMenu extends AppCompatActivity {
             clipboard.setPrimaryClip(clip);
          });
          idDisplay.setNegativeButton(android.R.string.cancel, (dialogInterface, i) -> {});
-         AlertDialog window = idDisplay.create();
-         window.show();
+         idDisplay.create().show();
       });
 
       TextView show_pw = new TextView(context);
       show_pw.setText(R.string.course_show_pw);
       show_pw.setOnClickListener(click -> {
-         AlertDialog.Builder pwDisplay = new AlertDialog.Builder(click.getContext());
+         AlertDialog.Builder pwDisplay = new AlertDialog.Builder(SharedMenu.getContext());
          pwDisplay.setTitle(R.string.course_show_pw);
          pwDisplay.setMessage(course.getData()[2]);
          pwDisplay.setPositiveButton(android.R.string.copy, (dialogInterface, i) -> {
@@ -125,8 +125,7 @@ public class TeacherMenu extends AppCompatActivity {
             clipboard.setPrimaryClip(clip);
          });
          pwDisplay.setNegativeButton(android.R.string.cancel, (dialogInterface, i) -> {});
-         AlertDialog window = pwDisplay.create();
-         window.show();
+         pwDisplay.create().show();
       });
 
       TextView drop_course = new TextView(context);
@@ -134,51 +133,36 @@ public class TeacherMenu extends AppCompatActivity {
       drop_course.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View view) {
-            //tell caller to send a drop command with this course's id
-            //remove the course from local course list and reset display,
-            //or notify the user that changes will be present when app is reset.
+            if (caller.dropCourse(course.getData()[1])) {
+               flowLink.populateCourses(caller.pullCourses());
+               restart();
+            }
          }
       });
-      TextView[] options = new TextView[]{show_id, show_pw, drop_course};
-      return view -> {
+
+      TextView[] options = new TextView[]{ show_course, show_id, show_pw, drop_course };
         SharedMenu.setFields(menuTitle, options);
-        context.startActivity(launchMenu);
-      };
+        startActivity(launchMenu);
    }
 
-
    private void setDisplay() {
-      ArrayList<NewCourse> courses = new ArrayList<>(flowLink.getCourseList());
-      ArrayList<TextView> views = new ArrayList<>();
-      if(courses.isEmpty()) {
-         TextView emptyList = new TextView(context);
-         emptyList.setText(R.string.course_default);
-         views.add(emptyList);
-      } else {
-         courses.forEach(course -> {
-            TextView view = new TextView(context);
-            view.setText(course.toString());
-            view.setOnClickListener(getCourseListener(course));
-            views.add(view);
-         });
+      courses = new ArrayList<>(flowLink.getCourseList());
+      String[] names;
+      if(courses.isEmpty()) names = new String[] { getString(R.string.course_default) };
+      else {
+         int len = courses.size();
+         names = new String[len];
+         for(int i=0;i<len;i++) names[i] = courses.get(i).toString();
       }
-      int len = views.size();
-      TextView[] courseItems = new TextView[len];
-      for(int i = 0; i < len; i++) courseItems[i] = views.get(i);
-      ArrayAdapter<TextView> listAdapter =
-         new ArrayAdapter<TextView>(this, android.R.layout.select_dialog_item, courseItems) {
-         @Override
-         public View getView(int position, View convertView, ViewGroup parent){
-            TextView item = courseItems[position];
-            item.setLayoutParams(new ListView.LayoutParams(
-               ListView.LayoutParams.WRAP_CONTENT,
-               ListView.LayoutParams.WRAP_CONTENT));
-            item.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-            item.setPadding(0,0,0,8);
-            return item;
-         }
-      };
+      ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(
+         this, android.R.layout.select_dialog_item, names);
       courseList.setAdapter(listAdapter);
+      courseList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+         @Override
+         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            focusCourse(courses.get(i));
+         }
+      });
    }
 
    private void setMenuOptions() {
@@ -202,9 +186,12 @@ public class TeacherMenu extends AppCompatActivity {
          EditText inputField = singleInputWindow.findViewById(R.id.single_input);
          savedInput = inputField.getText().toString();
          if(!savedInput.isEmpty()) {
-            //caller.open(savedInput)
-            //make sure that course is added to structures
-            setDisplay();
+            if(caller.open(savedInput)) {
+               flowLink.populateCourses(caller.pullCourses());
+               restart();
+               }
+            else Toast.makeText(
+               view.getContext(), "There was an error. Check your internet connection", Toast.LENGTH_SHORT);
             }
          });
          builder.create().show();
@@ -228,10 +215,12 @@ public class TeacherMenu extends AppCompatActivity {
                subBuilder.setView(innerInputWindow);
                subBuilder.setPositiveButton(android.R.string.ok, (dialogInterface1, i1) -> {
                   EditText innerField = innerInputWindow.findViewById(R.id.single_input);
-                  //caller.joinCourse(savedInput, innerField.getText().toString())
-                  //String responseMsg = We did the thing!/Wrong credentials, etc.
-                  //Toast(responseMsg)
-                  setDisplay();
+                  String content = innerField.getText().toString();
+                  if(!content.isEmpty()) if (caller.join(savedInput, content)) {
+                     flowLink.populateCourses(caller.pullCourses());
+                     restart();
+                  } else Toast.makeText(
+                     SharedMenu.getContext(), "Could not process Join", Toast.LENGTH_SHORT).show();
                });
                subBuilder.create().show();
 
@@ -253,6 +242,14 @@ public class TeacherMenu extends AppCompatActivity {
          finish();
       });
 
+   }
+
+   private void restart() {
+      Intent restart = new Intent (this, TeacherMenu.class);
+      restart.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+      restart.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+      startActivity(restart);
+      finish();
    }
 }
 

@@ -47,36 +47,38 @@ public class ServerCall implements Runnable {
          dispatcher.close();
 
          //Prep response for reading
-         BufferedReader receiver = new BufferedReader(
-            new InputStreamReader(
-               new BufferedInputStream(serverLink.getInputStream())
-            )
-         );
+         int responseCode = serverLink.getResponseCode();
+         if (responseCode < HttpURLConnection.HTTP_BAD_REQUEST) {
+            BufferedReader receiver = new BufferedReader(new InputStreamReader(
+               new BufferedInputStream(serverLink.getInputStream())));
 
-         switch (request.getString(SyncService.ACTION_FLAG)) {
-            case "SIGNUP": {
-               String userToken = receiver.readLine();
-               userPrefs.edit().putString("userToken", userToken).apply();
-               response = (serverLink.getResponseCode() == HttpURLConnection.HTTP_CREATED);
+            switch (request.getString(SyncService.ACTION_FLAG)) {
+               case "SIGNUP": {
+                  String userToken = receiver.readLine();
+                  userPrefs.edit().putString("userToken", userToken).apply();
+                  response = true;
+               }
+               case "LOGIN": {
+                  String userToken = receiver.readLine();
+                  userPrefs.edit().putString("userToken", userToken).apply();
+                  response = true;
+                  break;
+               }
+               case "CPULL":
+               case "PULL": {
+                  response = receiver.lines().toArray();
+                  break;
+               }
+               case "DROP":
+               case "OPEN":
+               case "JOIN":
+               case "PUSH": {
+                  response = true;
+                  break;
+               }
             }
-            case "LOGIN": {
-               String userToken = receiver.readLine();
-               userPrefs.edit().putString("userToken", userToken).apply();
-               response = (serverLink.getResponseCode() == HttpURLConnection.HTTP_OK);
-               break;
-            }
-            case "CPULL":
-            case "PULL": {
-               response = receiver.lines().toArray();
-               break;
-            }
-            case "PUSH": {
-               response = (serverLink.getResponseCode() == HttpsURLConnection.HTTP_CREATED);
-               break;
-            }
-         }
+         } else response = false;
          serverLink.disconnect();
-
       } catch (IOException e) {
          if(e instanceof SocketTimeoutException) {
             System.out.println("Connection Attempt Failed");

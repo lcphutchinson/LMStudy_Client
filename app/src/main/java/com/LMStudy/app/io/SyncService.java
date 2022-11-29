@@ -191,8 +191,21 @@ public class SyncService {
     * Calling method for terminating course membership. Used by both roles.
     * @param courseId String code used for identifying courses.
     */
-   public void dropCourse(String courseId) {
+   public Boolean dropCourse(String courseId) {
+      request = new JSONObject();
+      caller = new ServerCall();
+      try {
+         request.put(ACTION_FLAG, "DROP");
+         request.put("token", userPrefs.getString("userToken", ""));
+         request.put("role", userPrefs.getString("role", ""));
+         request.put("course", courseId);
+      } catch(JSONException j) {
+         j.printStackTrace();
+      }
 
+      Object response = this.getResponse();
+      if (response instanceof Boolean) return (Boolean) response;
+      else return false;
    }
 
    /**
@@ -223,6 +236,38 @@ public class SyncService {
       // later If(response instanceof Boolean) etc etc. This won't be a void function then.
    }
 
+   public Boolean open(String course) {
+      request = new JSONObject();
+      caller = new ServerCall();
+      try {
+         request.put(ACTION_FLAG, "OPEN");
+         request.put("token", userPrefs.getString("userToken", ""));
+         request.put("course", course);
+      } catch(JSONException j) {
+         j.printStackTrace();
+      }
+
+      Object response = this.getResponse();
+      if (response instanceof Boolean) return (Boolean) response;
+      else return false;
+   }
+
+   public boolean join(String course, String pw) {
+      request = new JSONObject();
+      caller = new ServerCall();
+      try {
+         request.put(ACTION_FLAG, "JOIN");
+         request.put("token", userPrefs.getString("userToken", ""));
+         request.put("course", course);
+         request.put("pw", pw);
+      } catch(JSONException j) {
+         j.printStackTrace();
+      }
+
+      Object response = this.getResponse();
+      if (response instanceof Boolean) return (Boolean) response;
+      else return false;
+   }
 
    /**
     * Utility method for processing a single assignment for transmission
@@ -255,6 +300,7 @@ public class SyncService {
       } catch(InterruptedException e) {
          e.printStackTrace();
       }
+      System.out.println("Busy Wait Concluded");
       return caller.getResponse();
    }
 
