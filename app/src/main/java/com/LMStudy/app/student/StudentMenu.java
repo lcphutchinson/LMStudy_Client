@@ -7,8 +7,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import com.LMStudy.app.CanvasConnect;
 import com.LMStudy.app.R;
 import com.LMStudy.app.ItemsList;
 import com.LMStudy.app.SharedMenu;
@@ -23,9 +25,10 @@ public class StudentMenu extends AppCompatActivity {
    private static final int LMS_MENU = 1;
    private static final int COURSE_MENU = 2;
    private static final int SETTINGS_MENU = 3;
+   private String savedInput;
 
    //subMenu1 Items Menu
-   private TextView item_list, item_select, item_complete;
+   private TextView item_list, item_log, item_complete;
 
    //subMenu2 LMS Menu
    private TextView lms_canvasLogin;
@@ -35,6 +38,7 @@ public class StudentMenu extends AppCompatActivity {
 
    //subMenu3 Settings Menu
    private TextView settings_forecast;
+   private TextView settings_logout;
 
    //Activity Components
    private Context context;
@@ -75,7 +79,7 @@ public class StudentMenu extends AppCompatActivity {
       switch(menuId) {
          case ITEM_MENU:
             menuTitle = nextItem.getText().toString();
-            options = new TextView[]{item_list, item_select, item_complete};
+            options = new TextView[]{item_list, item_log, item_complete};
             break;
          case LMS_MENU:
             menuTitle = getString(R.string.LMS_menuTitle);
@@ -87,7 +91,7 @@ public class StudentMenu extends AppCompatActivity {
             break;
          case SETTINGS_MENU:
             menuTitle = getString(R.string.Settings_menuTitle);
-            options = new TextView[]{settings_forecast};
+            options = new TextView[]{settings_forecast, settings_logout};
             break;
          default:
             menuTitle = getString(R.string.default_menuTitle);
@@ -169,9 +173,12 @@ public class StudentMenu extends AppCompatActivity {
          //any special settings for the activity here
       });
 
-      item_select = new TextView(context);
-      item_select.setText(R.string.item_select);
-      // this feature is cut
+      item_log = new TextView(context);
+      item_log.setText(R.string.item_select);
+      item_log.setOnClickListener(view -> {
+         //launch a window for logging progress on this assignment
+         //tell caller to send Progress to server.
+      });
 
       item_complete = new TextView(context);
       item_complete.setText(R.string.item_complete);
@@ -184,28 +191,31 @@ public class StudentMenu extends AppCompatActivity {
          }
       });
 
+      //subMenu2 LMS Menu
+      lms_canvasLogin = new TextView(context);
+      lms_canvasLogin.setText(R.string.lms_canvasLogin);
+      lms_canvasLogin.setOnClickListener(view -> {
+         startActivity(new Intent(context, CanvasConnect.class));
+      });
 
-      //subMenu2 Course Menu
+      //subMenu3 Course Menu
       course_default = new TextView(context);
       course_default.setText(R.string.course_default);
 
       course_add = new TextView(context);
       course_add.setText(R.string.course_add);
-      course_add.setOnClickListener(new View.OnClickListener() {
-         @Override
-         public void onClick(View view) {
-            //launch addacourse dialogue
-         }
-      });
-
-      //subMenu2 LMS Menu
-      lms_canvasLogin = new TextView(context);
-      lms_canvasLogin.setText(R.string.lms_canvasLogin);
-      lms_canvasLogin.setOnClickListener(new View.OnClickListener() {
-         @Override
-         public void onClick(View view) {
-            //launch canvas login
-         }
+      course_add.setOnClickListener(view -> {
+         AlertDialog.Builder builder = new AlertDialog.Builder(SharedMenu.getContext());
+         builder.setTitle(R.string.join_prompt);
+         final View singleInputWindow = getLayoutInflater().inflate(R.layout.single_input_dialogue, null);
+         builder.setView(singleInputWindow);
+         builder.setPositiveButton(android.R.string.ok, (dialogInterface, i) -> {
+               EditText inputfield = singleInputWindow.findViewById(R.id.single_input);
+               savedInput = inputfield.getText().toString();
+               //caller.join(savedinput)
+               //get response and make the appropriate Toast
+            });
+         builder.create().show();
       });
 
       //subMenu4 Settings Menu
@@ -216,9 +226,23 @@ public class StudentMenu extends AppCompatActivity {
       settings_forecast.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View view) {
-            //launch input dialogue
+            //launch a dialog with a spinner or something
          }
       });
+
+      settings_logout = new TextView(context);
+      settings_logout.setText(R.string.logout);
+      settings_logout.setOnClickListener(view -> {
+         userPrefs.edit().clear().apply();
+         Intent logout = new Intent(getBaseContext().getPackageManager()
+            .getLaunchIntentForPackage(getBaseContext().getPackageName()));
+         logout.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+         logout.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+         startActivity(logout);
+         finish();
+      });
+
+
 
    }
 

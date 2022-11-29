@@ -6,12 +6,9 @@ import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
-import com.LMStudy.app.ItemsList;
+import com.LMStudy.app.CanvasConnect;
 import com.LMStudy.app.R;
 import com.LMStudy.app.SharedMenu;
 import com.LMStudy.app.io.SyncService;
@@ -24,6 +21,7 @@ public class TeacherMenu extends AppCompatActivity {
    private static final int LMS_MENU = 1;
    private static final int COURSE_MENU = 2;
    private static final int SETTINGS_MENU = 3;
+   private String savedInput;
 
    //subMenu1 LMS Menu
    private TextView lms_canvasLogin;
@@ -32,7 +30,7 @@ public class TeacherMenu extends AppCompatActivity {
    private TextView course_add, course_join;
 
    //subMenu3 Settings Menu
-
+   private TextView settings_logout;
 
    //Activity Components
    private Context context;
@@ -42,7 +40,7 @@ public class TeacherMenu extends AppCompatActivity {
    private WorkFlow flowLink = WorkFlow.getInstance();
    private ListView courseList;
    private Button canvas_btn, course_btn, settings_btn;
-   Intent launchMenu;
+   private Intent launchMenu;
 
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
@@ -78,7 +76,7 @@ public class TeacherMenu extends AppCompatActivity {
             break;
          case SETTINGS_MENU:
             menuTitle = getString(R.string.Settings_menuTitle);
-            options = new TextView[]{};
+            options = new TextView[]{settings_logout};
             break;
          default:
             menuTitle = getString(R.string.default_menuTitle);
@@ -109,6 +107,7 @@ public class TeacherMenu extends AppCompatActivity {
          idDisplay.setMessage(course.getData()[1]);
          idDisplay.setPositiveButton(android.R.string.copy, (dialogInterface, i) -> {
             ClipData clip = ClipData.newPlainText("id", course.getData()[1]);
+            clipboard.setPrimaryClip(clip);
          });
          idDisplay.setNegativeButton(android.R.string.cancel, (dialogInterface, i) -> {});
          AlertDialog window = idDisplay.create();
@@ -187,23 +186,28 @@ public class TeacherMenu extends AppCompatActivity {
       //subMenu1 LMS Menu
       lms_canvasLogin = new TextView(context);
       lms_canvasLogin.setText(R.string.lms_canvasLogin);
-      lms_canvasLogin.setOnClickListener(new View.OnClickListener() {
-         @Override
-         public void onClick(View view) {
-            //launch canvas login
-         }
+      lms_canvasLogin.setOnClickListener(view -> {
+         startActivity(new Intent(context, CanvasConnect.class));
       });
 
       //subMenu2 Course Menu
       course_add = new TextView(context);
       course_add.setText(R.string.course_open);
-      course_add.setOnClickListener(new View.OnClickListener() {
-         @Override
-         public void onClick(View view) {
-            // launch a single-input dialogue view for inputting a new course name
-            // tell caller to Open a course with that name
-            // add that course to the list.
-         }
+      course_add.setOnClickListener(view -> {
+         AlertDialog.Builder builder = new AlertDialog.Builder(SharedMenu.getContext());
+         builder.setTitle(R.string.open_prompt);
+         final View singleInputWindow = getLayoutInflater().inflate(R.layout.single_input_dialogue, null);
+         builder.setView(singleInputWindow);
+         builder.setPositiveButton(android.R.string.ok, (dialogInterface, i) -> {
+         EditText inputField = singleInputWindow.findViewById(R.id.single_input);
+         savedInput = inputField.getText().toString();
+         if(!savedInput.isEmpty()) {
+            //caller.open(savedInput)
+            //make sure that course is added to structures
+            setDisplay();
+            }
+         });
+         builder.create().show();
       });
 
       course_join = new TextView(context);
@@ -211,11 +215,43 @@ public class TeacherMenu extends AppCompatActivity {
       course_join.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View view) {
-            //launch addacourse dialogue
+            AlertDialog.Builder builder = new AlertDialog.Builder(SharedMenu.getContext());
+            builder.setTitle(R.string.join_prompt);
+            final View singleInputWindow = getLayoutInflater().inflate(R.layout.single_input_dialogue, null);
+            builder.setView(singleInputWindow);
+            builder.setPositiveButton(android.R.string.ok, (dialogInterface, i) -> {
+               EditText inputfield = singleInputWindow.findViewById(R.id.single_input);
+               savedInput = inputfield.getText().toString();
+               AlertDialog.Builder subBuilder = new AlertDialog.Builder(SharedMenu.getContext());
+               subBuilder.setTitle(R.string.admin_prompt);
+               final View innerInputWindow = getLayoutInflater().inflate(R.layout.single_input_dialogue, null);
+               subBuilder.setView(innerInputWindow);
+               subBuilder.setPositiveButton(android.R.string.ok, (dialogInterface1, i1) -> {
+                  EditText innerField = innerInputWindow.findViewById(R.id.single_input);
+                  //caller.joinCourse(savedInput, innerField.getText().toString())
+                  //String responseMsg = We did the thing!/Wrong credentials, etc.
+                  //Toast(responseMsg)
+                  setDisplay();
+               });
+               subBuilder.create().show();
+
+            });
+            builder.create().show();
          }
       });
 
       //subMenu3 Settings Menu
+      settings_logout = new TextView(context);
+      settings_logout.setText(R.string.logout);
+      settings_logout.setOnClickListener(view -> {
+         userPrefs.edit().clear().apply();
+         Intent logout = new Intent(getBaseContext().getPackageManager()
+            .getLaunchIntentForPackage(getBaseContext().getPackageName()));
+         logout.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+         logout.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+         startActivity(logout);
+         finish();
+      });
 
    }
 }

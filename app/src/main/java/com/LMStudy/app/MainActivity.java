@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import com.LMStudy.app.io.CanvasCall;
+import com.LMStudy.app.io.ServerCall;
 import com.LMStudy.app.io.SyncService;
 import com.LMStudy.app.structures.NewCourse;
 import com.LMStudy.app.structures.WorkFlow;
@@ -37,8 +39,8 @@ public class MainActivity extends AppCompatActivity {
       ArrayList<NewCourse> exampleCourseList = new ArrayList<>();
       WorkFlow.getInstance().populateItems(exampleList);
       WorkFlow.getInstance().populateCourses(exampleCourseList);
-      //launchTarget = new Intent(this, StudentMenu.class);
-      launchTarget = new Intent(this, TeacherMenu.class);
+      launchTarget = new Intent(this, StudentMenu.class);
+      //launchTarget = new Intent(this, TeacherMenu.class);
       this.startActivity(launchTarget);
       // end autolaunch
 

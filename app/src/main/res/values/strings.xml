@@ -1,7 +1,7 @@
 <resources>
     <string name="StudentLogo">LMStudy Student v1.0</string>
     <string name="next_label">Our Next Recommendation:</string>
-    <string name="default_next">--</string>
+    <string name="default_next">-- Empty --</string>
     <string name="default_forecast">No Assignments to Complete</string>
     <string name="forecast_prefix">You have % items due\u0020</string>
     <string name="forecast_suffix1">today</string>
@@ -14,19 +14,25 @@
     <string name="item_list">See Full WorkFlow</string>
     <string name="item_select">Work On This</string>
     <string name="item_complete">Complete</string>
-    <string name="lms_canvasLogin">Login with Canvas</string>
+    <string name="lms_canvasLogin">Connect to Canvas</string>
     <string name="course_list">My Courses</string>
-    <string name="course_default">No Courses</string>
+    <string name="course_default">-- No Courses --</string>
     <string name="course_add">Join A Course</string>
     <string name="course_confirm_unenroll">Confirm End Enrollment</string>
     <string name="course_unenroll_prefix">Withdraw From Course\u0020</string>
     <string name="settings_forecast">Forecast:\u0020</string>
+    <string name="logout">Log Out of LMStudy</string>
     <string name="TeacherLogo">LMStudy Teacher v.1.0</string>
     <string name="course_show">Show Workload</string>
     <string name="course_show_id">Show Course Code</string>
     <string name="course_show_pw">Show Admin Code</string>
     <string name="course_drop">Drop Course</string>
     <string name="course_open">Open a Course</string>
+    <string name="open_prompt">Enter A Name For Your Course</string>
+    <string name="join_prompt">Enter A Course Code</string>
+    <string name="admin_prompt">Enter An Admin pw</string>
+    <string name="select_courses">Select Courses to Use</string>
+    <string name="single_input_default">-- Text --</string>
 
 
     <string name="app_name">LMStudy</string>

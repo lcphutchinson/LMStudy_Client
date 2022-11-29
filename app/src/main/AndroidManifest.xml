@@ -22,6 +22,10 @@
                 android:name=".teacher.TeacherAssignmentHome"
                 android:exported="true"/>
         <activity
+                android:name=".CanvasConnect"
+                android:theme="@style/Theme.AppCompat.Dialog.Alert"
+                android:exported="true"/>
+        <activity
                 android:name=".student.StudentHome"
                 android:exported="true"/>
         <activity

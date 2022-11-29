@@ -10,6 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
 
 /**
  * Example Https communications object for early development. Can be used to confirm server connection.
