@@ -48,6 +48,22 @@ public class WorkFlow {
 
    public WorkItem getFirst() { return items.first(); }
 
+   public ArrayList<WorkItem> getItemsFromCourse(String courseName) {
+      final ArrayList<WorkItem> items = new ArrayList<>();
+      NewCourse c = null;
+      for(int i=0;i<this.courses.size();i++) {
+         if(this.courses.get(i).toString().equals(courseName)) c = this.courses.get(i);
+      }
+      if(c == null) throw new IllegalArgumentException();
+      else {
+         final NewCourse target = c;
+         this.items.forEach(item -> {
+            if(item.getCourse() == target) items.add(item);
+         });
+      }
+      return items;
+   }
+
    public ArrayList<WorkItem> getWorkItems() {
       return new ArrayList<WorkItem>(items);
    }
