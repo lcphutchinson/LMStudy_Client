@@ -44,11 +44,10 @@ import java.util.List;
  */
 public class StudentHome extends AppCompatActivity {
 
-   private final WorkQueue queueLink = WorkQueue.getInstance();
+   // TODO: WorkFlow item that stores all work item information
    private final WorkFlow flowLink = WorkFlow.getInstance();
 
-   private List<Assignment> items;
-   private List<WorkItem> itemsList;
+   private List<WorkItem> itemsList; // Used for populating recycler view
 
    private TextView currentAssignment;
 
@@ -56,15 +55,16 @@ public class StudentHome extends AppCompatActivity {
    private RecyclerView rcSchedule;
    private ImageView profilePicture;
    private Button refreshButton, addAssignmentBtn, confirmAssignmentBtn;
-   //private TextView newAssignmentName, newAssignmentType, newAssignmentCourseInfo, newAssignmentDueDate;
 
    private TextView assignmentNameText, assignmentNameInfo, assignmentAssigneeText, assignmentAssigneeInfo,
            assignmentTypeText, assignmentTypeInfo, assignmentCourseText, assignmentCourseInfo,
-           assignmentDueDateText, assignmentDueDateInfo, assignmentPrioText, assignmentHoursText,
-           assignmentHoursInfo;
+           assignmentDueDateText, assignmentDueDateInfo, assignmentPrioText, assignmentPrioInfo,
+           assignmentHoursText, assignmentHoursInfo;
 
    private TextView newAssignmentName, newAssignmentHour, dateView;
    private Spinner newAssignmentTypeSpinner, newAssignmentCourseSpinner, newAssignmentPrioritySpinner;
+
+   // CALENDAR STUFF
 
    private DatePicker datePicker;
    private Calendar calendar;
@@ -91,6 +91,10 @@ public class StudentHome extends AppCompatActivity {
    ArrayList<NewCourse> enrolledCourseList = (ArrayList<NewCourse>) flowLink.getCourseList();
    ArrayList<String> enrolledCourseNameList = new ArrayList<String>();
 
+   /**
+    * Creates student home screen from action
+    * @param savedInstanceState
+    */
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
@@ -105,14 +109,23 @@ public class StudentHome extends AppCompatActivity {
       /**** ARBITRARY ENROLLED TEST COURSE FOR STUDENT ****/
       NewCourse testCourse = new NewCourse("999999","Personal Time","pw");
 
+      // enrolledCourseList gets enrolled course from WorkFlow above but courses in WorkFlow is currently null
       enrolledCourseList.add(testCourse);
 
       setDisplay();
       rcSchedule.setLayoutManager(new LinearLayoutManager(this));
 
+      /**
+       * Adds a listener to the recycler view of work item objects
+       */
       rcSchedule.addOnItemTouchListener(new AccountActivity.RecyclerItemClickListener(getApplicationContext(),
               rcSchedule, new AccountActivity.RecyclerItemClickListener.OnItemClickListener() {
 
+         /**
+          * Expands work item from recycler view to popup with more details about work item
+          * @param view
+          * @param position
+          */
          @Override
          public void onItemClick(View view, int position) {
             // inflate the layout of the popup window
@@ -148,6 +161,9 @@ public class StudentHome extends AppCompatActivity {
             assignmentDueDateText = popupView.findViewById(R.id.dueDateInfo_title);
             assignmentDueDateInfo = popupView.findViewById(R.id.dueDateInfo_txt);
             assignmentPrioText = popupView.findViewById(R.id.priorityInfo);
+            assignmentPrioInfo = popupView.findViewById(R.id.priorityInfo_txt);
+            assignmentHoursText = popupView.findViewById(R.id.hoursInfo);
+            assignmentHoursInfo = popupView.findViewById(R.id.hoursInfo_txt);
 
             completeAssignmentBtn = popupView.findViewById(R.id.completeAssignment_btn);
             removeAssignmentBtn = popupView.findViewById(R.id.rmvAssignment_btn);
@@ -156,8 +172,13 @@ public class StudentHome extends AppCompatActivity {
             assignmentTypeInfo.setText(studentHomeAdapter.getItemType(position));
             assignmentCourseInfo.setText(studentHomeAdapter.getItemCourse(position));
             assignmentDueDateInfo.setText(studentHomeAdapter.getItemDueDate(position));
-            //assignmentPrioInfo.setText(studentHomeAdapter.getItemPriority(position));
+            assignmentPrioInfo.setText(Integer.toString(itemsList.get(position).getPriority()));
 
+            /**
+             * Creates a work item from recycler item information to match to a work item from
+             * work flow object. Deletes from workflow and repopulates recycler view with updated
+             * information
+             */
             completeAssignmentBtn.setOnClickListener(view1 -> {
                String workType = studentHomeAdapter.getItemType(position);
                NewCourse courseSelection = new NewCourse(newAssignmentCourseSpinner.getSelectedItem().toString());
@@ -190,10 +211,11 @@ public class StudentHome extends AppCompatActivity {
                }
 
                int removed = 0;
-            // Find matching item in WorkItem list using equal
+
+               // Find matching item in WorkItem list using equals
                for (WorkItem w : flowLink.getWorkItems()) {
                   if (w.equals(item)) {
-                     flowLink.remove(w);
+                     flowLink.remove(w); // TODO: w is the WorkItem that is COMPLETED
                      removed = 1;
                   }
                }
@@ -207,12 +229,11 @@ public class StudentHome extends AppCompatActivity {
                   Toast.makeText(getBaseContext(), "Error, assignment not completed.", Toast.LENGTH_SHORT).show();
                   popupWindow.dismiss();
                }
-               // removal logic for "COMPLETED" and update recycler view
-               // add assignment somewhere using triggers
-
-
             });
 
+            /**
+             * Same logic as complete assignment
+             */
             removeAssignmentBtn.setOnClickListener(view1 -> {
 
                // inflate the layout of the popup window
@@ -241,9 +262,6 @@ public class StudentHome extends AppCompatActivity {
                noButton = popupView1.findViewById(R.id.no_btn);
 
                yesButton.setOnClickListener(view3 -> {
-                  //removal logic and update recycler view
-                  //studentHomeAdapter.removeAt(position);
-
                   String workType = studentHomeAdapter.getItemType(position);
                   NewCourse courseSelection = new NewCourse(newAssignmentCourseSpinner.getSelectedItem().toString());
                   WorkItem item;
@@ -278,7 +296,7 @@ public class StudentHome extends AppCompatActivity {
                   // Find matching item in WorkItem list using equal
                   for (WorkItem w : flowLink.getWorkItems()) {
                      if (w.equals(item)) {
-                        flowLink.remove(w);
+                        flowLink.remove(w); // TODO: w is the WorkItem that is REMOVED
                         removed = 1;
                      }
                   }
@@ -294,15 +312,6 @@ public class StudentHome extends AppCompatActivity {
                      popupWindow1.dismiss();
                      popupWindow.dismiss();
                   }
-
-//                  flowLink.remove(item);
-//                  setDisplay();
-//
-//                  // add assignment somewhere using triggers
-//
-//                  Toast.makeText(getBaseContext(), "Assignment successfully removed", Toast.LENGTH_SHORT).show();
-//                  popupWindow1.dismiss();
-//                  popupWindow.dismiss();
                });
 
                noButton.setOnClickListener(view4 -> {
@@ -319,14 +328,16 @@ public class StudentHome extends AppCompatActivity {
       }));
 
       /**
-       * Refreshes the student home activity.
-       * Resets everything so does not work exactly as intended.
+       * Refreshes the student home activity with refresh button.
        */
       refreshButton.setOnClickListener(view -> {
          finish();
          startActivity(getIntent());
       });
 
+      /**
+       * Opens an add assignment popup with textviews, spinners and calendars for options.
+       */
       addAssignmentBtn.setOnClickListener(view -> { // Adding an assignment only shows in the specific student's view
 
          // inflate the layout of the popup window
@@ -349,13 +360,7 @@ public class StudentHome extends AppCompatActivity {
             popupWindow.dismiss();
             return true;
          });
-/*
-         newAssignmentName = popupView.findViewById(R.id.newAssignmentName_input);
-         newAssignmentType = popupView.findViewById(R.id.newAssignmentType_input);
-         newAssignmentCourseInfo = popupView.findViewById(R.id.newAssignmentCourseInfo_input);
-         newAssignmentDueDate = popupView.findViewById(R.id.newDueDate_input);
-         confirmAssignmentBtn = popupView.findViewById(R.id.confirm_assignment_Btn);
-*/
+
          // SPINNER THINGS
          newAssignmentName = popupView.findViewById(R.id.r_newAssignmentName_input);
          newAssignmentTypeSpinner = popupView.findViewById(R.id.assignment_type_spinner);
@@ -373,6 +378,7 @@ public class StudentHome extends AppCompatActivity {
 
          confirmAssignmentBtn = popupView.findViewById(R.id.r_confirm_assignment_Btn);
 
+         // Used to populate Course spinner list
          for (NewCourse c : enrolledCourseList) {
             enrolledCourseNameList.add(c.toString());
          }
@@ -389,6 +395,9 @@ public class StudentHome extends AppCompatActivity {
          newAssignmentCourseSpinner.setAdapter(courseAdapter);
          newAssignmentPrioritySpinner.setAdapter(priorityAdapter);
 
+         /**
+          * Creates a new WorkItem depending on Type Spinner option chosen and adds to workflow item.
+          */
          confirmAssignmentBtn.setOnClickListener(view1 -> {
             if (newAssignmentHour.getText().toString().equals("") || Integer.valueOf(newAssignmentHour.getText().toString()) <= 0) {
                Toast.makeText(getBaseContext(), "Hours should be greater than 0", Toast.LENGTH_SHORT).show();
@@ -468,12 +477,21 @@ public class StudentHome extends AppCompatActivity {
               .append(month).append("/").append(year));
    }
 
+   /**
+    * Calendar supporting function
+    * @param view
+    */
    @SuppressWarnings("deprecation")
    public void setDate(View view) {
       showDialog(999);
-      Toast.makeText(getApplicationContext(), "ca", Toast.LENGTH_SHORT).show();
+      Toast.makeText(getApplicationContext(), "Set Due Date.", Toast.LENGTH_SHORT).show();
    }
 
+   /**
+    * Calendar supporting function
+    * @param id
+    * @return
+    */
    @Override
    protected Dialog onCreateDialog(int id) {
       // TODO Auto-generated method stub

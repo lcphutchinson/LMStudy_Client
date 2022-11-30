@@ -84,6 +84,8 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
     private String courseName;
     private ArrayList<NewCourse> courseList = new ArrayList<NewCourse>();
     private ArrayList<String> courseNameList = new ArrayList<String>();
+
+    // Stores course specific assignemnts into this array from SetDisplay()
     private ArrayList<WorkItem> courseAssignmentList = new ArrayList<WorkItem>();
 
     @Override
@@ -91,7 +93,7 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
         super.onCreate(savedInstanceState);
         setContentView(R.layout.course_assignment_list_activity);
 /*
-        // GETS INFORMATION FROM PREVIOUS ACTIVITY //
+        // TODO: Gets information from previous activity and stores in variables //
 
         Intent fromTeacherHome = getIntent();
         courseName = fromTeacherHome.getStringExtra("Course");
@@ -102,9 +104,7 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
         /**** ARBITRARY TEST COURSE FOR TEACHER ****/
         courseScreen = new NewCourse("999999","Personal Time","pw");
 
-        //profilePicture = findViewById(R.id.profile_icon);
         rcAssignmentList = findViewById(R.id.t_course_assignment_list);
-        //refreshButton = findViewById(R.id.t_refresh_btn);
         addAssignmentBtn = findViewById(R.id.t_addAssignment_Btn);
 
         setDisplay();
@@ -158,6 +158,10 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
                 assignmentDueDateInfo.setText(teacherAssignmentAdapter.getItemDueDate(position));
                 //assignmentPrioInfo.setText(studentHomeAdapter.getItemPriority(position));
 
+                /**
+                 * Creates a new work item to match to the specific course's workflow array
+                 * (retrieved and stored in this class in SetDisplay()) and removes from work flow.
+                 */
                 removeAssignmentBtn.setOnClickListener(view1 -> {
 
                     // inflate the layout of the popup window
@@ -186,15 +190,6 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
                     noButton = popupView1.findViewById(R.id.no_btn);
 
                     yesButton.setOnClickListener(view3 -> {
-                        //removal logic and update recycler view
-                        //studentHomeAdapter.removeAt(position);
-
-//                        String assignmentName = assignmentNameInfo.getText().toString();
-//                        String assignmentType = assignmentTypeInfo.getText().toString();
-//                        String courseInfo = assignmentCourseInfo.getText().toString();
-//                        String dueDate = assignmentDueDateInfo.getText().toString();
-//
-//                        Assignment newAssignment = new Assignment(courseInfo, assignmentName, assignmentType, dueDate);
 
                         String workType = teacherAssignmentAdapter.getItemType(position);
                         NewCourse courseSelection = new NewCourse(newAssignmentCourseSpinner.getSelectedItem().toString());
@@ -284,13 +279,7 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
                 popupWindow.dismiss();
                 return true;
             });
-/*
-            newAssignmentName = popupView.findViewById(R.id.newAssignmentName_input);
-            TextView newAssignmentType = popupView.findViewById(R.id.newAssignmentType_input);
-            TextView newAssignmentCourseInfo = popupView.findViewById(R.id.newAssignmentCourseInfo_input);
-            TextView newAssignmentDueDate = popupView.findViewById(R.id.newDueDate_input);
-            confirmAssignmentBtn = popupView.findViewById(R.id.confirm_assignment_Btn);
-*/
+
             // SPINNER
             newAssignmentName = popupView.findViewById(R.id.r_newAssignmentName_input);
             newAssignmentTypeSpinner = popupView.findViewById(R.id.assignment_type_spinner);
@@ -359,6 +348,7 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
                         break;
                 }
 
+                // item is the NEW work item added to the work flow
                 flowLink.add(item);
                 setDisplay();
 
@@ -369,7 +359,8 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
     }
 
     /**
-     * Repopulates the RecyclerView based on the underlying AssignmentList.
+     * Repopulates the RecyclerView based on assignments that match the course information
+     * passed into this activity class from previous activity. Retrieved from general WorkFlow item.
      */
     private void setDisplay() {
         //teacherAssignmentAdapter = new AccountActivity.RecyclerAdapter(this, courseAssignmentList);
