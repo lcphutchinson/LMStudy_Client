@@ -60,12 +60,11 @@ public class StudentHome extends AppCompatActivity {
 
    private TextView assignmentNameText, assignmentNameInfo, assignmentAssigneeText, assignmentAssigneeInfo,
            assignmentTypeText, assignmentTypeInfo, assignmentCourseText, assignmentCourseInfo,
-           assignmentDueDateText, assignmentDueDateInfo, assignmentPrioText, assignmentPrioInfo,
-           assignmentHoursText, assignmentHoursInfo;
+           assignmentDueDateText, assignmentDueDateInfo, assignmentPrioText, assignmentHoursText,
+           assignmentHoursInfo;
 
-   private TextView newAssignmentName, dateView;
-   private Spinner newAssignmentTypeSpinner, newAssignmentCourseSpinner, newAssignmentDueDateMonthSpinner,
-           newAssignmentDueDateDaySpinner, newAssignmentDueDateYearSpinner;
+   private TextView newAssignmentName, newAssignmentHour, dateView;
+   private Spinner newAssignmentTypeSpinner, newAssignmentCourseSpinner, newAssignmentPrioritySpinner;
 
    private DatePicker datePicker;
    private Calendar calendar;
@@ -149,7 +148,6 @@ public class StudentHome extends AppCompatActivity {
             assignmentDueDateText = popupView.findViewById(R.id.dueDateInfo_title);
             assignmentDueDateInfo = popupView.findViewById(R.id.dueDateInfo_txt);
             assignmentPrioText = popupView.findViewById(R.id.priorityInfo);
-            assignmentPrioInfo = popupView.findViewById(R.id.priorityInfo_txt);
 
             completeAssignmentBtn = popupView.findViewById(R.id.completeAssignment_btn);
             removeAssignmentBtn = popupView.findViewById(R.id.rmvAssignment_btn);
@@ -362,6 +360,8 @@ public class StudentHome extends AppCompatActivity {
          newAssignmentName = popupView.findViewById(R.id.r_newAssignmentName_input);
          newAssignmentTypeSpinner = popupView.findViewById(R.id.assignment_type_spinner);
          newAssignmentCourseSpinner = popupView.findViewById(R.id.course_spinner);
+         newAssignmentPrioritySpinner = popupView.findViewById(R.id.priority_spinner);
+         newAssignmentHour = popupView.findViewById(R.id.hours_input);
 
          dateView = (TextView) popupView.findViewById(R.id.dateText);
          calendar = Calendar.getInstance();
@@ -379,51 +379,61 @@ public class StudentHome extends AppCompatActivity {
 
          ArrayAdapter<CharSequence> typeAdapter = ArrayAdapter.createFromResource(this, R.array.assignment_types, android.R.layout.simple_spinner_item);
          ArrayAdapter<String> courseAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, enrolledCourseNameList);
+         ArrayAdapter<CharSequence> priorityAdapter = ArrayAdapter.createFromResource(this, R.array.priority_levels, android.R.layout.simple_spinner_item);
 
          typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
          courseAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+         priorityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
 
          newAssignmentTypeSpinner.setAdapter(typeAdapter);
          newAssignmentCourseSpinner.setAdapter(courseAdapter);
-
-         /** WILL ADD PRIORITY SPINNERS **/
+         newAssignmentPrioritySpinner.setAdapter(priorityAdapter);
 
          confirmAssignmentBtn.setOnClickListener(view1 -> {
-            String workType = newAssignmentTypeSpinner.getSelectedItem().toString();
-            NewCourse courseSelection = new NewCourse(newAssignmentCourseSpinner.getSelectedItem().toString());
-            WorkItem item;
+            if (newAssignmentHour.getText().toString().equals("") || Integer.valueOf(newAssignmentHour.getText().toString()) <= 0) {
+               Toast.makeText(getBaseContext(), "Hours should be greater than 0", Toast.LENGTH_SHORT).show();
+            }
+            else {
+               String workType = newAssignmentTypeSpinner.getSelectedItem().toString();
+               NewCourse courseSelection = new NewCourse(newAssignmentCourseSpinner.getSelectedItem().toString());
+               WorkItem item;
 
-            for (NewCourse c : enrolledCourseList) {
-               if (c.toString().equals(newAssignmentCourseSpinner.getSelectedItem().toString())) {
-                  courseSelection = c;
-                  break;
+               for (NewCourse c : enrolledCourseList) {
+                  if (c.toString().equals(newAssignmentCourseSpinner.getSelectedItem().toString())) {
+                     courseSelection = c;
+                     break;
+                  }
                }
+
+               switch (workType) {
+                  case "Exam":
+                     item = new Exam(courseSelection, newAssignmentName.getText().toString(),
+                             dateView.getText().toString(), Integer.valueOf(newAssignmentPrioritySpinner.getSelectedItem().toString()),
+                             Integer.valueOf(newAssignmentHour.getText().toString()));
+                     break;
+                  case "Project":
+                     item = new Project(courseSelection, newAssignmentName.getText().toString(),
+                             dateView.getText().toString(), Integer.valueOf(newAssignmentPrioritySpinner.getSelectedItem().toString()),
+                             Integer.valueOf(newAssignmentHour.getText().toString()));
+                     break;
+                  case "Quiz":
+                     item = new Quiz(courseSelection, newAssignmentName.getText().toString(),
+                             dateView.getText().toString(), Integer.valueOf(newAssignmentPrioritySpinner.getSelectedItem().toString()),
+                             Integer.valueOf(newAssignmentHour.getText().toString()));
+                     break;
+                  default: // Homework Case
+                     item = new Homework(courseSelection, newAssignmentName.getText().toString(),
+                             dateView.getText().toString(), Integer.valueOf(newAssignmentPrioritySpinner.getSelectedItem().toString()),
+                             Integer.valueOf(newAssignmentHour.getText().toString()));
+                     break;
+               }
+
+               flowLink.add(item);
+               setDisplay();
+
+               Toast.makeText(getBaseContext(), "Assignment successfully added", Toast.LENGTH_SHORT).show();
+               popupWindow.dismiss();
             }
-
-            switch(workType) {
-               case "Exam":
-                  item = new Exam(courseSelection, newAssignmentName.getText().toString(),
-                          dateView.getText().toString(), 8,3);
-                  break;
-               case "Project":
-                  item = new Project(courseSelection, newAssignmentName.getText().toString(),
-                          dateView.getText().toString(), 6,10);
-                  break;
-               case "Quiz":
-                  item = new Quiz(courseSelection, newAssignmentName.getText().toString(),
-                          dateView.getText().toString(), 7,1);
-                  break;
-               default: // Homework Case
-                  item = new Homework(courseSelection, newAssignmentName.getText().toString(),
-                          dateView.getText().toString(), 3,3);
-                  break;
-            }
-
-            flowLink.add(item);
-            setDisplay();
-
-            Toast.makeText(getBaseContext(), "Assignment successfully added", Toast.LENGTH_SHORT).show();
-            popupWindow.dismiss();
          });
       });
    }
