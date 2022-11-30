@@ -22,7 +22,6 @@ public class TeacherMenu extends AppCompatActivity {
    ArrayList<NewCourse> courses;
    private String savedInput;
 
-
    //subMenu1 LMS Menu
    private TextView lms_canvasLogin;
 
@@ -93,11 +92,10 @@ public class TeacherMenu extends AppCompatActivity {
 
       TextView show_course = new TextView(context);
       show_course.setText(R.string.course_show);
-      show_course.setOnClickListener(new View.OnClickListener() {
-         @Override
-         public void onClick(View view) {
-            //prep and launch the shared list activity.
-         }
+      show_course.setOnClickListener(view -> {
+         Intent launchTeacherList = new Intent(context, TeacherAssignmentHome.class);
+         launchTeacherList.putExtra("course", course.toString());
+         startActivity(launchTeacherList);
       });
 
       TextView show_id = new TextView(context);
@@ -130,13 +128,10 @@ public class TeacherMenu extends AppCompatActivity {
 
       TextView drop_course = new TextView(context);
       drop_course.setText(R.string.course_drop);
-      drop_course.setOnClickListener(new View.OnClickListener() {
-         @Override
-         public void onClick(View view) {
-            if (caller.dropCourse(course.getData()[1])) {
-               flowLink.populateCourses(caller.pullCourses());
-               restart();
-            }
+      drop_course.setOnClickListener(view -> {
+         if (caller.dropCourse(course.getData()[1])) {
+            flowLink.populateCourses(caller.pullCourses());
+            restart();
          }
       });
 
@@ -157,12 +152,7 @@ public class TeacherMenu extends AppCompatActivity {
       ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(
          this, android.R.layout.select_dialog_item, names);
       courseList.setAdapter(listAdapter);
-      courseList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-         @Override
-         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-            focusCourse(courses.get(i));
-         }
-      });
+      courseList.setOnItemClickListener((adapterView, view, i, l) -> focusCourse(courses.get(i)));
    }
 
    private void setMenuOptions() {
@@ -199,34 +189,31 @@ public class TeacherMenu extends AppCompatActivity {
 
       course_join = new TextView(context);
       course_join.setText(R.string.course_add);
-      course_join.setOnClickListener(new View.OnClickListener() {
-         @Override
-         public void onClick(View view) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(SharedMenu.getContext());
-            builder.setTitle(R.string.join_prompt);
-            final View singleInputWindow = getLayoutInflater().inflate(R.layout.single_input_dialogue, null);
-            builder.setView(singleInputWindow);
-            builder.setPositiveButton(android.R.string.ok, (dialogInterface, i) -> {
-               EditText inputfield = singleInputWindow.findViewById(R.id.single_input);
-               savedInput = inputfield.getText().toString();
-               AlertDialog.Builder subBuilder = new AlertDialog.Builder(SharedMenu.getContext());
-               subBuilder.setTitle(R.string.admin_prompt);
-               final View innerInputWindow = getLayoutInflater().inflate(R.layout.single_input_dialogue, null);
-               subBuilder.setView(innerInputWindow);
-               subBuilder.setPositiveButton(android.R.string.ok, (dialogInterface1, i1) -> {
-                  EditText innerField = innerInputWindow.findViewById(R.id.single_input);
-                  String content = innerField.getText().toString();
-                  if(!content.isEmpty()) if (caller.join(savedInput, content)) {
-                     flowLink.populateCourses(caller.pullCourses());
-                     restart();
-                  } else Toast.makeText(
-                     SharedMenu.getContext(), "Could not process Join", Toast.LENGTH_SHORT).show();
-               });
-               subBuilder.create().show();
-
+      course_join.setOnClickListener(view -> {
+         AlertDialog.Builder builder = new AlertDialog.Builder(SharedMenu.getContext());
+         builder.setTitle(R.string.join_prompt);
+         final View singleInputWindow = getLayoutInflater().inflate(R.layout.single_input_dialogue, null);
+         builder.setView(singleInputWindow);
+         builder.setPositiveButton(android.R.string.ok, (dialogInterface, i) -> {
+            EditText inputfield = singleInputWindow.findViewById(R.id.single_input);
+            savedInput = inputfield.getText().toString();
+            AlertDialog.Builder subBuilder = new AlertDialog.Builder(SharedMenu.getContext());
+            subBuilder.setTitle(R.string.admin_prompt);
+            final View innerInputWindow = getLayoutInflater().inflate(R.layout.single_input_dialogue, null);
+            subBuilder.setView(innerInputWindow);
+            subBuilder.setPositiveButton(android.R.string.ok, (dialogInterface1, i1) -> {
+               EditText innerField = innerInputWindow.findViewById(R.id.single_input);
+               String content = innerField.getText().toString();
+               if(!content.isEmpty()) if (caller.join(savedInput, content)) {
+                  flowLink.populateCourses(caller.pullCourses());
+                  restart();
+               } else Toast.makeText(
+                  SharedMenu.getContext(), "Could not process Join", Toast.LENGTH_SHORT).show();
             });
-            builder.create().show();
-         }
+            subBuilder.create().show();
+
+         });
+         builder.create().show();
       });
 
       //subMenu3 Settings Menu
