@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -19,7 +18,6 @@ import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.DatePicker;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 
@@ -27,18 +25,24 @@ import com.LMStudy.app.AccountActivity;
 import com.LMStudy.app.R;
 import com.LMStudy.app.structures.Assignment;
 import com.LMStudy.app.structures.Course;
-import com.LMStudy.app.structures.WorkQueue;
+import com.LMStudy.app.structures.NewCourse;
+import com.LMStudy.app.structures.WorkFlow;
+import com.LMStudy.app.structures.workitems.Exam;
+import com.LMStudy.app.structures.workitems.Homework;
+import com.LMStudy.app.structures.workitems.Project;
+import com.LMStudy.app.structures.workitems.Quiz;
+import com.LMStudy.app.structures.workitems.WorkItem;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 /**
  * Primary UI for Student Users (previously "Main Activity")
  */
 public class TeacherAssignmentHome extends AppCompatActivity implements Serializable {
 
+    private final WorkFlow flowLink = WorkFlow.getInstance(); // Pass WorkFlow into TeacherHome from Menu
     private AccountActivity.RecyclerAdapter teacherAssignmentAdapter;
     private RecyclerView rcAssignmentList;
     private ImageView profilePicture2;
@@ -52,7 +56,8 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
 
     private TextView assignmentNameText, assignmentNameInfo, assignmentAssigneeText, assignmentAssigneeInfo,
             assignmentTypeText, assignmentTypeInfo, assignmentCourseText, assignmentCourseInfo,
-            assignmentDueDateText, assignmentDueDateInfo, assignmentNotesText, assignmentNotesInfo;
+            assignmentDueDateText, assignmentDueDateInfo, assignmentPrioText, assignmentPrioInfo,
+            assignmentHoursText, assignmentHoursInfo;
 
     private DatePicker datePicker;
     private Calendar calendar;
@@ -76,20 +81,27 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
     private TextView confirmRemovalText;
     private Button yesButton, noButton;
 
+    NewCourse courseScreen;
     private String courseName;
-    private ArrayList<Course> courseList;
+    private ArrayList<NewCourse> courseList = new ArrayList<NewCourse>();
     private ArrayList<String> courseNameList = new ArrayList<String>();
-    private ArrayList<Assignment> courseAssignmentList;
+    private ArrayList<WorkItem> courseAssignmentList = new ArrayList<WorkItem>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.course_assignment_list_activity);
+/*
+        // GETS INFORMATION FROM PREVIOUS ACTIVITY //
 
         Intent fromTeacherHome = getIntent();
         courseName = fromTeacherHome.getStringExtra("Course");
-        courseList = (ArrayList<Course>) fromTeacherHome.getSerializableExtra("Course List");
+        courseList = (ArrayList<NewCourse>) fromTeacherHome.getSerializableExtra("Course List");
         courseAssignmentList = courseList.get(fromTeacherHome.getIntExtra("Position", 0)).getAssignmentList();
+*/
+
+        /**** ARBITRARY TEST COURSE FOR TEACHER ****/
+        courseScreen = new NewCourse("999999","Personal Time","pw");
 
         //profilePicture = findViewById(R.id.profile_icon);
         rcAssignmentList = findViewById(R.id.t_course_assignment_list);
@@ -136,13 +148,16 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
                 assignmentCourseInfo = popupView.findViewById(R.id.courseName_txt);
                 assignmentDueDateText = popupView.findViewById(R.id.dueDateInfo_title);
                 assignmentDueDateInfo = popupView.findViewById(R.id.dueDateInfo_txt);
-                // completeAssignmentBtn = popupView.findViewById(R.id.completeAssignment_btn);
+                assignmentPrioText = popupView.findViewById(R.id.priorityInfo);
+                assignmentPrioInfo = popupView.findViewById(R.id.priorityInfo_txt);
+
                 removeAssignmentBtn = popupView.findViewById(R.id.rmvAssignment_btn);
 
                 assignmentNameInfo.setText(teacherAssignmentAdapter.getItemName(position));
                 assignmentTypeInfo.setText(teacherAssignmentAdapter.getItemType(position));
                 assignmentCourseInfo.setText(teacherAssignmentAdapter.getItemCourse(position));
                 assignmentDueDateInfo.setText(teacherAssignmentAdapter.getItemDueDate(position));
+                //assignmentPrioInfo.setText(studentHomeAdapter.getItemPriority(position));
 
                 removeAssignmentBtn.setOnClickListener(view1 -> {
 
@@ -175,21 +190,63 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
                         //removal logic and update recycler view
                         //studentHomeAdapter.removeAt(position);
 
-                        String assignmentName = assignmentNameInfo.getText().toString();
-                        String assignmentType = assignmentTypeInfo.getText().toString();
-                        String courseInfo = assignmentCourseInfo.getText().toString();
-                        String dueDate = assignmentDueDateInfo.getText().toString();
+//                        String assignmentName = assignmentNameInfo.getText().toString();
+//                        String assignmentType = assignmentTypeInfo.getText().toString();
+//                        String courseInfo = assignmentCourseInfo.getText().toString();
+//                        String dueDate = assignmentDueDateInfo.getText().toString();
+//
+//                        Assignment newAssignment = new Assignment(courseInfo, assignmentName, assignmentType, dueDate);
 
-                        Assignment newAssignment = new Assignment(courseInfo, assignmentName, assignmentType, dueDate);
+                        String workType = teacherAssignmentAdapter.getItemType(position);
+                        NewCourse courseSelection = new NewCourse(newAssignmentCourseSpinner.getSelectedItem().toString());
+                        WorkItem item;
 
-                        courseAssignmentList.remove(newAssignment);
-                        setDisplay();
+                        for (NewCourse c : courseList) {
+                            if (c.toString().equals(newAssignmentCourseSpinner.getSelectedItem().toString())) {
+                                courseSelection = c;
+                                break;
+                            }
+                        }
 
-                        // add assignment somewhere using triggers
+                        switch(workType) {
+                            case "Exam":
+                                item = new Exam(courseSelection, newAssignmentName.getText().toString(),
+                                        dateView.getText().toString(), 0,0);
+                                break;
+                            case "Project":
+                                item = new Project(courseSelection, newAssignmentName.getText().toString(),
+                                        dateView.getText().toString(), 0,0);
+                                break;
+                            case "Quiz":
+                                item = new Quiz(courseSelection, newAssignmentName.getText().toString(),
+                                        dateView.getText().toString(), 0,0);
+                                break;
+                            default: // Homework Case
+                                item = new Homework(courseSelection, newAssignmentName.getText().toString(),
+                                        dateView.getText().toString(), 0,0);
+                                break;
+                        }
 
-                        Toast.makeText(getBaseContext(), "Assignment successfully removed", Toast.LENGTH_SHORT).show();
-                        popupWindow1.dismiss();
-                        popupWindow.dismiss();
+                        int removed = 0;
+                        // Find matching item in WorkItem list using equal
+                        for (WorkItem w : flowLink.getWorkItems()) {
+                            if (w.equals(item)) {
+                                flowLink.remove(w);
+                                removed = 1;
+                            }
+                        }
+
+                        if (removed == 1) {
+                            setDisplay();
+                            Toast.makeText(getBaseContext(), "Assignment completed", Toast.LENGTH_SHORT).show();
+                            popupWindow1.dismiss();
+                            popupWindow.dismiss();
+                        }
+                        else {
+                            Toast.makeText(getBaseContext(), "Error, assignment not removed.", Toast.LENGTH_SHORT).show();
+                            popupWindow1.dismiss();
+                            popupWindow.dismiss();
+                        }
                     });
 
                     noButton.setOnClickListener(view4 -> {
@@ -211,7 +268,7 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
             LayoutInflater inflater = (LayoutInflater)
                     getSystemService(LAYOUT_INFLATER_SERVICE);
             // View popupView = inflater.inflate(R.layout.add_assignment_popup_revised, null);
-            View popupView = inflater.inflate(R.layout.teacher_add_assignment_popup_revised, null);
+            View popupView = inflater.inflate(R.layout.add_assignment_popup_revised, null);
 
             // create the popup window
             int width = LinearLayout.LayoutParams.WRAP_CONTENT;
@@ -250,25 +307,8 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
 
             confirmAssignmentBtn = popupView.findViewById(R.id.r_confirm_assignment_Btn);
 
-            /*
-            newAssignmentTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-            {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-                {
-                    // do something upon option selection
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> parent)
-                {
-                    // can leave this empty
-                }
-            });
-            */
-
-            for (Course c : courseList) {
-                courseNameList.add(c.getCourseName());
+            for (NewCourse c : courseList) {
+                courseNameList.add(c.toString());
             }
 
             ArrayAdapter<CharSequence> typeAdapter = ArrayAdapter.createFromResource(this, R.array.assignment_types, android.R.layout.simple_spinner_item);
@@ -283,21 +323,37 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
             newAssignmentCourseSpinner.setSelection(courseNameList.indexOf(courseName));
 
             confirmAssignmentBtn.setOnClickListener(view1 -> {
-                String assignmentName = newAssignmentName.getText().toString();
-                String assignmentType = newAssignmentTypeSpinner.getSelectedItem().toString();
-                String courseInfo = newAssignmentCourseSpinner.getSelectedItem().toString();
-                String dueDate = dateView.getText().toString();
+                String workType = newAssignmentTypeSpinner.getSelectedItem().toString();
+                NewCourse courseSelection = new NewCourse(newAssignmentCourseSpinner.getSelectedItem().toString());
+                WorkItem item;
 
-                Assignment newAssignment = new Assignment(courseInfo, assignmentName, assignmentType, dueDate);
+                for (NewCourse c : courseList) {
+                    if (c.toString().equals(newAssignmentCourseSpinner.getSelectedItem().toString())) {
+                        courseSelection = c;
+                        break;
+                    }
+                }
 
-                courseAssignmentList.add(newAssignment);
+                switch(workType) {
+                    case "Exam":
+                        item = new Exam(courseSelection, newAssignmentName.getText().toString(),
+                                dateView.getText().toString(), 8,3);
+                        break;
+                    case "Project":
+                        item = new Project(courseSelection, newAssignmentName.getText().toString(),
+                                dateView.getText().toString(), 6,10);
+                        break;
+                    case "Quiz":
+                        item = new Quiz(courseSelection, newAssignmentName.getText().toString(),
+                                dateView.getText().toString(), 7,1);
+                        break;
+                    default: // Homework Case
+                        item = new Homework(courseSelection, newAssignmentName.getText().toString(),
+                                dateView.getText().toString(), 3,3);
+                        break;
+                }
 
-                int courseIndex = courseNameList.indexOf(courseInfo);
-                courseList.get(courseIndex).getAssignmentList().add(newAssignment);
-
-                /*if (courseInfo.equals(courseName))
-                    setDisplay();*/
-
+                flowLink.add(item);
                 setDisplay();
 
                 Toast.makeText(getBaseContext(), "Assignment successfully added", Toast.LENGTH_SHORT).show();
@@ -310,9 +366,18 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
      * Repopulates the RecyclerView based on the underlying AssignmentList.
      */
     private void setDisplay() {
+        //teacherAssignmentAdapter = new AccountActivity.RecyclerAdapter(this, courseAssignmentList);
+
+        courseAssignmentList.clear();
+
+        for (WorkItem w : flowLink.getWorkItems()) {
+            if (w.getCourse().equals(courseScreen)) {
+                courseAssignmentList.add(w);
+            }
+        }
+
         teacherAssignmentAdapter = new AccountActivity.RecyclerAdapter(this, courseAssignmentList);
         rcAssignmentList.setAdapter(teacherAssignmentAdapter);
-
     }
 
     /**

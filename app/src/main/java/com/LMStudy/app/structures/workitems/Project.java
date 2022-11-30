@@ -30,6 +30,11 @@ public class Project extends WorkItem {
       super(course,id,name,due,priority,hours,progress);
    }
 
+   @Override
+   public String getType() {
+      return "Project";
+   }
+
    /**
     * Custom Comparator for Project items--provides more precise, type-dependent sorting.
     * @param item the input item for comparison

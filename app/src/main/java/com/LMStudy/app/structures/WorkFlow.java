@@ -2,6 +2,8 @@ package com.LMStudy.app.structures;
 
 import com.LMStudy.app.structures.workitems.WorkItem;
 
+import java.sql.Array;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TreeSet;
@@ -10,8 +12,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class WorkFlow {
    private static WorkFlow instance = new WorkFlow();
-   private List<NewCourse> courses;
-   private TreeSet<WorkItem> items;
+   private List<NewCourse> courses = new ArrayList<NewCourse>();
+   private TreeSet<WorkItem> items = new TreeSet<WorkItem>();
 
    public static WorkFlow getInstance() {
       return instance;
@@ -39,6 +41,10 @@ public class WorkFlow {
 
    public WorkItem getFirst() { return items.first(); }
 
+   public ArrayList<WorkItem> getWorkItems() {
+      return new ArrayList<WorkItem>(items);
+   }
+
    /**
     * Counts the number of items due within a provided number of days--used by the Forecast UI element
     * @param forecastThreshold The integer number of days beyond the current date to search
@@ -55,12 +61,12 @@ public class WorkFlow {
       return counter.get();
    }
 
-   public Boolean add() {
-      return false;
+   public Boolean add(WorkItem item) {
+      return items.add(item);
    }
 
-   public Boolean remove() {
-      return false;
+   public Boolean remove(WorkItem item) {
+      return items.remove(item);
    }
 
 }

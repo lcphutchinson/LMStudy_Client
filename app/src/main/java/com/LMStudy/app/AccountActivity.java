@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.LMStudy.app.structures.Assignment;
+import com.LMStudy.app.structures.workitems.WorkItem;
 
 import java.util.List;
 
@@ -67,9 +68,9 @@ public class AccountActivity {
 
         private Context context;
         //List<AssignmentItem> itemsList;
-        List<Assignment> itemsList;
+        List<WorkItem> itemsList;
 
-        public RecyclerAdapter(Context context, List<Assignment> itemsList) {
+        public RecyclerAdapter(Context context, List<WorkItem> itemsList) {
             this.context = context;
             this.itemsList = itemsList;
         }
@@ -84,10 +85,10 @@ public class AccountActivity {
 
         @Override
         public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-            holder.assignment_name.setText(itemsList.get(position).getAssignmentName());
-            holder.assignment_type.setText(itemsList.get(position).getAssignmentType());
-            holder.course_info.setText(itemsList.get(position).getCourseInfo());
-            holder.due_date.setText(itemsList.get(position).getDueDate());
+            holder.assignment_name.setText(itemsList.get(position).getName());
+            holder.assignment_type.setText(itemsList.get(position).getType());
+            holder.course_info.setText(itemsList.get(position).getCourse().toString());
+            holder.due_date.setText(itemsList.get(position).getDisplayDate());
         }
 
         @Override
@@ -103,21 +104,24 @@ public class AccountActivity {
         }
 
         public String getItemName(int position) {
-            return itemsList.get(position).getAssignmentName();
+            return itemsList.get(position).getName();
         }
 
         public String getItemType(int position) {
-            return itemsList.get(position).getAssignmentType();
+            return itemsList.get(position).getType();
         }
 
         public String getItemCourse(int position) {
-            return itemsList.get(position).getCourseInfo();
+            return itemsList.get(position).getCourse().toString();
         }
 
         public String getItemDueDate(int position) {
-            return itemsList.get(position).getDueDate();
+            return itemsList.get(position).getDisplayDate();
         }
 
+        public int getItemPriority(int position) {
+            return itemsList.get(position).getPriority();
+        }
 
         public class MyViewHolder extends RecyclerView.ViewHolder{
 

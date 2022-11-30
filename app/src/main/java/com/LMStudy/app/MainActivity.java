@@ -37,8 +37,8 @@ public class MainActivity extends AppCompatActivity {
       ArrayList<NewCourse> exampleCourseList = new ArrayList<>();
       WorkFlow.getInstance().populateItems(exampleList);
       WorkFlow.getInstance().populateCourses(exampleCourseList);
-      //launchTarget = new Intent(this, StudentMenu.class);
-      launchTarget = new Intent(this, TeacherMenu.class);
+      launchTarget = new Intent(this, StudentMenu.class);
+      //launchTarget = new Intent(this, TeacherMenu.class);
       this.startActivity(launchTarget);
       // end autolaunch
 

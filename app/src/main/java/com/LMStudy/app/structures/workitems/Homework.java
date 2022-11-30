@@ -33,6 +33,11 @@ public class Homework extends WorkItem implements Comparable<WorkItem> {
       super(course,id,name,due,priority,hours,progress);
    }
 
+   @Override
+   public String getType() {
+      return "Homework";
+   }
+
    /**
     * Custom Comparator for Homework items--provides more precise, type-dependent sorting.
     * @param item the input item for comparison
