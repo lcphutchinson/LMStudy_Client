@@ -153,7 +153,7 @@ public class SyncService {
                      String id = j.getString(1);
                      String name = j.getString(2);
                      String type = j.getString(3);
-                     String due = j.getString(4);
+                     String due = j.getString(4).split("T")[0];
                      Integer priority = j.getInt(5);
                      Integer hours = j.getInt(6);
                      Integer progress = j.getInt(7);
@@ -276,6 +276,23 @@ public class SyncService {
          request.put(ACTION_FLAG, "ENROLL");
          request.put("token", userPrefs.getString("userToken", ""));
          request.put("course", course);
+      } catch(JSONException j) {
+         j.printStackTrace();
+      }
+
+      Object response = this.getResponse();
+      if (response instanceof Boolean) return (Boolean) response;
+      else return false;
+   }
+
+   public boolean progress(String item, int val) {
+      request = new JSONObject();
+      caller = new ServerCall();
+      try {
+         request.put(ACTION_FLAG, "PROGRESS");
+         request.put("token", userPrefs.getString("userToken", ""));
+         request.put("item", item);
+         request.put("val", val);
       } catch(JSONException j) {
          j.printStackTrace();
       }

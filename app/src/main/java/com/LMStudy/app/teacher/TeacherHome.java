@@ -138,7 +138,7 @@ public class TeacherHome extends AppCompatActivity {
             LayoutInflater inflater = (LayoutInflater)
                     getSystemService(LAYOUT_INFLATER_SERVICE);
             // View popupView = inflater.inflate(R.layout.add_assignment_popup_revised, null); // This is the revised add popup
-            View popupView = inflater.inflate(R.layout.teacher_add_assignment_popup_revised, null);
+            View popupView = inflater.inflate(R.layout.add_assignment_popup_revised, null);
 
             // create the popup window
             int width = LinearLayout.LayoutParams.WRAP_CONTENT;

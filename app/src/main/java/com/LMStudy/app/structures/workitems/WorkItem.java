@@ -194,7 +194,7 @@ public abstract class WorkItem implements Comparable<WorkItem>{
       return "(" + this.course.toString() + ") "
          + this.name + "\n"
          + "Due: " + this.due + "\n"
-         + "Progress: " + this.progress + "/" + this.hours;
+         + "Progress: " + this.progress + "%";
    }
 
    /**

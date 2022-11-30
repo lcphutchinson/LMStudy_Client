@@ -12,7 +12,7 @@
     <string name="Course_menuTitle">Course Management</string>
     <string name="Settings_menuTitle">User Settings</string>
     <string name="item_list">See Full WorkFlow</string>
-    <string name="item_select">Work On This</string>
+    <string name="item_select">Log Progress</string>
     <string name="item_complete">Complete</string>
     <string name="lms_canvasLogin">Connect to Canvas</string>
     <string name="course_list">My Courses</string>
@@ -35,7 +35,8 @@
     <string name="select_items">Select Items to Include</string>
     <string name="single_input_default">-- Text --</string>
     <string name="login_mode_switch">I am a Teacher/TA</string>
-    <string name="forecast_prompt">Enter a new Forecast Value (Integer)</string>
+    <string name="forecast_prompt">Enter a new Forecast Value (Numeric)</string>
+    <string name="progress_prompt">Enter a new Progress Value (0-100)</string>
     <string name="confirm">Confirm</string>
     <string name="no_items">No Items Found</string>
 

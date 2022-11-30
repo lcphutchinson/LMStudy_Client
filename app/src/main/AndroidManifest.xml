@@ -16,9 +16,6 @@
                 android:name=".teacher.TeacherHome"
                 android:exported="true"/>
         <activity
-                android:name=".ItemsList"
-                android:exported="true"/>
-        <activity
                 android:name=".teacher.TeacherAssignmentHome"
                 android:exported="true"/>
         <activity

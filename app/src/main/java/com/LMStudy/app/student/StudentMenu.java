@@ -13,12 +13,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.LMStudy.app.CanvasConnect;
 import com.LMStudy.app.R;
-import com.LMStudy.app.ItemsList;
 import com.LMStudy.app.SharedMenu;
 import com.LMStudy.app.io.SyncService;
 import com.LMStudy.app.structures.NewCourse;
 import com.LMStudy.app.structures.WorkFlow;
-import com.LMStudy.app.teacher.TeacherMenu;
 
 import java.util.ArrayList;
 
@@ -171,15 +169,33 @@ public class StudentMenu extends AppCompatActivity {
       item_list = new TextView(context);
       item_list.setText(R.string.item_list);
       item_list.setOnClickListener(view -> {
-         context.startActivity(new Intent(context, ItemsList.class));
-         //any special settings for the activity here
+         context.startActivity(new Intent(context, StudentHome.class));
       });
 
       item_log = new TextView(context);
       item_log.setText(R.string.item_select);
       item_log.setOnClickListener(view -> {
-         //launch a window for logging progress on this assignment
-         //tell caller to send Progress to server.
+         AlertDialog.Builder builder = new AlertDialog.Builder(SharedMenu.getContext());
+         builder.setTitle(R.string.progress_prompt);
+         final View singleInputWindow = getLayoutInflater().inflate(R.layout.single_input_dialogue, null);
+         builder.setView(singleInputWindow);
+         builder.setPositiveButton(android.R.string.ok, (dialogInterface, i) -> {
+            EditText inputfield = singleInputWindow.findViewById(R.id.single_input);
+            savedInput = inputfield.getText().toString();
+            if(!savedInput.isEmpty()) {
+               try {
+                  int newProgress = Integer.parseInt(savedInput);
+                  caller.progress(flowLink.getFirst().getIID(), newProgress);
+                  flowLink.populateCourses(caller.pullCourses());
+                  flowLink.populateItems(caller.pullItems());
+                  restart();
+               } catch (NumberFormatException e) {
+                  Toast.makeText(
+                     SharedMenu.getContext(), "Enter a Numeric Value (0-100)", Toast.LENGTH_SHORT).show();
+               }
+            }
+         });
+         builder.create().show();
       });
 
       item_complete = new TextView(context);
@@ -220,7 +236,7 @@ public class StudentMenu extends AppCompatActivity {
                   flowLink.populateItems(caller.pullItems());
                   restart();
                } else Toast.makeText(
-                  SharedMenu.getContext(), "Unable to Complete Enroll", Toast.LENGTH_SHORT);
+                  SharedMenu.getContext(), "Unable to Complete Enroll", Toast.LENGTH_SHORT).show();
             });
          builder.create().show();
       });
@@ -230,26 +246,24 @@ public class StudentMenu extends AppCompatActivity {
       int forecastThreshold = userPrefs.getInt("forecastThreshold",1);
       String forecastSetting = getString(R.string.settings_forecast) + forecastThreshold;
       settings_forecast.setText(forecastSetting);
-      settings_forecast.setOnClickListener(new View.OnClickListener() {
-         @Override
-         public void onClick(View view) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(SharedMenu.getContext());
-            builder.setTitle(R.string.forecast_prompt);
-            final View singleInputWindow = getLayoutInflater().inflate(R.layout.single_input_dialogue, null);
-            builder.setView(singleInputWindow);
-            builder.setPositiveButton(android.R.string.ok, (dialogInterface, i) -> {
-               EditText inputField = singleInputWindow.findViewById(R.id.single_input);
-               savedInput = inputField.getText().toString();
-               try {
-                  Integer newForecast = Integer.parseInt(savedInput);
-                  userPrefs.edit().putString("forecastThreshold", newForecast.toString()).commit();
-                  restart();
-               } catch (NumberFormatException e) {
-                  Toast.makeText(
-                     SharedMenu.getContext(), "Input must be a positive integer", Toast.LENGTH_SHORT);
-               }
-            });
-         }
+      settings_forecast.setOnClickListener(view -> {
+         AlertDialog.Builder builder = new AlertDialog.Builder(SharedMenu.getContext());
+         builder.setTitle(R.string.forecast_prompt);
+         final View singleInputWindow = getLayoutInflater().inflate(R.layout.single_input_dialogue, null);
+         builder.setView(singleInputWindow);
+         builder.setPositiveButton(android.R.string.ok, (dialogInterface, i) -> {
+            EditText inputField = singleInputWindow.findViewById(R.id.single_input);
+            savedInput = inputField.getText().toString();
+            try {
+               int newForecast = Integer.parseInt(savedInput);
+               userPrefs.edit().putInt("forecastThreshold", newForecast).commit();
+               restart();
+            } catch (NumberFormatException e) {
+               Toast.makeText(
+                  SharedMenu.getContext(), "Input must be a positive integer", Toast.LENGTH_SHORT).show();
+            }
+         });
+         builder.create().show();
       });
 
       settings_logout = new TextView(context);
