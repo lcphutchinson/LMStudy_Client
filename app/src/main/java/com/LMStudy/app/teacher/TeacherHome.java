@@ -107,6 +107,9 @@ public class TeacherHome extends AppCompatActivity {
 
          @Override
          public void onItemClick(View view, int position) {
+
+            // TODO: Passes specific course information onto TeacherAssignmentHome using Intents
+
             launchAssignmentTarget = new Intent(view.getContext(),TeacherAssignmentHome.class);
             launchAssignmentTarget.putExtra("Course List", courseList);
             launchAssignmentTarget.putExtra("Course", courseList.get(position).toString());
@@ -155,13 +158,6 @@ public class TeacherHome extends AppCompatActivity {
                popupWindow.dismiss();
                return true;
             });
-/*
-            newAssignmentName = popupView.findViewById(R.id.newAssignmentName_input);
-            TextView newAssignmentType = popupView.findViewById(R.id.newAssignmentType_input);
-            TextView newAssignmentCourseInfo = popupView.findViewById(R.id.newAssignmentCourseInfo_input);
-            TextView newAssignmentDueDate = popupView.findViewById(R.id.newDueDate_input);
-            confirmAssignmentBtn = popupView.findViewById(R.id.confirm_assignment_Btn);
-*/
 
             // SPINNER THINGS
             newAssignmentName = popupView.findViewById(R.id.r_newAssignmentName_input);
