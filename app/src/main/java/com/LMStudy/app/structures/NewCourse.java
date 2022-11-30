@@ -4,7 +4,7 @@ package com.LMStudy.app.structures;
  * Data unit for tracking enrolled courses. Referenced by Drop Operations.
  */
 public class NewCourse {
-   private static final NewCourse SELF_ASSIGNED = new NewCourse("SELF","SELF","");
+   public static final NewCourse SELF_ASSIGNED = new NewCourse("SELF","SELF","");
    private String id;
    private String name;
    private String pw;

@@ -210,9 +210,9 @@ public class SyncService {
 
    /**
     * Calling method for custom assignment submission. Used by both users
-    * @param a:
+    * @param i: A WorkItem for sending
     */
-   public void push(Assignment a) {
+   public String push(WorkItem i) {
       caller = new ServerCall();
       request = new JSONObject();
 
@@ -220,12 +220,14 @@ public class SyncService {
          switch(userPrefs.getString("role","")) {
             case "TEACHER": {
                request.put(ACTION_FLAG, "PUBLISH");
-               request.put("course", a.getCourseInfo());
+               request.put("token", userPrefs.getString("userToken", ""));
+               request.put("course", i.getCourse().toString());
             }
             case "STUDENT": {
                request.put(ACTION_FLAG, "PUSH");
+               request.put("token", userPrefs.getString("userToken", ""));
             }
-            request.put("item", packItem(a));
+            request.put("item", packItem(i));
          }
 
       } catch (JSONException j) {
@@ -233,7 +235,8 @@ public class SyncService {
       }
 
       Object response = getResponse();
-      // later If(response instanceof Boolean) etc etc. This won't be a void function then.
+      if (response instanceof String) return (String) response;
+      else return "";
    }
 
    public Boolean open(String course) {
@@ -285,6 +288,22 @@ public class SyncService {
       else return false;
    }
 
+   public boolean complete(String item) {
+      request = new JSONObject();
+      caller = new ServerCall();
+      try {
+         request.put(ACTION_FLAG, "COMPLETE");
+         request.put("token", userPrefs.getString("userToken", ""));
+         request.put("item", item);
+      } catch(JSONException j) {
+         j.printStackTrace();
+      }
+
+      Object response = this.getResponse();
+      if (response instanceof Boolean) return (Boolean) response;
+      else return false;
+   }
+
    public boolean progress(String item, int val) {
       request = new JSONObject();
       caller = new ServerCall();
@@ -305,16 +324,16 @@ public class SyncService {
    /**
     * Utility method for processing a single assignment for transmission
     * @param a an Assignment for packing
-    * @return a JSONObject containing the input assignment.
+    * @return a JSONObject containing the input item.
     */
-   private JSONObject packItem(Assignment a) {
+   private JSONObject packItem(WorkItem a) {
       JSONObject item = new JSONObject();
       try {
-         item.put("name", a.getAssignmentName());
-         item.put("type", a.getAssignmentType());
-         item.put("due", a.getDueDate());
+         item.put("name", a.getName());
+         item.put("type", a.getType().toLowerCase());
+         item.put("due", a.getDisplayDate());
          item.put("priority", a.getPriority());
-         item.put("hours", 0); //replace when Assignment has an hours field.
+         item.put("hours", a.getPriorityData()[1]);
       } catch (JSONException j) {
          j.printStackTrace();
       }

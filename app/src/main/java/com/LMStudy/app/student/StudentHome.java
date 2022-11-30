@@ -23,6 +23,7 @@ import android.widget.DatePicker;
 
 import com.LMStudy.app.AccountActivity;
 import com.LMStudy.app.R;
+import com.LMStudy.app.io.SyncService;
 import com.LMStudy.app.structures.Assignment;
 import com.LMStudy.app.structures.Course;
 import com.LMStudy.app.structures.NewCourse;
@@ -46,6 +47,7 @@ public class StudentHome extends AppCompatActivity {
 
    // TODO: WorkFlow item that stores all work item information
    private final WorkFlow flowLink = WorkFlow.getInstance();
+   private final SyncService caller = SyncService.getInstance();
 
    private List<WorkItem> itemsList; // Used for populating recycler view
 
@@ -128,8 +130,9 @@ public class StudentHome extends AppCompatActivity {
           */
          @Override
          public void onItemClick(View view, int position) {
-            // inflate the layout of the popup window
+            WorkItem clickedItem = itemsList.get(position);
 
+            // inflate the layout of the popup window
             LayoutInflater inflater = (LayoutInflater)
                     getSystemService(LAYOUT_INFLATER_SERVICE);
             View popupView = inflater.inflate(R.layout.assignment_info_popup, null);
@@ -180,65 +183,8 @@ public class StudentHome extends AppCompatActivity {
              * information
              */
             completeAssignmentBtn.setOnClickListener(view1 -> {
-               String workType = studentHomeAdapter.getItemType(position);
-               NewCourse courseSelection = new NewCourse(newAssignmentCourseSpinner.getSelectedItem().toString());
-               WorkItem item;
-
-               for (NewCourse c : enrolledCourseList) {
-                  if (c.toString().equals(newAssignmentCourseSpinner.getSelectedItem().toString())) {
-                     courseSelection = c;
-                     break;
-                  }
-               }
-
-               switch(workType) {
-                  case "Exam":
-                     item = new Exam(courseSelection, newAssignmentName.getText().toString(),
-                             dateView.getText().toString(), 0,0);
-                     break;
-                  case "Project":
-                     item = new Project(courseSelection, newAssignmentName.getText().toString(),
-                             dateView.getText().toString(), 0,0);
-                     break;
-                  case "Quiz":
-                     item = new Quiz(courseSelection, newAssignmentName.getText().toString(),
-                             dateView.getText().toString(), 0,0);
-                     break;
-                  default: // Homework Case
-                     item = new Homework(courseSelection, newAssignmentName.getText().toString(),
-                             dateView.getText().toString(), 0,0);
-                     break;
-               }
-
-               int removed = 0;
-
-               // Find matching item in WorkItem list using equals
-               for (WorkItem w : flowLink.getWorkItems()) {
-                  if (w.equals(item)) {
-                     flowLink.remove(w); // TODO: w is the WorkItem that is COMPLETED
-                     removed = 1;
-                  }
-               }
-
-               if (removed == 1) {
-                  setDisplay();
-                  Toast.makeText(getBaseContext(), "Assignment completed", Toast.LENGTH_SHORT).show();
-                  popupWindow.dismiss();
-               }
-               else {
-                  Toast.makeText(getBaseContext(), "Error, assignment not completed.", Toast.LENGTH_SHORT).show();
-                  popupWindow.dismiss();
-               }
-            });
-
-            /**
-             * Same logic as complete assignment
-             */
-            removeAssignmentBtn.setOnClickListener(view1 -> {
-
-               // inflate the layout of the popup window
                LayoutInflater inflater1 = (LayoutInflater)
-                       getSystemService(LAYOUT_INFLATER_SERVICE);
+                  getSystemService(LAYOUT_INFLATER_SERVICE);
                View popupView1 = inflater1.inflate(R.layout.remove_assignment_popup, null);
 
                // create the popup window
@@ -262,62 +208,27 @@ public class StudentHome extends AppCompatActivity {
                noButton = popupView1.findViewById(R.id.no_btn);
 
                yesButton.setOnClickListener(view3 -> {
-                  String workType = studentHomeAdapter.getItemType(position);
-                  NewCourse courseSelection = new NewCourse(newAssignmentCourseSpinner.getSelectedItem().toString());
-                  WorkItem item;
-
-                  for (NewCourse c : enrolledCourseList) {
-                     if (c.toString().equals(newAssignmentCourseSpinner.getSelectedItem().toString())) {
-                        courseSelection = c;
-                        break;
-                     }
-                  }
-
-                  switch(workType) {
-                     case "Exam":
-                        item = new Exam(courseSelection, newAssignmentName.getText().toString(),
-                                dateView.getText().toString(), 0,0);
-                        break;
-                     case "Project":
-                        item = new Project(courseSelection, newAssignmentName.getText().toString(),
-                                dateView.getText().toString(), 0,0);
-                        break;
-                     case "Quiz":
-                        item = new Quiz(courseSelection, newAssignmentName.getText().toString(),
-                                dateView.getText().toString(), 0,0);
-                        break;
-                     default: // Homework Case
-                        item = new Homework(courseSelection, newAssignmentName.getText().toString(),
-                                dateView.getText().toString(), 0,0);
-                        break;
-                  }
-
-                  int removed = 0;
-                  // Find matching item in WorkItem list using equal
-                  for (WorkItem w : flowLink.getWorkItems()) {
-                     if (w.equals(item)) {
-                        flowLink.remove(w); // TODO: w is the WorkItem that is REMOVED
-                        removed = 1;
-                     }
-                  }
-
-                  if (removed == 1) {
+                  if (caller.complete(clickedItem.getIID())) {
+                     flowLink.removeById(clickedItem.getIID());
+                     itemsList.remove(position);
                      setDisplay();
                      Toast.makeText(getBaseContext(), "Assignment completed", Toast.LENGTH_SHORT).show();
-                     popupWindow1.dismiss();
                      popupWindow.dismiss();
-                  }
-                  else {
-                     Toast.makeText(getBaseContext(), "Error, assignment not removed.", Toast.LENGTH_SHORT).show();
-                     popupWindow1.dismiss();
+                  } else {
+                     Toast.makeText(getBaseContext(), "Error, assignment not completed.", Toast.LENGTH_SHORT).show();
                      popupWindow.dismiss();
                   }
                });
-
                noButton.setOnClickListener(view4 -> {
-                  Toast.makeText(getBaseContext(), "Remove cancelled.", Toast.LENGTH_SHORT).show();
                   popupWindow1.dismiss();
                });
+            });
+
+            /**
+             * Same logic as complete assignment
+             */
+            removeAssignmentBtn.setOnClickListener(view1 -> {
+
             });
          }
 
@@ -339,7 +250,6 @@ public class StudentHome extends AppCompatActivity {
        * Opens an add assignment popup with textviews, spinners and calendars for options.
        */
       addAssignmentBtn.setOnClickListener(view -> { // Adding an assignment only shows in the specific student's view
-
          // inflate the layout of the popup window
          LayoutInflater inflater = (LayoutInflater)
                  getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -416,27 +326,29 @@ public class StudentHome extends AppCompatActivity {
 
                switch (workType) {
                   case "Exam":
-                     item = new Exam(courseSelection, newAssignmentName.getText().toString(),
+                     item = new Exam(NewCourse.SELF_ASSIGNED, newAssignmentName.getText().toString(),
                              dateView.getText().toString(), Integer.valueOf(newAssignmentPrioritySpinner.getSelectedItem().toString()),
                              Integer.valueOf(newAssignmentHour.getText().toString()));
                      break;
                   case "Project":
-                     item = new Project(courseSelection, newAssignmentName.getText().toString(),
+                     item = new Project(NewCourse.SELF_ASSIGNED, newAssignmentName.getText().toString(),
                              dateView.getText().toString(), Integer.valueOf(newAssignmentPrioritySpinner.getSelectedItem().toString()),
                              Integer.valueOf(newAssignmentHour.getText().toString()));
                      break;
                   case "Quiz":
-                     item = new Quiz(courseSelection, newAssignmentName.getText().toString(),
+                     item = new Quiz(NewCourse.SELF_ASSIGNED, newAssignmentName.getText().toString(),
                              dateView.getText().toString(), Integer.valueOf(newAssignmentPrioritySpinner.getSelectedItem().toString()),
                              Integer.valueOf(newAssignmentHour.getText().toString()));
                      break;
                   default: // Homework Case
-                     item = new Homework(courseSelection, newAssignmentName.getText().toString(),
+                     item = new Homework(NewCourse.SELF_ASSIGNED, newAssignmentName.getText().toString(),
                              dateView.getText().toString(), Integer.valueOf(newAssignmentPrioritySpinner.getSelectedItem().toString()),
                              Integer.valueOf(newAssignmentHour.getText().toString()));
                      break;
                }
 
+               String iId = caller.push(item);
+               item.setIID(iId);
                flowLink.add(item);
                setDisplay();
 

@@ -92,4 +92,5 @@ public class WorkFlow {
       return items.remove(item);
    }
 
+   public void removeById(String id) { this.items.removeIf(item -> item.getIID().equals(id) ); }
 }

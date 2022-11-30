@@ -69,12 +69,16 @@ public class ServerCall implements Runnable {
                   response = receiver.lines().toArray();
                   break;
                }
+               case "PUSH": {
+                  response = receiver.readLine();
+                  break;
+               }
                case "DROP":
                case "OPEN":
                case "JOIN":
                case "ENROLL":
-               case "PROGRESS":
-               case "PUSH": {
+               case "COMPLETE":
+               case "PROGRESS": {
                   response = true;
                   break;
                }
