@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.LMStudy.app.CanvasConnect;
 import com.LMStudy.app.R;
@@ -17,6 +18,7 @@ import com.LMStudy.app.SharedMenu;
 import com.LMStudy.app.io.SyncService;
 import com.LMStudy.app.structures.NewCourse;
 import com.LMStudy.app.structures.WorkFlow;
+import com.LMStudy.app.teacher.TeacherMenu;
 
 import java.util.ArrayList;
 
@@ -139,7 +141,7 @@ public class StudentMenu extends AppCompatActivity {
             TextView view = new TextView(context);
             view.setText(course.toString());
             view.setOnClickListener(click -> {
-               AlertDialog.Builder confirmUnenroll = new AlertDialog.Builder(click.getContext());
+               AlertDialog.Builder confirmUnenroll = new AlertDialog.Builder(SharedMenu.getContext());
                confirmUnenroll.setTitle(R.string.course_confirm_unenroll);
                String message = getString(R.string.course_unenroll_prefix) + course + "?";
                confirmUnenroll.setMessage(message);
@@ -212,8 +214,13 @@ public class StudentMenu extends AppCompatActivity {
          builder.setPositiveButton(android.R.string.ok, (dialogInterface, i) -> {
                EditText inputfield = singleInputWindow.findViewById(R.id.single_input);
                savedInput = inputfield.getText().toString();
-               //caller.join(savedinput)
-               //get response and make the appropriate Toast
+               if(!savedInput.isEmpty()) {
+                  caller.enroll(savedInput);
+                  flowLink.populateCourses(caller.pullCourses());
+                  flowLink.populateItems(caller.pullItems());
+                  restart();
+               } else Toast.makeText(
+                  SharedMenu.getContext(), "Unable to Complete Enroll", Toast.LENGTH_SHORT);
             });
          builder.create().show();
       });
@@ -226,7 +233,22 @@ public class StudentMenu extends AppCompatActivity {
       settings_forecast.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View view) {
-            //launch a dialog with a spinner or something
+            AlertDialog.Builder builder = new AlertDialog.Builder(SharedMenu.getContext());
+            builder.setTitle(R.string.forecast_prompt);
+            final View singleInputWindow = getLayoutInflater().inflate(R.layout.single_input_dialogue, null);
+            builder.setView(singleInputWindow);
+            builder.setPositiveButton(android.R.string.ok, (dialogInterface, i) -> {
+               EditText inputField = singleInputWindow.findViewById(R.id.single_input);
+               savedInput = inputField.getText().toString();
+               try {
+                  Integer newForecast = Integer.parseInt(savedInput);
+                  userPrefs.edit().putString("forecastThreshold", newForecast.toString()).commit();
+                  restart();
+               } catch (NumberFormatException e) {
+                  Toast.makeText(
+                     SharedMenu.getContext(), "Input must be a positive integer", Toast.LENGTH_SHORT);
+               }
+            });
          }
       });
 
@@ -242,8 +264,13 @@ public class StudentMenu extends AppCompatActivity {
          finish();
       });
 
-
-
    }
 
+   private void restart() {
+      Intent restart = new Intent (this, StudentMenu.class);
+      restart.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+      restart.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+      startActivity(restart);
+      finish();
+   }
 }

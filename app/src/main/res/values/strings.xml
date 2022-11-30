@@ -31,9 +31,13 @@
     <string name="open_prompt">Enter A Name For Your Course</string>
     <string name="join_prompt">Enter A Course Code</string>
     <string name="admin_prompt">Enter An Admin pw</string>
-    <string name="select_courses">Select Courses to Use</string>
+    <string name="select_courses">Select Courses to Include</string>
+    <string name="select_items">Select Items to Include</string>
     <string name="single_input_default">-- Text --</string>
     <string name="login_mode_switch">I am a Teacher/TA</string>
+    <string name="forecast_prompt">Enter a new Forecast Value (Integer)</string>
+    <string name="confirm">Confirm</string>
+    <string name="no_items">No Items Found</string>
 
     <string name="app_name">LMStudy</string>
     <string name="your_schedule_title">Your Schedule</string>

@@ -3,6 +3,8 @@ package com.LMStudy.app;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.SparseBooleanArray;
+import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import com.LMStudy.app.io.CanvasCall;
@@ -17,24 +19,78 @@ public class CanvasConnect extends AppCompatActivity {
    private String[] ids;
    private String[] items;
 
+   private String[] courseIds;
+   private String[] courses;
+
    private ListView menuOptions;
    private ArrayAdapter<String> menuAdapter;
-   private Button okButton;
+   private Button confirm_btn;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      setContentView(R.layout.shared_menu);
-      this.setTitle(R.string.select_courses);
+      setContentView(R.layout.canvas_selector);
       context = this;
       userPrefs = this.getApplicationContext().getSharedPreferences("userPrefs", MODE_PRIVATE);
-      menuOptions = findViewById(R.id.menu_options);
+      menuOptions = findViewById(R.id.selector);
+      confirm_btn = findViewById(R.id.confirm_button);
+      confirm_btn.setText(R.string.confirm);
 
-      //Stage 0: Pull the appropriate courses for this user, and allow selection.
-      fillFromCall(getResponse(constructUrl(0)));
-      menuAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_multiple_choice, this.items);
+      String userRole = userPrefs.getString("role", "STUDENT");
+      if (userRole.equals("STUDENT")) studentQuery();
+      else teacherQuery();
+   }
+
+   private void studentQuery() {
+      this.setTitle(R.string.select_items);
+      String call = CanvasCall.API_URL + CanvasCall.STUDENT_QUERY;
+      fillFromCall(getResponse(call));
+      if (this.items.length == 0) setEmpty();
+      else {
+         menuAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_multiple_choice, this.items);
+         menuOptions.setAdapter(menuAdapter);
+         menuOptions.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
+         menuOptions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+               if(menuOptions.getCheckedItemCount() > 0)
+                  processMenu(menuOptions.getCheckedItemPositions());
+            }
+         });
+
+      }
+   }
+
+   private void teacherQuery() {
+      this.setTitle(R.string.select_courses);
+      String courseCall = CanvasCall.API_URL + CanvasCall.COURSE_QUERY;
+      fillFromCall(getResponse(courseCall));
+      courseIds = ids;
+      courses = items;
+      menuAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_multiple_choice, this.courses);
       menuOptions.setAdapter(menuAdapter);
       menuOptions.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
+      confirm_btn.setOnClickListener(view -> {
+         // if(menuOptions.getCheckedItemCount() > 0) nextSteps(menuOptions.getCheckedItemPositions());
+      });
+   }
+
+   private void setEmpty() {
+      this.items = new String[] { getString(R.string.no_items) };
+      menuAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, this.items);
+      menuOptions.setAdapter(menuAdapter);
+   }
+
+   private void processMenu(SparseBooleanArray selection) {
+      int len = this.ids.length;
+      Boolean[] selected = new Boolean[len];
+      for(int i=0; i<len; i++) selected[i] = selection.get(i, false);
+      for(int i=0; i<len; i++) {
+         if (selected[i]) {
+            //launch add menu
+         }
+      }
+
    }
 
    private void fillFromCall(JSONArray response) {
@@ -48,18 +104,6 @@ public class CanvasConnect extends AppCompatActivity {
             this.items[i] = item.getString("name");
          }
       } catch (JSONException j) { j.printStackTrace(); }
-   }
-
-   private String constructUrl(int query_stage) {
-      String returnUrl = CanvasCall.API_URL;
-      switch(query_stage) {
-         case 0:
-            returnUrl += CanvasCall.COURSE_QUERY;
-            String userRole = userPrefs.getString("role", "TEACHER");
-            if (userRole.equals("STUDENT")) returnUrl += CanvasCall.STUDENT_QUERY;
-            break;
-      }
-      return returnUrl;
    }
 
    private JSONArray getResponse(String url) {

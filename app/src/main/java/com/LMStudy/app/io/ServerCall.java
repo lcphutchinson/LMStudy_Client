@@ -72,6 +72,7 @@ public class ServerCall implements Runnable {
                case "DROP":
                case "OPEN":
                case "JOIN":
+               case "ENROLL":
                case "PUSH": {
                   response = true;
                   break;

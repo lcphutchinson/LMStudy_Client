@@ -269,6 +269,22 @@ public class SyncService {
       else return false;
    }
 
+   public boolean enroll(String course) {
+      request = new JSONObject();
+      caller = new ServerCall();
+      try {
+         request.put(ACTION_FLAG, "ENROLL");
+         request.put("token", userPrefs.getString("userToken", ""));
+         request.put("course", course);
+      } catch(JSONException j) {
+         j.printStackTrace();
+      }
+
+      Object response = this.getResponse();
+      if (response instanceof Boolean) return (Boolean) response;
+      else return false;
+   }
+
    /**
     * Utility method for processing a single assignment for transmission
     * @param a an Assignment for packing
