@@ -30,6 +30,11 @@ public class Exam extends WorkItem {
       super(course,id,name,due,priority,hours,progress);
    }
 
+   @Override
+   public String getType() {
+      return "Exam";
+   }
+
    /**
     * Custom Comparator for Exam items--provides more precise, type-dependent sorting.
     * @param item the input item for comparison

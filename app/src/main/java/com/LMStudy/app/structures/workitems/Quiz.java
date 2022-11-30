@@ -31,6 +31,11 @@ public class Quiz extends WorkItem implements Comparable<WorkItem> {
       super(course,id,name,due,priority,hours,progress);
    }
 
+   @Override
+   public String getType() {
+      return "Quiz";
+   }
+
    /**
     * Custom Comparator for Quiz items--provides more precise, type-dependent sorting.
     * @param item the input item for comparison

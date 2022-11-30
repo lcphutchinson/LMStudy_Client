@@ -133,7 +133,20 @@ public abstract class WorkItem implements Comparable<WorkItem>{
       return this.dueDate;
    }
 
+   /**
+    * Getter for item priority
+    * @return item priority
+    */
    public Integer getPriority() { return this.priority; }
+
+   /**
+    * Getter for basic item type to be overriden in respective work items class
+    * @return basic item type
+    */
+   public String getType() {
+      return "Work Item";
+   }
+
 
    /**
     * Getter for prioritization data, used for comparisons
