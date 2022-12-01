@@ -82,6 +82,7 @@ public class StudentHome extends AppCompatActivity {
          // arg2 = month
          // arg3 = day
          showDate(arg1, arg2+1, arg3);
+
          }
       };
 
@@ -385,8 +386,8 @@ public class StudentHome extends AppCompatActivity {
     * @param day due date day
     */
    private void showDate(int year, int month, int day) {
-      dateView.setText(new StringBuilder().append(day).append("/")
-              .append(month).append("/").append(year));
+      String dateString = year + "-" + month + "-" + day;
+      dateView.setText(dateString);
    }
 
    /**
