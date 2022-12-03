@@ -22,6 +22,7 @@ public class WorkFlow {
 
    public void populateCourses(List<NewCourse> input) {
       this.courses = input;
+      input.add(NewCourse.SELF_ASSIGNED);
    }
 
    public void populateItems(List<WorkItem> input) {
