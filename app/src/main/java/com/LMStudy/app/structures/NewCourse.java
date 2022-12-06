@@ -32,6 +32,12 @@ public class NewCourse {
    }
 
    /**
+    * Getter for course Id: used to pass a course as a string.
+    * @return the unique Id string associated with this course.
+    */
+   public String getCId() { return this.id; }
+
+   /**
     * Setter method for server-generated course codes.
     * Invoked following user-prompted Course creation.
     * @param id A server-generated course code for this course

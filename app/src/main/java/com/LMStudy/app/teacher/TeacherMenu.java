@@ -94,7 +94,7 @@ public class TeacherMenu extends AppCompatActivity {
       show_course.setText(R.string.course_show);
       show_course.setOnClickListener(view -> {
          Intent launchTeacherList = new Intent(context, TeacherAssignmentHome.class);
-         launchTeacherList.putExtra("course", course.toString());
+         launchTeacherList.putExtra("course", course.getCId());
          startActivity(launchTeacherList);
       });
 
