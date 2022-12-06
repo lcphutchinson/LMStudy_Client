@@ -94,16 +94,7 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
         setContentView(R.layout.course_assignment_list_activity);
 
         courseScreen = flowLink.getCourseById(getIntent().getStringExtra("course"));
-/*
-        // TODO: Gets information from previous activity and stores in variables //
-        Intent fromTeacherHome = getIntent();
-        courseName = fromTeacherHome.getStringExtra("Course");
-        courseList = (ArrayList<NewCourse>) fromTeacherHome.getSerializableExtra("Course List");
-        courseAssignmentList = courseList.get(fromTeacherHome.getIntExtra("Position", 0)).getAssignmentList();
 
-        / ARBITRARY TEST COURSE FOR TEACHER /
-        courseScreen = new NewCourse("999999","Personal Time","pw");
-*/
         rcAssignmentList = findViewById(R.id.t_course_assignment_list);
         addAssignmentBtn = findViewById(R.id.t_addAssignment_Btn);
 
