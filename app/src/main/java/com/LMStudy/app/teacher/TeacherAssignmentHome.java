@@ -23,6 +23,7 @@ import android.app.Dialog;
 
 import com.LMStudy.app.AccountActivity;
 import com.LMStudy.app.R;
+import com.LMStudy.app.io.SyncService;
 import com.LMStudy.app.structures.Assignment;
 import com.LMStudy.app.structures.Course;
 import com.LMStudy.app.structures.NewCourse;
@@ -43,6 +44,7 @@ import java.util.Calendar;
 public class TeacherAssignmentHome extends AppCompatActivity implements Serializable {
 
     private final WorkFlow flowLink = WorkFlow.getInstance(); // Pass WorkFlow into TeacherHome from Menu
+    private final SyncService caller = SyncService.getInstance();
     private AccountActivity.RecyclerAdapter teacherAssignmentAdapter;
     private RecyclerView rcAssignmentList;
     private ImageView profilePicture2;
@@ -75,7 +77,7 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
             }
         };
 
-    private Button removeAssignmentBtn;
+    private Button detailAssignmentBtn, removeAssignmentBtn;
 
     private TextView confirmRemovalText;
     private Button yesButton, noButton;
@@ -93,11 +95,10 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
         super.onCreate(savedInstanceState);
         setContentView(R.layout.course_assignment_list_activity);
 
-        courseScreen = flowLink.getCourseById(getIntent().getStringExtra("course"));
-
         rcAssignmentList = findViewById(R.id.t_course_assignment_list);
         addAssignmentBtn = findViewById(R.id.t_addAssignment_Btn);
 
+        courseScreen = flowLink.getCourseById(getIntent().getStringExtra("course"));
         setDisplay();
         rcAssignmentList.setLayoutManager(new LinearLayoutManager(this));
 
@@ -106,8 +107,9 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
 
             @Override
             public void onItemClick(View view, int position) {
-                // inflate the layout of the popup window
+                WorkItem clickedItem = courseAssignmentList.get(position);
 
+                // inflate the layout of the popup window
                 LayoutInflater inflater = (LayoutInflater)
                         getSystemService(LAYOUT_INFLATER_SERVICE);
                 View popupView = inflater.inflate(R.layout.assignment_info_popup, null);
@@ -141,6 +143,8 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
                 assignmentPrioText = popupView.findViewById(R.id.priorityInfo);
                 assignmentPrioInfo = popupView.findViewById(R.id.priorityInfo_txt);
 
+                detailAssignmentBtn = popupView.findViewById(R.id.completeAssignment_btn);
+                detailAssignmentBtn.setText("Edit Assignment");
                 removeAssignmentBtn = popupView.findViewById(R.id.rmvAssignment_btn);
 
                 assignmentNameInfo.setText(teacherAssignmentAdapter.getItemName(position));
@@ -148,6 +152,118 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
                 assignmentCourseInfo.setText(teacherAssignmentAdapter.getItemCourse(position));
                 assignmentDueDateInfo.setText(teacherAssignmentAdapter.getItemDueDate(position));
                 //assignmentPrioInfo.setText(studentHomeAdapter.getItemPriority(position));
+
+                detailAssignmentBtn.setOnClickListener(view12 -> {
+                    LayoutInflater inflater12 = (LayoutInflater)
+                       getSystemService(LAYOUT_INFLATER_SERVICE);
+                    // View popupView = inflater.inflate(R.layout.add_assignment_popup_revised, null);
+                    View popupView12 = inflater12.inflate(R.layout.add_assignment_popup_revised, null);
+
+                    // create the popup window
+                    int width12 = LinearLayout.LayoutParams.WRAP_CONTENT;
+                    int height12 = LinearLayout.LayoutParams.WRAP_CONTENT;
+                    boolean focusable12 = true; // lets taps outside the popup also dismiss it
+                    final PopupWindow popupWindow12 = new PopupWindow(popupView12, width12, height12, focusable12);
+
+                    // show the popup window
+                    // which view you pass in doesn't matter, it is only used for the window token
+                    popupWindow12.showAtLocation(view, Gravity.CENTER, 0, 0);
+
+                    // dismiss the popup window when touched
+                    popupView12.setOnTouchListener((v, event) -> {
+                        popupWindow12.dismiss();
+                        return true;
+                    });
+
+                    // SPINNER
+                    newAssignmentName = popupView12.findViewById(R.id.r_newAssignmentName_input);
+                    newAssignmentName.setText(clickedItem.getName());
+                    newAssignmentTypeSpinner = popupView12.findViewById(R.id.assignment_type_spinner);
+                    newAssignmentPrioritySpinner = popupView12.findViewById(R.id.priority_spinner);
+
+                    dateView = (TextView) popupView12.findViewById(R.id.dateText);
+                    dateView.setText(clickedItem.getDisplayDate());
+
+                    newAssignmentHour = popupView12.findViewById(R.id.hours_input);
+                    newAssignmentHour.setText(clickedItem.getPriorityData()[1].toString());
+
+                    confirmAssignmentBtn = popupView12.findViewById(R.id.r_confirm_assignment_Btn);
+
+                    ArrayAdapter<CharSequence> typeAdapter = ArrayAdapter.createFromResource(getBaseContext(), R.array.assignment_types, android.R.layout.simple_spinner_item);
+                    ArrayAdapter<CharSequence> priorityAdapter = ArrayAdapter.createFromResource(getBaseContext(), R.array.priority_levels, android.R.layout.simple_spinner_item);
+
+                    typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+                    priorityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+
+                    newAssignmentTypeSpinner.setAdapter(typeAdapter);
+                    switch (clickedItem.getType()) {
+                        case "Exam":
+                            newAssignmentTypeSpinner.setSelection(0);
+                            break;
+                        case "Homework":
+                            newAssignmentTypeSpinner.setSelection(1);
+                            break;
+                        case "Project":
+                            newAssignmentTypeSpinner.setSelection(2);
+                            break;
+                        case "Quiz":
+                            newAssignmentTypeSpinner.setSelection(3);
+                            break;
+                        default:
+                            throw new IllegalStateException();
+                    }
+
+                    newAssignmentPrioritySpinner.setAdapter(priorityAdapter);
+                    newAssignmentPrioritySpinner.setSelection(clickedItem.getPriorityData()[0]);
+
+                    confirmAssignmentBtn.setOnClickListener(view1 -> {
+                        if (newAssignmentHour.getText().toString().equals("") || Integer.valueOf(newAssignmentHour.getText().toString()) <= 0) {
+                            Toast.makeText(getBaseContext(), "Hours should be greater than 0", Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            String workType = newAssignmentTypeSpinner.getSelectedItem().toString();
+                            WorkItem item;
+
+                            switch(workType) {
+                                case "Exam":
+                                    item = new Exam(courseScreen, newAssignmentName.getText().toString(),
+                                       dateView.getText().toString(), Integer.valueOf(newAssignmentPrioritySpinner.getSelectedItem().toString()),
+                                       Integer.valueOf(newAssignmentHour.getText().toString()));
+                                    break;
+                                case "Project":
+                                    item = new Project(courseScreen, newAssignmentName.getText().toString(),
+                                       dateView.getText().toString(), Integer.valueOf(newAssignmentPrioritySpinner.getSelectedItem().toString()),
+                                       Integer.valueOf(newAssignmentHour.getText().toString()));
+                                    break;
+                                case "Quiz":
+                                    item = new Quiz(courseScreen, newAssignmentName.getText().toString(),
+                                       dateView.getText().toString(), Integer.valueOf(newAssignmentPrioritySpinner.getSelectedItem().toString()),
+                                       Integer.valueOf(newAssignmentHour.getText().toString()));
+                                    break;
+                                default: // Homework Case
+                                    item = new Homework(courseScreen, newAssignmentName.getText().toString(),
+                                       dateView.getText().toString(), Integer.valueOf(newAssignmentPrioritySpinner.getSelectedItem().toString()),
+                                       Integer.valueOf(newAssignmentHour.getText().toString()));
+                                    break;
+                            }
+
+                            // item is the NEW work item added to the work flow
+                            item.setIID(clickedItem.getIID());
+                            if(caller.detail(item)) {
+                                flowLink.remove(clickedItem);
+                                flowLink.add(item);
+                                courseAssignmentList.remove(clickedItem);
+                                courseAssignmentList.add(item);
+                                setDisplay();
+                                Toast.makeText(getBaseContext(), "Assignment details modified", Toast.LENGTH_SHORT).show();
+                                popupWindow.dismiss();
+                            } else {
+                                Toast.makeText(getBaseContext(), "Error: Update Failed", Toast.LENGTH_SHORT);
+                            }
+                        }
+
+                    });
+                });
 
                 /**
                  * Creates a new work item to match to the specific course's workflow array
@@ -181,61 +297,19 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
                     noButton = popupView1.findViewById(R.id.no_btn);
 
                     yesButton.setOnClickListener(view3 -> {
-
-                        String workType = teacherAssignmentAdapter.getItemType(position);
-                        NewCourse courseSelection = new NewCourse(newAssignmentCourseSpinner.getSelectedItem().toString());
-                        WorkItem item;
-
-                        for (NewCourse c : courseList) {
-                            if (c.toString().equals(newAssignmentCourseSpinner.getSelectedItem().toString())) {
-                                courseSelection = c;
-                                break;
-                            }
-                        }
-
-                        switch(workType) {
-                            case "Exam":
-                                item = new Exam(courseSelection, newAssignmentName.getText().toString(),
-                                        dateView.getText().toString(), 0,0);
-                                break;
-                            case "Project":
-                                item = new Project(courseSelection, newAssignmentName.getText().toString(),
-                                        dateView.getText().toString(), 0,0);
-                                break;
-                            case "Quiz":
-                                item = new Quiz(courseSelection, newAssignmentName.getText().toString(),
-                                        dateView.getText().toString(), 0,0);
-                                break;
-                            default: // Homework Case
-                                item = new Homework(courseSelection, newAssignmentName.getText().toString(),
-                                        dateView.getText().toString(), 0,0);
-                                break;
-                        }
-
-                        int removed = 0;
-                        // Find matching item in WorkItem list using equal
-                        for (WorkItem w : flowLink.getWorkItems()) {
-                            if (w.equals(item)) {
-                                flowLink.remove(w);
-                                removed = 1;
-                            }
-                        }
-
-                        if (removed == 1) {
-                            setDisplay();
-                            Toast.makeText(getBaseContext(), "Assignment completed", Toast.LENGTH_SHORT).show();
-                            popupWindow1.dismiss();
-                            popupWindow.dismiss();
-                        }
-                        else {
-                            Toast.makeText(getBaseContext(), "Error, assignment not removed.", Toast.LENGTH_SHORT).show();
-                            popupWindow1.dismiss();
-                            popupWindow.dismiss();
-                        }
-                    });
-
+                           if (caller.delete(clickedItem.getIID())) {
+                               System.out.println("This did happen");
+                               flowLink.remove(clickedItem);
+                               courseAssignmentList.remove(clickedItem);
+                               setDisplay();
+                               Toast.makeText(getBaseContext(), "Assignment Removed", Toast.LENGTH_SHORT);
+                               popupWindow1.dismiss();
+                               popupWindow.dismiss();
+                           } else {
+                               Toast.makeText(getBaseContext(), "Error: Remove Failed", Toast.LENGTH_SHORT);
+                           }
+                       });
                     noButton.setOnClickListener(view4 -> {
-                        Toast.makeText(getBaseContext(), "Remove cancelled.", Toast.LENGTH_SHORT).show();
                         popupWindow1.dismiss();
                     });
                 });
@@ -275,6 +349,7 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
             newAssignmentName = popupView.findViewById(R.id.r_newAssignmentName_input);
             newAssignmentTypeSpinner = popupView.findViewById(R.id.assignment_type_spinner);
             newAssignmentCourseSpinner = popupView.findViewById(R.id.course_spinner);
+            newAssignmentPrioritySpinner = popupView.findViewById(R.id.priority_spinner);
 
             dateView = (TextView) popupView.findViewById(R.id.dateText);
             calendar = Calendar.getInstance();
@@ -284,6 +359,7 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
             day = calendar.get(Calendar.DAY_OF_MONTH);
             showDate(year, month+1, day);
 
+            newAssignmentHour = popupView.findViewById(R.id.hours_input);
             confirmAssignmentBtn = popupView.findViewById(R.id.r_confirm_assignment_Btn);
 
             for (NewCourse c : courseList) {
@@ -291,60 +367,56 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
             }
 
             ArrayAdapter<CharSequence> typeAdapter = ArrayAdapter.createFromResource(this, R.array.assignment_types, android.R.layout.simple_spinner_item);
-            ArrayAdapter<String> courseAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, courseNameList);
             ArrayAdapter<CharSequence> priorityAdapter = ArrayAdapter.createFromResource(this, R.array.priority_levels, android.R.layout.simple_spinner_item);
 
             typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
-            courseAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
             priorityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
 
             newAssignmentTypeSpinner.setAdapter(typeAdapter);
-            newAssignmentCourseSpinner.setAdapter(courseAdapter);
             newAssignmentPrioritySpinner.setAdapter(priorityAdapter);
 
             newAssignmentCourseSpinner.setSelection(courseNameList.indexOf(courseName));
 
             confirmAssignmentBtn.setOnClickListener(view1 -> {
-                String workType = newAssignmentTypeSpinner.getSelectedItem().toString();
-                NewCourse courseSelection = new NewCourse(newAssignmentCourseSpinner.getSelectedItem().toString());
-                WorkItem item;
+                if (newAssignmentHour.getText().toString().equals("") || Integer.valueOf(newAssignmentHour.getText().toString()) <= 0) {
+                    Toast.makeText(getBaseContext(), "Hours should be greater than 0", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    String workType = newAssignmentTypeSpinner.getSelectedItem().toString();
+                    WorkItem item;
 
-                for (NewCourse c : courseList) {
-                    if (c.toString().equals(newAssignmentCourseSpinner.getSelectedItem().toString())) {
-                        courseSelection = c;
-                        break;
+                    switch(workType) {
+                        case "Exam":
+                            item = new Exam(courseScreen, newAssignmentName.getText().toString(),
+                               dateView.getText().toString(), Integer.valueOf(newAssignmentPrioritySpinner.getSelectedItem().toString()),
+                               Integer.valueOf(newAssignmentHour.getText().toString()));
+                            break;
+                        case "Project":
+                            item = new Project(courseScreen, newAssignmentName.getText().toString(),
+                               dateView.getText().toString(), Integer.valueOf(newAssignmentPrioritySpinner.getSelectedItem().toString()),
+                               Integer.valueOf(newAssignmentHour.getText().toString()));
+                            break;
+                        case "Quiz":
+                            item = new Quiz(courseScreen, newAssignmentName.getText().toString(),
+                               dateView.getText().toString(), Integer.valueOf(newAssignmentPrioritySpinner.getSelectedItem().toString()),
+                               Integer.valueOf(newAssignmentHour.getText().toString()));
+                            break;
+                        default: // Homework Case
+                            item = new Homework(courseScreen, newAssignmentName.getText().toString(),
+                               dateView.getText().toString(), Integer.valueOf(newAssignmentPrioritySpinner.getSelectedItem().toString()),
+                               Integer.valueOf(newAssignmentHour.getText().toString()));
+                            break;
                     }
+
+                    // item is the NEW work item added to the work flow
+                    item.setIID(caller.push(item));
+                    flowLink.add(item);
+                    setDisplay();
+
+                    Toast.makeText(getBaseContext(), "Assignment successfully added", Toast.LENGTH_SHORT).show();
+                    popupWindow.dismiss();
                 }
 
-                switch(workType) {
-                    case "Exam":
-                        item = new Exam(courseSelection, newAssignmentName.getText().toString(),
-                                dateView.getText().toString(), Integer.valueOf(newAssignmentPrioritySpinner.getSelectedItem().toString()),
-                                Integer.valueOf(newAssignmentHour.getText().toString()));
-                        break;
-                    case "Project":
-                        item = new Project(courseSelection, newAssignmentName.getText().toString(),
-                                dateView.getText().toString(), Integer.valueOf(newAssignmentPrioritySpinner.getSelectedItem().toString()),
-                                Integer.valueOf(newAssignmentHour.getText().toString()));
-                        break;
-                    case "Quiz":
-                        item = new Quiz(courseSelection, newAssignmentName.getText().toString(),
-                                dateView.getText().toString(), Integer.valueOf(newAssignmentPrioritySpinner.getSelectedItem().toString()),
-                                Integer.valueOf(newAssignmentHour.getText().toString()));
-                        break;
-                    default: // Homework Case
-                        item = new Homework(courseSelection, newAssignmentName.getText().toString(),
-                                dateView.getText().toString(), Integer.valueOf(newAssignmentPrioritySpinner.getSelectedItem().toString()),
-                                Integer.valueOf(newAssignmentHour.getText().toString()));
-                        break;
-                }
-
-                // item is the NEW work item added to the work flow
-                flowLink.add(item);
-                setDisplay();
-
-                Toast.makeText(getBaseContext(), "Assignment successfully added", Toast.LENGTH_SHORT).show();
-                popupWindow.dismiss();
             });
         });
     }
@@ -375,14 +447,14 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
      * @param day due date day
      */
     private void showDate(int year, int month, int day) {
-        dateView.setText(new StringBuilder().append(day).append("/")
-                .append(month).append("/").append(year));
+        String dateString = year + "-" + month + "-" + day;
+        dateView.setText(dateString);
     }
 
     @SuppressWarnings("deprecation")
     public void setDate(View view) {
         showDialog(999);
-        Toast.makeText(getApplicationContext(), "ca", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "Set Due Date.", Toast.LENGTH_SHORT).show();
     }
 
     @Override

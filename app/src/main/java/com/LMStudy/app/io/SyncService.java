@@ -321,6 +321,39 @@ public class SyncService {
       else return false;
    }
 
+   public boolean detail(WorkItem i) {
+      request = new JSONObject();
+      caller = new ServerCall();
+      try {
+         request.put(ACTION_FLAG, "DETAIL");
+         request.put("token", userPrefs.getString("userToken",""));
+         request.put("id", i.getIID());
+         request.put("item", packItem(i));
+      } catch (JSONException j) {
+         j.printStackTrace();
+      }
+
+      Object response = this.getResponse();
+      if (response instanceof Boolean) return (Boolean) response;
+      else return false;
+   }
+
+   public boolean delete(String item) {
+      request = new JSONObject();
+      caller = new ServerCall();
+      try {
+         request.put(ACTION_FLAG, "DELETE");
+         request.put("token", userPrefs.getString("userToken", ""));
+         request.put("item", item);
+      } catch(JSONException j) {
+         j.printStackTrace();
+      }
+
+      Object response = this.getResponse();
+      if (response instanceof Boolean) return (Boolean) response;
+      else return false;
+   }
+
    /**
     * Utility method for processing a single assignment for transmission
     * @param a an Assignment for packing

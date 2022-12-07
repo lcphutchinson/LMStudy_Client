@@ -82,14 +82,14 @@ public class MainActivity extends AppCompatActivity {
    }
 
    private void launch() {
-      flowLink.populateCourses(caller.pullCourses());
-      flowLink.populateItems(caller.pullItems());
       String userRole = userPrefs.getString("role", "");
+      flowLink.populateCourses(caller.pullCourses());
       if(userRole.equals("STUDENT")) {
          launchTarget = new Intent(this, StudentMenu.class);
          flowLink.addSelfCourse();
       }
       if(userRole.equals("TEACHER")) launchTarget = new Intent( this, TeacherMenu.class);
+      flowLink.populateItems(caller.pullItems());
       launchTarget.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
       launchTarget.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
       startActivity(launchTarget);

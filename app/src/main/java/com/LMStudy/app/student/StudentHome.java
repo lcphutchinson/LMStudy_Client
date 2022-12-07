@@ -217,7 +217,6 @@ public class StudentHome extends AppCompatActivity {
                      popupWindow.dismiss();
                   } else {
                      Toast.makeText(getBaseContext(), "Error, assignment not completed.", Toast.LENGTH_SHORT).show();
-                     popupWindow.dismiss();
                   }
                });
                noButton.setOnClickListener(view4 -> {

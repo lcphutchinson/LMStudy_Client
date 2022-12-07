@@ -67,7 +67,7 @@
         android:forceHasOverlappingRendering="true"
         android:includeFontPadding="false"
         android:paddingTop="18dp"
-        android:text="[Course] Work"
+        android:text="Course Work"
         android:textAlignment="viewEnd"
         android:textAllCaps="true"
         android:textColor="#FFFFFF"
