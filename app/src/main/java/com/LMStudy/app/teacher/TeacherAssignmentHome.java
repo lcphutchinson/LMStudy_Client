@@ -256,6 +256,7 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
                                 courseAssignmentList.add(item);
                                 setDisplay();
                                 Toast.makeText(getBaseContext(), "Assignment details modified", Toast.LENGTH_SHORT).show();
+                                popupWindow12.dismiss();
                                 popupWindow.dismiss();
                             } else {
                                 Toast.makeText(getBaseContext(), "Error: Update Failed", Toast.LENGTH_SHORT);

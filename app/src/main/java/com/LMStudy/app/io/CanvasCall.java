@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class CanvasCall implements Runnable {
    public static final String MY_TOKEN = "";
    public static final String API_URL = "https://canvas.instructure.com/api/v1/";
-   public static final String STUDENT_QUERY = "users/self/todo";
+   public static final String STUDENT_QUERY = "users/self/activity_stream?only_active_courses=true";
    public static final String COURSE_QUERY = "courses?exclude_blueprint_courses&enrollment_state=active";
    private static final Integer TIMEOUT_VAL = 3000;
 

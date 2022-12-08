@@ -39,6 +39,7 @@
     <string name="progress_prompt">Enter a new Progress Value (0-100)</string>
     <string name="confirm">Confirm</string>
     <string name="no_items">No Items Found</string>
+    <string name="associate_menu">Saving:\u0020</string>
 
     <string name="app_name">LMStudy</string>
     <string name="your_schedule_title">Your Schedule</string>
