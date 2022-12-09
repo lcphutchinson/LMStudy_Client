@@ -1,3 +1,68 @@
 <resources>
+    <string name="StudentLogo">LMStudy Student v1.0</string>
+    <string name="next_label">Our Next Recommendation:</string>
+    <string name="default_next">-- Empty --</string>
+    <string name="default_forecast">No Assignments to Complete</string>
+    <string name="forecast_prefix">You have % items due\u0020</string>
+    <string name="forecast_suffix1">today</string>
+    <string name="forecast_suffix2">in % days</string>
+    <string name="default_menuTitle">TITLE</string>
+    <string name="default_menuItem">ITEM</string>
+    <string name="LMS_menuTitle">LMS Management</string>
+    <string name="Course_menuTitle">Course Management</string>
+    <string name="Settings_menuTitle">User Settings</string>
+    <string name="item_list">See Full WorkFlow</string>
+    <string name="item_select">Log Progress</string>
+    <string name="item_complete">Complete</string>
+    <string name="lms_canvasLogin">Connect to Canvas</string>
+    <string name="course_list">My Courses</string>
+    <string name="course_default">-- No Courses --</string>
+    <string name="course_add">Join A Course</string>
+    <string name="course_confirm_unenroll">Confirm End Enrollment</string>
+    <string name="course_unenroll_prefix">Withdraw From Course\u0020</string>
+    <string name="settings_forecast">Forecast:\u0020</string>
+    <string name="logout">Log Out of LMStudy</string>
+    <string name="TeacherLogo">LMStudy Teacher v.1.0</string>
+    <string name="course_show">Show Workload</string>
+    <string name="course_show_id">Show Course Code</string>
+    <string name="course_show_pw">Show Admin Code</string>
+    <string name="course_drop">Drop Course</string>
+    <string name="course_open">Open a Course</string>
+    <string name="open_prompt">Enter A Name For Your Course</string>
+    <string name="join_prompt">Enter A Course Code</string>
+    <string name="admin_prompt">Enter An Admin pw</string>
+    <string name="select_courses">Select Courses to Include</string>
+    <string name="select_items">Select Items to Include</string>
+    <string name="single_input_default">-- Text --</string>
+    <string name="login_mode_switch">I am a Teacher/TA</string>
+    <string name="forecast_prompt">Enter a new Forecast Value (Numeric)</string>
+    <string name="progress_prompt">Enter a new Progress Value (0-100)</string>
+    <string name="confirm">Confirm</string>
+    <string name="no_items">No Items Found</string>
+    <string name="associate_menu">Saving:\u0020</string>
+
     <string name="app_name">LMStudy</string>
+    <string name="your_schedule_title">Your Schedule</string>
+    <string name="ret_user_settings">Retrieving User Settings</string>
+    <string name="launching">Launching LMStudy</string>
+    <string name="sign_in_title">Sign In</string>
+    <string name="login_caps">LOGIN</string>
+    <string name="or">or</string>
+    <string name="signup_caps">SIGN UP</string>
+    <string name="create_account">Create a new account</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="default_txt">Default</string>
+    <string-array name="assignment_types">
+        <item>Exam</item>
+        <item>Homework</item>
+        <item>Project</item>
+        <item>Quiz</item>
+    </string-array>
+    <string-array name="priority_levels">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
 </resources>

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/Constraint_Layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="314dp"
+        android:layout_height="595dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="49dp"
+        android:layout_marginBottom="72dp"
+        android:background="#FF6D63"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <TextView
+                android:id="@+id/r_createNewAssignmentPopUp"
+                android:layout_width="269dp"
+                android:layout_height="59dp"
+                android:layout_marginTop="32dp"
+                android:background="#FFFFFF"
+                android:gravity="center"
+                android:shadowColor="#FFFBFB"
+                android:text="New Assignment"
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.506"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <EditText
+                android:id="@+id/r_newAssignmentName_input"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:backgroundTint="#CD8888"
+                android:ems="10"
+                android:hint="Assignment Name"
+                android:inputType="textNoSuggestions|textVisiblePassword"
+                android:maxLength="40"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.509"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/r_createNewAssignmentPopUp" />
+
+            <Spinner
+                android:id="@+id/assignment_type_spinner"
+                android:layout_width="210dp"
+                android:layout_height="42dp"
+                android:layout_marginTop="24dp"
+                android:autofillHints="Assignment Type"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/r_newAssignmentName_input" />
+
+            <Spinner
+                android:id="@+id/course_spinner"
+                android:layout_width="210dp"
+                android:layout_height="42dp"
+                android:layout_marginTop="24dp"
+                android:autofillHints="Course"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/assignment_type_spinner" />
+
+            <Spinner
+                android:id="@+id/priority_spinner"
+                android:layout_width="130dp"
+                android:layout_height="42dp"
+                android:layout_marginTop="24dp"
+                android:autofillHints="Priority"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.288"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/course_spinner" />
+
+            <TextView
+                android:id="@+id/due_date_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Due Date:"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.234"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/priority_spinner" />
+
+            <TextView
+                android:id="@+id/dateText"
+                android:layout_width="116dp"
+                android:layout_height="28dp"
+                android:layout_marginTop="24dp"
+                android:gravity="center"
+                android:text="TextView"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/due_date_text"
+                app:layout_constraintTop_toBottomOf="@+id/priority_spinner" />
+
+            <EditText
+                android:id="@+id/hours_input"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:width="40dp"
+                android:backgroundTint="#CD8888"
+                android:ems="10"
+                android:hint="Hours"
+                android:inputType="number"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.163"
+                app:layout_constraintStart_toEndOf="@+id/priority_spinner"
+                app:layout_constraintTop_toBottomOf="@+id/course_spinner" />
+
+            <Button
+                android:id="@+id/calendar_btn"
+                android:layout_width="125dp"
+                android:layout_height="43dp"
+                android:layout_marginTop="16dp"
+                android:onClick="setDate"
+                android:text="Select Date"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.502"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/due_date_text" />
+
+            <Button
+                android:id="@+id/r_confirm_assignment_Btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="Add Assignment"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.503"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

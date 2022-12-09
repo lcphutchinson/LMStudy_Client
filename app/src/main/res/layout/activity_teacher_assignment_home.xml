@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                   xmlns:tools="http://schemas.android.com/tools"
+                                                   android:layout_width="match_parent"
+                                                   android:layout_height="match_parent"
+                                                   tools:context=".teacher.TeacherHome">
+
+    <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar1"
+            android:layout_width="match_parent"
+            android:layout_height="69dp"
+            android:background="@color/black"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme"
+            app:maxButtonHeight="80dp" app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+    <Button
+            android:id="@+id/refresh_Btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:insetLeft="15dp"
+            android:insetBottom="16dp"
+            android:text="Refresh"
+            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"/>
+
+    <Button
+            android:id="@+id/addAssignment_Btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="90dp"
+            android:insetBottom="16dp"
+            android:text="Add Assignment"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/refresh_Btn"/>
+
+    <ImageView
+            android:id="@+id/profile_icon"
+            android:layout_width="74dp"
+            android:layout_height="69dp"
+            app:srcCompat="@drawable/default_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+    <TextView
+            android:id="@+id/course_list_title"
+            android:layout_width="406dp"
+            android:layout_height="67dp"
+            android:fontFamily="sans-serif-medium"
+            android:forceHasOverlappingRendering="true"
+            android:includeFontPadding="false"
+            android:paddingTop="18dp"
+            android:text="@string/your_schedule_title"
+            android:textAlignment="center"
+            android:textAllCaps="true"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp" tools:text="Teacher Assignment List" app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="32dp"/>
+    <TextView
+            android:text="Teacher Name"
+            android:layout_width="124dp"
+            android:layout_height="24dp" android:id="@+id/textView5"
+            android:textSize="18sp" android:fontFamily="sans-serif"
+            android:textStyle="bold" android:layout_marginTop="120dp" app:layout_constraintTop_toTopOf="@+id/toolbar1"
+            app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="27dp"/>
+    <TextView
+            android:text="Sesh Venugopal"
+            android:layout_width="174dp"
+            android:layout_height="24dp" android:id="@+id/teacherName_tv"
+            android:textSize="18sp" android:fontFamily="sans-serif"
+            android:layout_marginTop="120dp" app:layout_constraintTop_toTopOf="@+id/toolbar1"
+            android:layout_marginStart="30dp" app:layout_constraintStart_toEndOf="@+id/textView5"/>
+    <TextView
+            android:text="Teacher Dept."
+            android:layout_width="124dp"
+            android:layout_height="26dp" android:id="@+id/textView6"
+            android:textSize="18sp" android:fontFamily="sans-serif"
+            android:textStyle="bold" android:layout_marginTop="35dp" app:layout_constraintTop_toTopOf="@+id/textView5"
+            app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="27dp"/>
+    <TextView
+            android:text="Computer Science"
+            android:layout_width="175dp"
+            android:layout_height="26dp" android:id="@+id/teacherDept_tv"
+            android:textSize="18sp" android:fontFamily="sans-serif"
+            android:layout_marginTop="35dp" app:layout_constraintTop_toTopOf="@+id/teacherName_tv"
+            android:layout_marginStart="30dp" app:layout_constraintStart_toEndOf="@+id/textView6"/>
+    <View
+            android:id="@+id/divider3"
+            android:layout_width="409dp"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="1dp"
+            android:layout_marginTop="18dp" app:layout_constraintTop_toBottomOf="@+id/textView6"/>
+    <TextView
+            android:text="Assignment List"
+            android:layout_width="135dp"
+            android:layout_height="25dp" android:id="@+id/textView10"
+            android:textSize="18sp"
+            android:textAlignment="center" android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@+id/editCourse_btn"
+            android:layout_marginTop="6dp" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="129dp" app:layout_constraintEnd_toStartOf="@+id/textView20"
+            android:layout_marginEnd="82dp" android:layout_marginBottom="3dp"
+            app:layout_constraintBottom_toTopOf="@+id/textView17"/>
+    <TextView
+            android:text="Course ID"
+            android:layout_width="87dp"
+            android:layout_height="23dp" android:id="@+id/textView11"
+            android:textSize="18sp" android:textStyle="bold" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/divider3"/>
+    <TextView
+            android:layout_width="98dp"
+            android:layout_height="27dp" android:id="@+id/courseID_tv"
+            android:textSize="18sp" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="16dp"
+            android:text="01:198:210"
+            app:layout_constraintEnd_toStartOf="@+id/courseName_tv" android:layout_marginTop="2dp"
+            app:layout_constraintTop_toBottomOf="@+id/textView11"/>
+    <TextView
+            android:text="Course Name"
+            android:layout_width="119dp"
+            android:layout_height="24dp" android:id="@+id/textView13"
+            android:textSize="18sp" android:textStyle="bold" android:layout_marginStart="12dp"
+            app:layout_constraintStart_toEndOf="@+id/textView11"
+            app:layout_constraintTop_toBottomOf="@+id/divider3"/>
+    <TextView
+            android:text="Data Structures"
+            android:layout_width="143dp"
+            android:layout_height="25dp" android:id="@+id/courseName_tv"
+            android:textSize="18sp" android:layout_marginStart="8dp"
+            app:layout_constraintStart_toEndOf="@+id/textView11"
+            app:layout_constraintEnd_toStartOf="@+id/department_tv"
+            android:layout_marginEnd="10dp" android:layout_marginTop="1dp"
+            app:layout_constraintTop_toBottomOf="@+id/textView13"/>
+    <TextView
+            android:text="Department"
+            android:layout_width="104dp"
+            android:layout_height="25dp" android:id="@+id/textView15"
+            android:textSize="18sp" android:textStyle="bold" android:layout_marginEnd="36dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider3"/>
+    <TextView
+            android:text="Comp. Science"
+            android:layout_width="126dp"
+            android:layout_height="27dp" android:id="@+id/department_tv"
+            android:textSize="18sp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toBottomOf="@+id/textView15"/>
+    <View
+            android:id="@+id/divider4"
+            android:layout_width="409dp"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+            android:layout_marginEnd="1dp"
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toBottomOf="@+id/editCourse_btn"
+            app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="1dp"
+            android:layout_marginBottom="5dp" app:layout_constraintBottom_toTopOf="@+id/textView10"/>
+    <Button
+            android:text="Edit Course"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/editCourse_btn"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@+id/courseName_tv" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="129dp"/>
+    <TextView
+            android:text="Name"
+            android:layout_width="58dp"
+            android:layout_height="31dp" android:id="@+id/textView9"
+            android:textSize="18sp"
+            android:textStyle="bold" app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="24dp"
+            android:layout_marginTop="36dp" app:layout_constraintTop_toBottomOf="@+id/divider4"/>
+    <TextView
+            android:text="Priority"
+            android:layout_width="70dp"
+            android:layout_height="34dp" android:id="@+id/textView17"
+            android:textSize="18sp" android:textStyle="bold" android:layout_marginStart="77dp"
+            app:layout_constraintStart_toEndOf="@+id/textView9" android:layout_marginTop="3dp"
+            app:layout_constraintTop_toBottomOf="@+id/textView10"/>
+    <TextView
+            android:text="Due Date"
+            android:layout_width="83dp"
+            android:layout_height="32dp" android:id="@+id/textView19"
+            android:textSize="18sp"
+            android:textStyle="bold" android:layout_marginStart="13dp"
+            app:layout_constraintStart_toEndOf="@+id/textView17"
+            android:layout_marginTop="3dp" app:layout_constraintTop_toBottomOf="@+id/textView10"/>
+    <TextView
+            android:text="Value Points"
+            android:layout_width="65dp"
+            android:layout_height="47dp" android:id="@+id/textView20"
+            android:textSize="18sp" android:textStyle="bold" android:layout_marginStart="21dp"
+            app:layout_constraintStart_toEndOf="@+id/textView19" android:layout_marginTop="19dp"
+            app:layout_constraintTop_toBottomOf="@+id/divider4"/>
+    <ListView
+            android:layout_width="409dp"
+            android:layout_height="304dp"
+            app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="1dp"
+            android:layout_marginTop="1dp" app:layout_constraintTop_toBottomOf="@+id/textView17"
+            android:layout_marginEnd="1dp" app:layout_constraintEnd_toEndOf="parent" android:layout_marginBottom="1dp"
+            app:layout_constraintBottom_toTopOf="@+id/refresh_Btn" android:id="@+id/assignList_lv"
+            android:clickable="true"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
