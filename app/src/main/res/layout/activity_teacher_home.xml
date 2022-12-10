@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
         android:insetBottom="16dp"
-        android:text="Add Assignment"
+        android:text="@string/add_assignment"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -67,7 +67,7 @@
         android:forceHasOverlappingRendering="true"
         android:includeFontPadding="false"
         android:paddingTop="18dp"
-        android:text="Course List"
+        android:text="@string/course_list"
         android:textAlignment="viewEnd"
         android:textAllCaps="true"
         android:textColor="#FFFFFF"
