@@ -221,14 +221,16 @@ public class SyncService {
             case "TEACHER": {
                request.put(ACTION_FLAG, "PUBLISH");
                request.put("token", userPrefs.getString("userToken", ""));
-               request.put("course", i.getCourse().toString());
+               request.put("course", i.getCourse().getCId());
+               break;
             }
             case "STUDENT": {
                request.put(ACTION_FLAG, "PUSH");
                request.put("token", userPrefs.getString("userToken", ""));
+               break;
             }
-            request.put("item", packItem(i));
          }
+         request.put("item", packItem(i));
 
       } catch (JSONException j) {
          j.printStackTrace();

@@ -69,6 +69,7 @@ public class ServerCall implements Runnable {
                   response = receiver.lines().toArray();
                   break;
                }
+               case "PUBLISH":
                case "PUSH": {
                   response = receiver.readLine();
                   break;
