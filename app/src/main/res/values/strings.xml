@@ -26,6 +26,8 @@
     <string name="settings_forecast">Forecast:\u0020</string>
     <string name="logout">Log Out of LMStudy</string>
     <string name="TeacherLogo">LMStudy Teacher v.1.0</string>
+    <string name="word_course">Course</string>
+    <string name="course_work">Course Work</string>
     <string name="course_show">Show Workload</string>
     <string name="course_show_id">Show Course Code</string>
     <string name="course_show_pw">Show Admin Code</string>
@@ -55,6 +57,27 @@
     <string name="create_account">Create a new account</string>
     <string name="forgot_password">Forgot Password?</string>
     <string name="default_txt">Default</string>
+    <string name="new_assignment">New Assignment</string>
+    <string name="add_assignment">Add Assignment</string>
+    <string name="current_assignment">Current Assignment: </string>
+    <string name="assignment_info">Assignment Info</string>
+    <string name="assignment_name_txt">Assignment Name</string>
+    <string name="assignment_name">Assignment Name: </string>
+    <string name="assignee_name">Assignee: </string>
+    <string name="assignment_type">Assignment Type: </string>
+    <string name="assignment_course">Course: </string>
+    <string name="due_date_is">Due Date: </string>
+    <string name="assignment_priority">Priority: </string>
+    <string name="priority">Priority</string>
+    <string name="hours">Hours</string>
+    <string name="hours_to_work">Hours to work: </string>
+    <string name="complete_assignment">Complete Assignment</string>
+    <string name="remove_assignment">Remove Assignment</string>
+    <string name="remove_question_text">Are you sure you want to remove this assignment?</string>
+    <string name="select_date">Select Date</string>
+    <string name="refresh">Refresh</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
     <string-array name="assignment_types">
         <item>Exam</item>
         <item>Homework</item>

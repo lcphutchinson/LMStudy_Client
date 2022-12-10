@@ -41,7 +41,6 @@ public class TeacherRecyclerAdapter extends RecyclerView.Adapter<TeacherRecycler
     }
     @Override
     public int getItemCount() {
-        System.out.println(itemsList.size());
         return itemsList.size();
     }
 

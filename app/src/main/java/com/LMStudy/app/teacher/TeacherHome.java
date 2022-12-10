@@ -45,22 +45,14 @@ public class TeacherHome extends AppCompatActivity {
 
    private TeacherRecyclerAdapter teacherHomeAdapter;
    private RecyclerView rcCourseList;
-   private ImageView profilePicture1;
-
-   private TextView assignmentNameText, assignmentNameInfo, assignmentAssigneeText, assignmentAssigneeInfo,
-           assignmentTypeText, assignmentTypeInfo, assignmentCourseText, assignmentCourseInfo,
-           assignmentDueDateText, assignmentDueDateInfo, assignmentNotesText, assignmentNotesInfo;
 
    private Button addAssignmentBtn, confirmAssignmentBtn;
    private TextView newAssignmentName, dateView;
-   private Spinner newAssignmentTypeSpinner, newAssignmentCourseSpinner, newAssignmentDueDateMonthSpinner,
-           newAssignmentDueDateDaySpinner, newAssignmentDueDateYearSpinner;
+   private Spinner newAssignmentTypeSpinner, newAssignmentCourseSpinner;
 
    private DatePicker datePicker;
    private Calendar calendar;
    private int year, month, day;
-
-   ArrayList<Assignment> assignmentArrayList;
 
    private List<String> testListSections = new ArrayList<String>();
 
@@ -69,25 +61,22 @@ public class TeacherHome extends AppCompatActivity {
    private DatePickerDialog.OnDateSetListener myDateListener = new
       DatePickerDialog.OnDateSetListener() {
          @Override
-         public void onDateSet(DatePicker arg0,
-                              int arg1, int arg2, int arg3) {
-           // TODO Auto-generated method stub
-           // arg1 = year
-           // arg2 = month
-           // arg3 = day
+         public void onDateSet(DatePicker arg0, int arg1, int arg2, int arg3) {
            showDate(arg1, arg2+1, arg3);
          }
       };
 
+   /**
+    * Creates teacher home screen from action
+    * @param savedInstanceState Saved application state
+    */
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_teacher_home);
       context = this;
 
-      //profilePicture = findViewById(R.id.profile_icon);
       rcCourseList = findViewById(R.id.t_course_list);
-      //refreshButton = findViewById(R.id.t_refresh_btn);
       addAssignmentBtn = findViewById(R.id.t_addAssignment_Btn);
 
       courseList.add(arbitraryCourseForTesting);
@@ -100,16 +89,12 @@ public class TeacherHome extends AppCompatActivity {
        * which only displays assignments and other information for that course.
        *
        * Passes COURSE NAME as parameter to access course specific assignment list.
-       * Need to create a back button.
        */
       rcCourseList.addOnItemTouchListener(new AccountActivity.RecyclerItemClickListener(getApplicationContext(),
               rcCourseList, new AccountActivity.RecyclerItemClickListener.OnItemClickListener() {
 
          @Override
          public void onItemClick(View view, int position) {
-
-            // TODO: Passes specific course information onto TeacherAssignmentHome using Intents
-
             launchAssignmentTarget = new Intent(view.getContext(),TeacherAssignmentHome.class);
             launchAssignmentTarget.putExtra("Course List", courseList);
             launchAssignmentTarget.putExtra("Course", courseList.get(position).toString());
@@ -137,29 +122,22 @@ public class TeacherHome extends AppCompatActivity {
             Toast.makeText(getBaseContext(), "ERROR: No enrolled course", Toast.LENGTH_SHORT).show();
          }
          else {
-            // inflate the layout of the popup window
             LayoutInflater inflater = (LayoutInflater)
                     getSystemService(LAYOUT_INFLATER_SERVICE);
-            // View popupView = inflater.inflate(R.layout.add_assignment_popup_revised, null); // This is the revised add popup
             View popupView = inflater.inflate(R.layout.add_assignment_popup_revised, null);
 
-            // create the popup window
             int width = LinearLayout.LayoutParams.WRAP_CONTENT;
             int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-            boolean focusable = true; // lets taps outside the popup also dismiss it
+            boolean focusable = true;
             final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
 
-            // show the popup window
-            // which view you pass in doesn't matter, it is only used for the window token
             popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
 
-            // dismiss the popup window when touched
             popupView.setOnTouchListener((v, event) -> {
                popupWindow.dismiss();
                return true;
             });
 
-            // SPINNER THINGS
             newAssignmentName = popupView.findViewById(R.id.r_newAssignmentName_input);
             newAssignmentTypeSpinner = popupView.findViewById(R.id.assignment_type_spinner);
             newAssignmentCourseSpinner = popupView.findViewById(R.id.course_spinner);
@@ -224,12 +202,21 @@ public class TeacherHome extends AppCompatActivity {
               .append(month).append("/").append(year));
    }
 
+   /**
+    * Calendar supporting function for setting date
+    * @param view The view that was clicked
+    */
    @SuppressWarnings("deprecation")
    public void setDate(View view) {
       showDialog(999);
       Toast.makeText(getApplicationContext(), "ca", Toast.LENGTH_SHORT).show();
    }
 
+   /**
+    * Calendar supporting function
+    * @param id Object id
+    * @return Calls function to set date
+    */
    @Override
    protected Dialog onCreateDialog(int id) {
       // TODO Auto-generated method stub
