@@ -93,7 +93,6 @@ public class AccountActivity {
 
         @Override
         public int getItemCount() {
-            System.out.println(itemsList.size());
             return itemsList.size();
         }
 
