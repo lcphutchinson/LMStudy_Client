@@ -3,6 +3,10 @@ package com.LMStudy.app.structures.workitems;
 
 import com.LMStudy.app.structures.NewCourse;
 
+/**
+ * Quiz WorkItem, sorted before other assessments but after assignments.
+ * @author: Larson Pushard Hutchinson
+ */
 public class Quiz extends WorkItem implements Comparable<WorkItem> {
 
    /**
@@ -31,6 +35,10 @@ public class Quiz extends WorkItem implements Comparable<WorkItem> {
       super(course,id,name,due,priority,hours,progress);
    }
 
+   /**
+    * Display method for fetching item type
+    * @return a String label for type.
+    */
    @Override
    public String getType() {
       return "Quiz";

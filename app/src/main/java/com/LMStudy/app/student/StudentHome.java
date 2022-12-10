@@ -19,23 +19,18 @@ import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.DatePicker;
 
 import com.LMStudy.app.AccountActivity;
 import com.LMStudy.app.R;
 import com.LMStudy.app.io.SyncService;
-import com.LMStudy.app.structures.Assignment;
-import com.LMStudy.app.structures.Course;
 import com.LMStudy.app.structures.NewCourse;
 import com.LMStudy.app.structures.WorkFlow;
-import com.LMStudy.app.structures.WorkQueue;
 import com.LMStudy.app.structures.workitems.Exam;
 import com.LMStudy.app.structures.workitems.Homework;
 import com.LMStudy.app.structures.workitems.Project;
 import com.LMStudy.app.structures.workitems.Quiz;
 import com.LMStudy.app.structures.workitems.WorkItem;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;

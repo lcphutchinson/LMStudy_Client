@@ -1,6 +1,8 @@
 package com.LMStudy.app;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.widget.Button;
@@ -16,7 +18,8 @@ import com.LMStudy.app.teacher.TeacherMenu;
 
 
 /**
- * Launch activity--handles field initialization and settings retrieval, and launches the Student or Teacher UI.2
+ * Launch activity--handles field initialization and settings retrieval and handles login/signup operations.
+ * @author: Yulie Ying, Larson Pushard Hutchinson
  */
 public class MainActivity extends AppCompatActivity {
    private final SyncService caller = SyncService.getInstance();
@@ -34,8 +37,6 @@ public class MainActivity extends AppCompatActivity {
       userPrefs = this.getApplicationContext().getSharedPreferences("userPrefs", MODE_PRIVATE);
       caller.setPreferences(userPrefs);
       context = this;
-
-      if (userPrefs.contains("userToken")) launch();
 
       TextView username = findViewById(R.id.username_i);
       TextView password = findViewById(R.id.password_i);
@@ -79,20 +80,34 @@ public class MainActivity extends AppCompatActivity {
             else Toast.makeText(this, "Username Already in Use", Toast.LENGTH_SHORT).show();
          }
       });
+
+      if (userPrefs.contains("userToken")) launch();
    }
 
    private void launch() {
-      String userRole = userPrefs.getString("role", "");
-      flowLink.populateCourses(caller.pullCourses());
-      if(userRole.equals("STUDENT")) {
-         launchTarget = new Intent(this, StudentMenu.class);
-         flowLink.addSelfCourse();
+      try {
+         String userRole = userPrefs.getString("role", "");
+         flowLink.populateCourses(caller.pullCourses());
+         if (userRole.equals("STUDENT")) {
+            launchTarget = new Intent(this, StudentMenu.class);
+            flowLink.addSelfCourse();
+         }
+         if (userRole.equals("TEACHER")) launchTarget = new Intent(this, TeacherMenu.class);
+         flowLink.populateItems(caller.pullItems());
+         launchTarget.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+         launchTarget.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+         startActivity(launchTarget);
+         finish();
+      } catch ( NullPointerException e) {
+         System.out.println("Error Caught");
+         AlertDialog.Builder errorBuilder = new AlertDialog.Builder(this);
+         errorBuilder.setTitle(R.string.errorTitle);
+         errorBuilder.setMessage(R.string.errorMsg);
+         errorBuilder.setOnDismissListener(dialogInterface -> finish());
+         errorBuilder.setPositiveButton(android.R.string.ok, (dialogInterface, i) -> {
+         finish();
+         });
+         errorBuilder.create().show();
       }
-      if(userRole.equals("TEACHER")) launchTarget = new Intent( this, TeacherMenu.class);
-      flowLink.populateItems(caller.pullItems());
-      launchTarget.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-      launchTarget.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-      startActivity(launchTarget);
-      finish();
    }
 }

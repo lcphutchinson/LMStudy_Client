@@ -1,4 +1,7 @@
 <resources>
+    <string name="errorTitle">Server Unreachable</string>
+    <string name="errorMsg">LMStudy Server is currently unavailable.
+        Please check your network connection and try again.\n\nLMStudy will now close.</string>
     <string name="StudentLogo">LMStudy Student v1.0</string>
     <string name="next_label">Our Next Recommendation:</string>
     <string name="default_next">-- Empty --</string>

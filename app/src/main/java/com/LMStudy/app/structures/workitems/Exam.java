@@ -2,6 +2,10 @@ package com.LMStudy.app.structures.workitems;
 
 import com.LMStudy.app.structures.NewCourse;
 
+/**
+ * Exam WorkItem--Sorted after other examinations
+ * @author: Larson Pushard Hutchinson
+ */
 public class Exam extends WorkItem {
 
    /**
@@ -30,6 +34,10 @@ public class Exam extends WorkItem {
       super(course,id,name,due,priority,hours,progress);
    }
 
+   /**
+    * Display method for fetching item type
+    * @return a String label for type.
+    */
    @Override
    public String getType() {
       return "Exam";

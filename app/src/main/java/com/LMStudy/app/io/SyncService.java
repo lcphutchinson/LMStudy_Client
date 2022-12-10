@@ -1,7 +1,6 @@
 package com.LMStudy.app.io;
 
 import android.content.SharedPreferences;
-import com.LMStudy.app.structures.Assignment;
 import com.LMStudy.app.structures.NewCourse;
 import com.LMStudy.app.structures.WorkFlow;
 import com.LMStudy.app.structures.workitems.*;
@@ -13,21 +12,53 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Https communications object; manages a library of server calls.
+ * Https communications service for preparing and launching ServerCall threads.
+ * @author: Larson Pushard Hutchinson
  */
 public class SyncService {
-   public static final String ACTION_FLAG = "ACTION";
-   private ServerCall caller;
-   private JSONObject request;
-   private SharedPreferences userPrefs;
-   WorkFlow flowLink = WorkFlow.getInstance();
 
+   /**
+    * String label for the Action Flag, a JSON field used to indicate message intent to the LMStudy Server.
+    */
+   public static final String ACTION_FLAG = "ACTION";
+
+   /**
+    * ServerCall Object that is populated and run during method calls
+    */
+   private ServerCall caller;
+
+   /**
+    * JSON field for building a server request prior to call.
+    */
+   private JSONObject request;
+
+   /**
+    * SharedPreferences object for locating user settings, such as user role.
+    */
+   private SharedPreferences userPrefs;
+
+   /**
+    * Singleton Instance reference to the WorkFlow class. Used for retrieving items and courses.
+    */
+   private WorkFlow flowLink = WorkFlow.getInstance();
+
+   /**
+    * Singleton Instance reference for the SyncService. Passed to activities that make server calls.
+    */
    public static SyncService instance = new SyncService();
 
+   /**
+    * Retrieves the Singleton Instance reference for the SyncService
+    * @return a static SyncService Object
+    */
    public static SyncService getInstance(){
       return instance;
    }
 
+   /**
+    * sets the userPrefs reference used by the Sync Service. Passed at program start.
+    * @param userPrefs a SharedPreferences object, passed from MainActivity.
+    */
    public void setPreferences(SharedPreferences userPrefs){
       this.userPrefs = userPrefs;
    }
@@ -209,7 +240,7 @@ public class SyncService {
    }
 
    /**
-    * Calling method for custom assignment submission. Used by both users
+    * Calling method for custom assignment submission. Used by both user roles
     * @param i: A WorkItem for sending
     */
    public String push(WorkItem i) {
@@ -241,6 +272,11 @@ public class SyncService {
       else return "";
    }
 
+   /**
+    * Calling method for new course creation. Used by the Teacher role.
+    * @param course the name of the course to be submitted for creation.
+    * @return a boolean indicating successful creation.
+    */
    public Boolean open(String course) {
       request = new JSONObject();
       caller = new ServerCall();
@@ -257,6 +293,12 @@ public class SyncService {
       else return false;
    }
 
+   /**
+    * Calling method for joining a course as administrator. Used by Teacher Users.
+    * @param course a string identifier for the course to be joined.
+    * @param pw an administrative password for the course to be joined
+    * @return a Boolean indicating successful enrollment.
+    */
    public boolean join(String course, String pw) {
       request = new JSONObject();
       caller = new ServerCall();
@@ -274,6 +316,11 @@ public class SyncService {
       else return false;
    }
 
+   /**
+    * Calling method for course enrollment. Used by Student Users.
+    * @param course a string identifier for the course to be joined
+    * @return a Boolean indicating successful enrollment.
+    */
    public boolean enroll(String course) {
       request = new JSONObject();
       caller = new ServerCall();
@@ -290,6 +337,11 @@ public class SyncService {
       else return false;
    }
 
+   /**
+    * Calling method for assignment dismissal. Used by Student Users
+    * @param item a string identifier for the course to be completed.
+    * @return a Boolean indicating successful completion.
+    */
    public boolean complete(String item) {
       request = new JSONObject();
       caller = new ServerCall();
@@ -306,6 +358,12 @@ public class SyncService {
       else return false;
    }
 
+   /**
+    * Calling method for logging progress updates. Used by Student Users.
+    * @param item a string identifier for the item to be edited.
+    * @param val a new value for the Progress field.
+    * @return a Boolean indicating successful update.
+    */
    public boolean progress(String item, int val) {
       request = new JSONObject();
       caller = new ServerCall();
@@ -323,6 +381,11 @@ public class SyncService {
       else return false;
    }
 
+   /**
+    * Calling method for updating attributes of an assignment. Used by Teacher users.
+    * @param i a WorkItem for transmission, containing updated fields
+    * @return a Boolean indicating successful update.
+    */
    public boolean detail(WorkItem i) {
       request = new JSONObject();
       caller = new ServerCall();
@@ -340,6 +403,11 @@ public class SyncService {
       else return false;
    }
 
+   /**
+    * Calling method for deleting a published assignment. Used by Teacher users.
+    * @param item a string identifier for the item to be deleted
+    * @return a Boolean indicating successful deletion.
+    */
    public boolean delete(String item) {
       request = new JSONObject();
       caller = new ServerCall();
@@ -375,6 +443,10 @@ public class SyncService {
       return item;
    }
 
+   /**
+    * Launch method for the server call. Builds and runs the call thread, then retrieves a response.
+    * @return the response Object generated by this server call.
+    */
    private Object getResponse() {
       caller.setRequest(request);
       caller.setPreferences(userPrefs);
@@ -382,12 +454,11 @@ public class SyncService {
       call.start();
       try {
          while (caller.getResponse() == null){
-            Thread.sleep(10); //note: fix this later.
+            Thread.sleep(10); //note: fix this later, if possible.
          }
       } catch(InterruptedException e) {
          e.printStackTrace();
       }
-      System.out.println("Busy Wait Concluded");
       return caller.getResponse();
    }
 

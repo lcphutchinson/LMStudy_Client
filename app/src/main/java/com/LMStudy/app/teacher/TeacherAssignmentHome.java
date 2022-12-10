@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -24,8 +23,6 @@ import android.app.Dialog;
 import com.LMStudy.app.AccountActivity;
 import com.LMStudy.app.R;
 import com.LMStudy.app.io.SyncService;
-import com.LMStudy.app.structures.Assignment;
-import com.LMStudy.app.structures.Course;
 import com.LMStudy.app.structures.NewCourse;
 import com.LMStudy.app.structures.WorkFlow;
 import com.LMStudy.app.structures.workitems.Exam;
@@ -214,7 +211,7 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
                     }
 
                     newAssignmentPrioritySpinner.setAdapter(priorityAdapter);
-                    newAssignmentPrioritySpinner.setSelection(clickedItem.getPriorityData()[0]);
+                    newAssignmentPrioritySpinner.setSelection(clickedItem.getPriorityData()[0]-1);
 
                     confirmAssignmentBtn.setOnClickListener(view1 -> {
                         if (newAssignmentHour.getText().toString().equals("") || Integer.valueOf(newAssignmentHour.getText().toString()) <= 0) {
@@ -299,7 +296,6 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
 
                     yesButton.setOnClickListener(view3 -> {
                            if (caller.delete(clickedItem.getIID())) {
-                               System.out.println("This did happen");
                                flowLink.remove(clickedItem);
                                courseAssignmentList.remove(clickedItem);
                                setDisplay();
