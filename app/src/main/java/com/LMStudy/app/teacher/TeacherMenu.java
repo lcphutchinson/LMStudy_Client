@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import com.LMStudy.app.CanvasConnect;
+import com.LMStudy.app.MainActivity;
 import com.LMStudy.app.R;
 import com.LMStudy.app.SharedMenu;
 import com.LMStudy.app.io.SyncService;
@@ -15,11 +16,46 @@ import com.LMStudy.app.structures.WorkFlow;
 
 import java.util.ArrayList;
 
+/**
+ * Main Menu controller for the Teacher User. Prepares various submenus and
+ * displays a list of all administered courses for this user.
+ * @author: Larson Pushard Hutchinson, Yulie Ying
+ */
 public class TeacherMenu extends AppCompatActivity {
+
+   /**
+    * Static String flag used for the Course Extra label
+    */
+   private static final String COURSE_FLAG = "course";
+
+   /**
+    * Static String flag for the clipboard service, used in copy operations.
+    */
+   private static final String CLIP_LABEL = "lmstudyClip";
+
+   /**
+    * Static Switch Case identifier for the LMS Menu, used in menu population.
+    */
    private static final int LMS_MENU = 1;
+
+   /**
+    * Static Switch Case identifier for the Course Menu, used in menu population.
+    */
    private static final int COURSE_MENU = 2;
+
+   /**
+    * Static Switch Case identifier for the Settings Menu, used in menu population.
+    */
    private static final int SETTINGS_MENU = 3;
-   ArrayList<NewCourse> courses;
+
+   /**
+    * ArrayList for maintaining and displaying registered courses for this user.
+    */
+   private ArrayList<NewCourse> courses;
+
+   /**
+    * String container for storing saved input values between operations.
+    */
    private String savedInput;
 
    //subMenu1 LMS Menu
@@ -32,19 +68,46 @@ public class TeacherMenu extends AppCompatActivity {
    private TextView settings_logout;
 
    //Activity Components
+   /**
+    * Container field for passing Context information between methods.
+    */
    private Context context;
+
+   /**
+    * Reference field for the LMStudy SharedPreferences file.
+    */
    private SharedPreferences userPrefs;
+
+   /**
+    * Clipboard Manager for handling clipboard operations.
+    */
    private ClipboardManager clipboard;
+
+   /**
+    * Singleton instance for the SyncService. Used for launching server calls.
+    */
    private SyncService caller = SyncService.getInstance();
+
+   /**
+    * Singleton instance for the WorkFlow data structure. Used for data operations.
+    */
    private WorkFlow flowLink = WorkFlow.getInstance();
    private ListView courseList;
    private Button canvas_btn, course_btn, settings_btn;
+
+   /**
+    * Container field for building and launching submenus and activities.
+    */
    private Intent launchMenu;
 
+   /**
+    * OnCreate for the Teacher User Menu. Prepares and initializes submenu triggers and populates the display.
+    * @param savedInstanceState
+    */
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       context = this;
-      userPrefs = this.getApplicationContext().getSharedPreferences("userPrefs", MODE_PRIVATE);
+      userPrefs = this.getApplicationContext().getSharedPreferences(MainActivity.PREFS_FILE, MODE_PRIVATE);
       launchMenu = new Intent(this, SharedMenu.class);
       clipboard = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
       setContentView(R.layout.activity_teacher_menu);
@@ -61,6 +124,11 @@ public class TeacherMenu extends AppCompatActivity {
       settings_btn.setOnClickListener(getMenuLauncher(SETTINGS_MENU));
    }
 
+   /**
+    * Builds an on-click listener for the submenu corresponding to the provided input flag.
+    * @param menuId Input flag for designating menu path
+    * @return a menu configuration packaged in an OnClickListener.
+    */
    private View.OnClickListener getMenuLauncher(Integer menuId) {
       String menuTitle;
       TextView[] options;
@@ -87,6 +155,10 @@ public class TeacherMenu extends AppCompatActivity {
       };
    }
 
+   /**
+    * Programmatically prepares a SharedMenu instance to be launched when the User selects the given course.
+    * @param course a Course object corresponding to an item in the menu display.
+    */
    private void focusCourse (NewCourse course) {
       String menuTitle = course.toString();
 
@@ -94,7 +166,7 @@ public class TeacherMenu extends AppCompatActivity {
       show_course.setText(R.string.course_show);
       show_course.setOnClickListener(view -> {
          Intent launchTeacherList = new Intent(context, TeacherAssignmentHome.class);
-         launchTeacherList.putExtra("course", course.getCId());
+         launchTeacherList.putExtra(COURSE_FLAG, course.getCId());
          startActivity(launchTeacherList);
       });
 
@@ -105,7 +177,7 @@ public class TeacherMenu extends AppCompatActivity {
          idDisplay.setTitle(R.string.course_show_id);
          idDisplay.setMessage(course.getData()[1]);
          idDisplay.setPositiveButton(android.R.string.copy, (dialogInterface, i) -> {
-            ClipData clip = ClipData.newPlainText("id", course.getData()[1]);
+            ClipData clip = ClipData.newPlainText(CLIP_LABEL, course.getData()[1]);
             clipboard.setPrimaryClip(clip);
          });
          idDisplay.setNegativeButton(android.R.string.cancel, (dialogInterface, i) -> {});
@@ -119,7 +191,7 @@ public class TeacherMenu extends AppCompatActivity {
          pwDisplay.setTitle(R.string.course_show_pw);
          pwDisplay.setMessage(course.getData()[2]);
          pwDisplay.setPositiveButton(android.R.string.copy, (dialogInterface, i) -> {
-            ClipData clip = ClipData.newPlainText("id", course.getData()[2]);
+            ClipData clip = ClipData.newPlainText(CLIP_LABEL, course.getData()[2]);
             clipboard.setPrimaryClip(clip);
          });
          pwDisplay.setNegativeButton(android.R.string.cancel, (dialogInterface, i) -> {});
@@ -140,6 +212,9 @@ public class TeacherMenu extends AppCompatActivity {
         startActivity(launchMenu);
    }
 
+   /**
+    * Populates the course list display based on the underlying WorkFlow
+    */
    private void setDisplay() {
       courses = new ArrayList<>(flowLink.getCourseList());
       String[] names;
@@ -155,6 +230,9 @@ public class TeacherMenu extends AppCompatActivity {
       courseList.setOnItemClickListener((adapterView, view, i, l) -> focusCourse(courses.get(i)));
    }
 
+   /**
+    * Sets the text fields and assigns listeners to menu options components
+    */
    private void setMenuOptions() {
 
       //subMenu1 LMS Menu
@@ -181,7 +259,7 @@ public class TeacherMenu extends AppCompatActivity {
                restart();
                }
             else Toast.makeText(
-               view.getContext(), "There was an error. Check your internet connection", Toast.LENGTH_SHORT);
+               view.getContext(), R.string.add_err, Toast.LENGTH_SHORT);
             }
          });
          builder.create().show();
@@ -208,7 +286,7 @@ public class TeacherMenu extends AppCompatActivity {
                   flowLink.populateCourses(caller.pullCourses());
                   restart();
                } else Toast.makeText(
-                  SharedMenu.getContext(), "Could not process Join", Toast.LENGTH_SHORT).show();
+                  SharedMenu.getContext(), R.string.join_err, Toast.LENGTH_SHORT).show();
             });
             subBuilder.create().show();
 
@@ -231,6 +309,9 @@ public class TeacherMenu extends AppCompatActivity {
 
    }
 
+   /**
+    * (Zealously) resets the activity, preventing back navigation.
+    */
    private void restart() {
       Intent restart = new Intent (this, TeacherMenu.class);
       restart.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

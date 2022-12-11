@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -13,10 +12,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Stack;
 
+/**
+ * Modular Menu activity pre-populated with a Title and list of TextViews. Displays as a DialogAlert
+ */
 public class SharedMenu extends AppCompatActivity {
 
-   private static Stack<String> title = new Stack<>();
-   private static Stack<TextView[]> options = new Stack<>();
+   /**
+    *
+    */
+   private static final Stack<String> TITLE = new Stack<>();
+   private static final Stack<TextView[]> OPTIONS = new Stack<>();
    private static Context context;
 
    private ListView menuOptions;
@@ -27,8 +32,8 @@ public class SharedMenu extends AppCompatActivity {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.shared_menu);
       context = this;
-      this.setTitle(title.peek());
-      TextView[] theseOptions = options.peek();
+      this.setTitle(TITLE.peek());
+      TextView[] theseOptions = OPTIONS.peek();
 
       menuOptions = findViewById(R.id.menu_options);
 
@@ -50,14 +55,14 @@ public class SharedMenu extends AppCompatActivity {
    public static Context getContext() { return context; }
 
    public static void setFields(String inTitle, TextView[] inOptions) {
-      title.push(inTitle);
-      options.push(inOptions);
+      TITLE.push(inTitle);
+      OPTIONS.push(inOptions);
    }
 
    @Override
    protected void onDestroy() {
       super.onDestroy();
-      title.pop();
-      options.pop();
+      TITLE.pop();
+      OPTIONS.pop();
    }
 }

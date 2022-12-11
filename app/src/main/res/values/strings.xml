@@ -41,10 +41,22 @@
     <string name="single_input_default">-- Text --</string>
     <string name="login_mode_switch">I am a Teacher/TA</string>
     <string name="forecast_prompt">Enter a new Forecast Value (Numeric)</string>
-    <string name="progress_prompt">Enter a new Progress Value (0-100)</string>
+    <string name="progress_prompt">Enter a new Progress Value (0–100)</string>
+    <string name="badprogress_prompt">Enter a Numeric Value (0–100)</string>
     <string name="confirm">Confirm</string>
     <string name="no_items">No Items Found</string>
     <string name="associate_menu">Saving:\u0020</string>
+    <string name="missing_creds">Username &amp; Password Required</string>
+    <string name="connection_err">Connection Error</string>
+    <string name="login_ok">Login Successful</string>
+    <string name="login_bad">Bad Credentials for Login</string>
+    <string name="signup_bad">Username Already in Use</string>
+    <string name="complete_success">Item Completed Successfully</string>
+    <string name="complete_fail">Complete Operation Failed</string>
+    <string name="enroll_fail">Enroll Operation Failed</string>
+    <string name="forecast_err">Input must be a positive integer</string>
+    <string name="add_err">Open Operation Failed</string>
+    <string name="join_err">Join Operation Failed</string>
 
     <string name="app_name">LMStudy</string>
     <string name="your_schedule_title">Your Schedule</string>

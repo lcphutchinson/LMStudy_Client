@@ -173,10 +173,10 @@ public class StudentHome extends AppCompatActivity {
                      flowLink.removeById(clickedItem.getIID());
                      itemsList.remove(position);
                      setDisplay();
-                     Toast.makeText(getBaseContext(), "Assignment completed", Toast.LENGTH_SHORT).show();
+                     Toast.makeText(getBaseContext(), R.string.complete_success, Toast.LENGTH_SHORT).show();
                      popupWindow.dismiss();
                   } else {
-                     Toast.makeText(getBaseContext(), "Error, assignment not completed.", Toast.LENGTH_SHORT).show();
+                     Toast.makeText(getBaseContext(), R.string.complete_fail, Toast.LENGTH_SHORT).show();
                   }
                });
                noButton.setOnClickListener(view4 -> {
