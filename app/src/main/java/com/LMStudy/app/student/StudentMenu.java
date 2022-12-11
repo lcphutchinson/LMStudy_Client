@@ -15,6 +15,7 @@ import com.LMStudy.app.CanvasConnect;
 import com.LMStudy.app.MainActivity;
 import com.LMStudy.app.R;
 import com.LMStudy.app.SharedMenu;
+import com.LMStudy.app.io.CanvasCall;
 import com.LMStudy.app.io.SyncService;
 import com.LMStudy.app.structures.NewCourse;
 import com.LMStudy.app.structures.WorkFlow;
@@ -273,7 +274,11 @@ public class StudentMenu extends AppCompatActivity {
       lms_canvasLogin = new TextView(context);
       lms_canvasLogin.setText(R.string.lms_canvasLogin);
       lms_canvasLogin.setOnClickListener(view -> {
-         startActivity(new Intent(context, CanvasConnect.class));
+         if(CanvasCall.MY_TOKEN.isEmpty()) {
+            Toast.makeText(this, R.string.canvas_err, Toast.LENGTH_SHORT).show();
+         } else {
+            startActivity(new Intent(context, CanvasConnect.class));
+         }
       });
 
       //subMenu3 Course Menu

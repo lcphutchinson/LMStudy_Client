@@ -57,6 +57,7 @@
     <string name="forecast_err">Input must be a positive integer</string>
     <string name="add_err">Open Operation Failed</string>
     <string name="join_err">Join Operation Failed</string>
+    <string name="canvas_err">Install a Canvas Token to access Canvas Demo</string>
 
     <string name="app_name">LMStudy</string>
     <string name="your_schedule_title">Your Schedule</string>

@@ -18,15 +18,27 @@ import java.util.Stack;
 public class SharedMenu extends AppCompatActivity {
 
    /**
-    *
+    * Static Stack for managing menu titles--allows the menu to be presented in layers
     */
    private static final Stack<String> TITLE = new Stack<>();
+
+   /**
+    * Static Stack for managing menu option sets--allows the menu to be presented in layers
+    */
    private static final Stack<TextView[]> OPTIONS = new Stack<>();
+
+   /**
+    * Container field for passing context to methods and activities.
+    */
    private static Context context;
 
    private ListView menuOptions;
    private ArrayAdapter<TextView> menuAdapter;
 
+   /**
+    * OnCreate for the Shared Menu. Initializes and inflates the menu UI
+    * @param savedInstanceState
+    */
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
@@ -52,13 +64,25 @@ public class SharedMenu extends AppCompatActivity {
       menuOptions.setAdapter(menuAdapter);
    }
 
+   /**
+    * Fetches the currently stored static context, for launching over the existing menu.
+    * @return
+    */
    public static Context getContext() { return context; }
 
+   /**
+    * Puts a new title and options set on the stack, determining the next available menu layout.
+    * @param inTitle a String for use as a menu title
+    * @param inOptions a TextView Array for generating menu options
+    */
    public static void setFields(String inTitle, TextView[] inOptions) {
       TITLE.push(inTitle);
       OPTIONS.push(inOptions);
    }
 
+   /**
+    * OnDestroy for the SharedMenu. Pops the most recent title and option set from the stack before closing.
+    */
    @Override
    protected void onDestroy() {
       super.onDestroy();
