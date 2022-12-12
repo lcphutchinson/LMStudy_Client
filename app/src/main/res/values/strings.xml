@@ -2,7 +2,6 @@
     <string name="errorTitle">Server Unreachable</string>
     <string name="errorMsg">LMStudy Server is currently unavailable.
         Please check your network connection and try again.\n\nLMStudy will now close.</string>
-    <string name="StudentLogo">LMStudy Student v1.0</string>
     <string name="next_label">Our Next Recommendation:</string>
     <string name="default_next">-- Empty --</string>
     <string name="default_forecast">No Assignments to Complete</string>
@@ -25,7 +24,9 @@
     <string name="course_unenroll_prefix">Withdraw From Course\u0020</string>
     <string name="settings_forecast">Forecast:\u0020</string>
     <string name="logout">Log Out of LMStudy</string>
-    <string name="TeacherLogo">LMStudy Teacher v.1.0</string>
+    <string name="LMSLogo">LMStudy v.1.0</string>
+    <string name="StudentWelcome">Welcome back student user!</string>
+    <string name="TeacherWelcome">Welcome back teacher user!</string>
     <string name="word_course">Course</string>
     <string name="course_work">Course Work</string>
     <string name="course_show">Show Workload</string>
@@ -91,6 +92,11 @@
     <string name="refresh">Refresh</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+
+    <string name="canvas">CANVAS</string>
+    <string name="course_options">Course Options</string>
+    <string name="settings">Settings</string>
+    <string name="default_reminder_txt">Remember to take breaks and drink enough water! ☻</string>
     <string-array name="assignment_types">
         <item>Exam</item>
         <item>Homework</item>

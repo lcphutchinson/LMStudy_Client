@@ -6,72 +6,138 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/student_menu_background"
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:background="@color/black"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
-            android:id="@+id/student_logo"
-            android:text="@string/StudentLogo"
-            android:textStyle="bold"
-            android:textSize="34sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+        android:id="@+id/student_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:text="@string/LMSLogo"
+        android:textColor="#FFFFFF"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
-            android:id="@+id/next_label"
-            android:text="@string/next_label"
-            android:layout_width="360dp"
-            android:layout_height="20dp"
-            android:layout_marginTop="24dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/student_logo"/>
+        android:id="@+id/student_welcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/StudentWelcome"
+        android:textColor="#C5C5C5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/student_logo" />
+
+    <TextView
+        android:id="@+id/next_label"
+        android:layout_width="360dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="50dp"
+        android:gravity="center"
+        android:text="@string/next_label"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/student_welcome" />
+
     <Button
-            android:id="@+id/next_item"
-            android:text="@string/default_next"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:minHeight="60dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/next_label"/>
+        android:id="@+id/next_item"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:minHeight="60dp"
+        android:text="@string/default_next"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/next_label" />
+
     <TextView
-            android:id="@+id/forecast"
-            android:text="@string/default_forecast"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/next_item"/>
+        android:id="@+id/forecast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/default_forecast"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/next_item" />
+
     <Button
-            android:id="@+id/canvas_btn"
-            android:text="A"
-            android:background="@drawable/ergo_button"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_margin="32dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/course_btn"/>
+        android:id="@+id/canvas_btn"
+        android:layout_width="310dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="460dp"
+        android:background="@drawable/ergo_button"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="@string/canvas"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        app:icon="@drawable/canvas_logo"
+        app:iconGravity="textStart"
+        app:iconPadding="10dp"
+        app:iconSize="30dp"
+        app:iconTint="#FF0000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <Button
 
-            android:id="@+id/course_btn"
-            android:text="B"
-            android:background="@drawable/ergo_button"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_margin="32dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+        android:id="@+id/course_btn"
+        android:layout_width="310dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/ergo_button"
+        android:text="@string/course_options"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/canvas_btn" />
+
     <Button
-            android:id="@+id/settings_btn"
-            android:text="C"
-            android:background="@drawable/ergo_button"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_margin="32dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/course_btn"/>
+        android:id="@+id/settings_btn"
+        android:layout_width="310dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/ergo_button"
+        android:text="@string/settings"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/course_btn" />
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/student_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/black"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <TextView
+        android:id="@+id/reminder_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="18dp"
+        android:text="@string/default_reminder_txt"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
