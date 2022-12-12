@@ -11,11 +11,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.LMStudy.app.structures.Assignment;
 import com.LMStudy.app.structures.workitems.WorkItem;
 
 import java.util.List;
 
+/**
+ * Utility Class for the Student and Teacher WorkFlow Displays. Manages RecyclerView Components.
+ * @author: Yulie Ying.
+ */
 public class AccountActivity {
     public static class RecyclerItemClickListener  implements RecyclerView.OnItemTouchListener {
         public static interface OnItemClickListener {
@@ -67,7 +70,6 @@ public class AccountActivity {
     public static class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder> {
 
         private Context context;
-        //List<AssignmentItem> itemsList;
         List<WorkItem> itemsList;
 
         public RecyclerAdapter(Context context, List<WorkItem> itemsList) {

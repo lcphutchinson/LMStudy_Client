@@ -13,7 +13,6 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
@@ -36,7 +35,8 @@ import java.util.Calendar;
 import java.util.List;
 
 /**
- * Primary UI for Student Users (previously "Main Activity")
+ * Detailed WorkFlow display for Student Users. Uses RecyclerView to display WorkItems
+ * @author: Yulie Ying
  */
 public class StudentHome extends AppCompatActivity {
 

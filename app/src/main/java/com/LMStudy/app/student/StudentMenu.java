@@ -243,11 +243,16 @@ public class StudentMenu extends AppCompatActivity {
             if(!savedInput.isEmpty()) {
                try {
                   int newProgress = Integer.parseInt(savedInput);
-                  caller.progress(flowLink.getFirst().getIID(), newProgress);
-                  flowLink.populateCourses(caller.pullCourses());
-                  flowLink.addSelfCourse();
-                  flowLink.populateItems(caller.pullItems());
-                  restart();
+                  if (newProgress < 0 || newProgress > 100) {
+                     Toast.makeText(
+                        SharedMenu.getContext(), R.string.badprogress_prompt, Toast.LENGTH_SHORT).show();
+                  } else {
+                     caller.progress(flowLink.getFirst().getIID(), newProgress);
+                     flowLink.populateCourses(caller.pullCourses());
+                     flowLink.addSelfCourse();
+                     flowLink.populateItems(caller.pullItems());
+                     restart();
+                  }
                } catch (NumberFormatException e) {
                   Toast.makeText(
                      SharedMenu.getContext(), R.string.badprogress_prompt, Toast.LENGTH_SHORT).show();

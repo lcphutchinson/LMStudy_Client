@@ -36,7 +36,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
- * Primary UI for Student Users (previously "Main Activity")
+ * Detailed WorkFlow display for the Teacher User. Uses a RecyclerView to display all WorkItems in a chosen Course
+ * @author: Yulie Ying
  */
 public class TeacherAssignmentHome extends AppCompatActivity implements Serializable {
 
@@ -50,7 +51,7 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
 
     private TextView newAssignmentName, newAssignmentHour, dateView;
 
-    private Spinner newAssignmentTypeSpinner, newAssignmentCourseSpinner, newAssignmentPrioritySpinner;
+    private Spinner newAssignmentTypeSpinner, newAssignmentPrioritySpinner;
 
     private TextView assignmentNameText, assignmentNameInfo, assignmentAssigneeText, assignmentAssigneeInfo,
             assignmentTypeText, assignmentTypeInfo, assignmentCourseText, assignmentCourseInfo,
@@ -79,8 +80,7 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
     private TextView confirmRemovalText;
     private Button yesButton, noButton;
 
-    NewCourse courseScreen;
-    private String courseName;
+    private NewCourse courseScreen;
     private ArrayList<NewCourse> courseList = new ArrayList<NewCourse>();
     private ArrayList<String> courseNameList = new ArrayList<String>();
 
@@ -345,7 +345,6 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
             // SPINNER
             newAssignmentName = popupView.findViewById(R.id.r_newAssignmentName_input);
             newAssignmentTypeSpinner = popupView.findViewById(R.id.assignment_type_spinner);
-            newAssignmentCourseSpinner = popupView.findViewById(R.id.course_spinner);
             newAssignmentPrioritySpinner = popupView.findViewById(R.id.priority_spinner);
 
             dateView = (TextView) popupView.findViewById(R.id.dateText);
@@ -371,8 +370,6 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
 
             newAssignmentTypeSpinner.setAdapter(typeAdapter);
             newAssignmentPrioritySpinner.setAdapter(priorityAdapter);
-
-            newAssignmentCourseSpinner.setSelection(courseNameList.indexOf(courseName));
 
             confirmAssignmentBtn.setOnClickListener(view1 -> {
                 if (newAssignmentHour.getText().toString().equals("") || Integer.valueOf(newAssignmentHour.getText().toString()) <= 0) {
@@ -423,8 +420,6 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
      * passed into this activity class from previous activity. Retrieved from general WorkFlow item.
      */
     private void setDisplay() {
-        //teacherAssignmentAdapter = new AccountActivity.RecyclerAdapter(this, courseAssignmentList);
-
         courseAssignmentList.clear();
 
         for (WorkItem w : flowLink.getWorkItems()) {
