@@ -13,9 +13,6 @@
             android:networkSecurityConfig="@xml/network_security_config"
             >
         <activity
-                android:name=".teacher.TeacherHome"
-                android:exported="true"/>
-        <activity
                 android:name=".teacher.TeacherAssignmentHome"
                 android:exported="true"/>
         <activity

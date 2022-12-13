@@ -96,6 +96,8 @@ public class WorkFlow {
     */
    public NewCourse getCourseById(String id) {
       int len = this.courses.size();
+      System.out.println(len);
+      System.out.println(id);
       for(int i=0;i<len;i++) if (courses.get(i).getData()[1].equals(id)) return courses.get(i);
       throw new NoSuchElementException();
    }

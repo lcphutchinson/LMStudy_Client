@@ -147,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
          errorBuilder.setOnDismissListener(dialogInterface -> finish());
          errorBuilder.setPositiveButton(android.R.string.ok, (dialogInterface, i) -> {
          finish();
+         System.exit(0);
          });
          errorBuilder.create().show();
       }

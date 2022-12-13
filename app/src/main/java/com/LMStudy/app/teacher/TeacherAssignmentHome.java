@@ -129,8 +129,6 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
 
                 assignmentNameText = popupView.findViewById(R.id.assignmentName);
                 assignmentNameInfo = popupView.findViewById(R.id.assignmentName_txt);
-                assignmentAssigneeText = popupView.findViewById(R.id.assigneeName);
-                assignmentAssigneeInfo = popupView.findViewById(R.id.assigneeName_txt);
                 assignmentTypeText = popupView.findViewById(R.id.assignmentType);
                 assignmentTypeInfo = popupView.findViewById(R.id.assignmentType_txt);
                 assignmentCourseText = popupView.findViewById(R.id.course_txt);
@@ -141,7 +139,7 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
                 assignmentPrioInfo = popupView.findViewById(R.id.priorityInfo_txt);
 
                 detailAssignmentBtn = popupView.findViewById(R.id.completeAssignment_btn);
-                detailAssignmentBtn.setText("Edit Assignment");
+                detailAssignmentBtn.setText(R.string.edit_assignment);
                 removeAssignmentBtn = popupView.findViewById(R.id.rmvAssignment_btn);
 
                 assignmentNameInfo.setText(teacherAssignmentAdapter.getItemName(position));
@@ -172,6 +170,8 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
                         return true;
                     });
 
+                    TextView title = popupView12.findViewById(R.id.r_createNewAssignmentPopUp);
+                    title.setText(R.string.edit_assignment);
                     // SPINNER
                     newAssignmentName = popupView12.findViewById(R.id.r_newAssignmentName_input);
                     newAssignmentName.setText(clickedItem.getName());
@@ -185,6 +185,7 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
                     newAssignmentHour.setText(clickedItem.getPriorityData()[1].toString());
 
                     confirmAssignmentBtn = popupView12.findViewById(R.id.r_confirm_assignment_Btn);
+                    confirmAssignmentBtn.setText(R.string.edit_assignment);
 
                     ArrayAdapter<CharSequence> typeAdapter = ArrayAdapter.createFromResource(getBaseContext(), R.array.assignment_types, android.R.layout.simple_spinner_item);
                     ArrayAdapter<CharSequence> priorityAdapter = ArrayAdapter.createFromResource(getBaseContext(), R.array.priority_levels, android.R.layout.simple_spinner_item);
@@ -224,22 +225,22 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
                             switch(workType) {
                                 case "Exam":
                                     item = new Exam(courseScreen, newAssignmentName.getText().toString(),
-                                       dateView.getText().toString(), Integer.valueOf(newAssignmentPrioritySpinner.getSelectedItem().toString()),
+                                       dateView.getText().toString(), newAssignmentPrioritySpinner.getSelectedItemPosition()+1,
                                        Integer.valueOf(newAssignmentHour.getText().toString()));
                                     break;
                                 case "Project":
                                     item = new Project(courseScreen, newAssignmentName.getText().toString(),
-                                       dateView.getText().toString(), Integer.valueOf(newAssignmentPrioritySpinner.getSelectedItem().toString()),
+                                       dateView.getText().toString(), newAssignmentPrioritySpinner.getSelectedItemPosition()+1,
                                        Integer.valueOf(newAssignmentHour.getText().toString()));
                                     break;
                                 case "Quiz":
                                     item = new Quiz(courseScreen, newAssignmentName.getText().toString(),
-                                       dateView.getText().toString(), Integer.valueOf(newAssignmentPrioritySpinner.getSelectedItem().toString()),
+                                       dateView.getText().toString(), newAssignmentPrioritySpinner.getSelectedItemPosition()+1,
                                        Integer.valueOf(newAssignmentHour.getText().toString()));
                                     break;
                                 default: // Homework Case
                                     item = new Homework(courseScreen, newAssignmentName.getText().toString(),
-                                       dateView.getText().toString(), Integer.valueOf(newAssignmentPrioritySpinner.getSelectedItem().toString()),
+                                       dateView.getText().toString(), newAssignmentPrioritySpinner.getSelectedItemPosition()+1,
                                        Integer.valueOf(newAssignmentHour.getText().toString()));
                                     break;
                             }
@@ -370,6 +371,7 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
 
             newAssignmentTypeSpinner.setAdapter(typeAdapter);
             newAssignmentPrioritySpinner.setAdapter(priorityAdapter);
+            newAssignmentPrioritySpinner.setSelection(2);
 
             confirmAssignmentBtn.setOnClickListener(view1 -> {
                 if (newAssignmentHour.getText().toString().equals("") || Integer.valueOf(newAssignmentHour.getText().toString()) <= 0) {
@@ -382,22 +384,22 @@ public class TeacherAssignmentHome extends AppCompatActivity implements Serializ
                     switch(workType) {
                         case "Exam":
                             item = new Exam(courseScreen, newAssignmentName.getText().toString(),
-                               dateView.getText().toString(), Integer.valueOf(newAssignmentPrioritySpinner.getSelectedItem().toString()),
+                               dateView.getText().toString(), newAssignmentPrioritySpinner.getSelectedItemPosition()+1,
                                Integer.valueOf(newAssignmentHour.getText().toString()));
                             break;
                         case "Project":
                             item = new Project(courseScreen, newAssignmentName.getText().toString(),
-                               dateView.getText().toString(), Integer.valueOf(newAssignmentPrioritySpinner.getSelectedItem().toString()),
+                               dateView.getText().toString(), newAssignmentPrioritySpinner.getSelectedItemPosition()+1,
                                Integer.valueOf(newAssignmentHour.getText().toString()));
                             break;
                         case "Quiz":
                             item = new Quiz(courseScreen, newAssignmentName.getText().toString(),
-                               dateView.getText().toString(), Integer.valueOf(newAssignmentPrioritySpinner.getSelectedItem().toString()),
+                               dateView.getText().toString(), newAssignmentPrioritySpinner.getSelectedItemPosition()+1,
                                Integer.valueOf(newAssignmentHour.getText().toString()));
                             break;
                         default: // Homework Case
                             item = new Homework(courseScreen, newAssignmentName.getText().toString(),
-                               dateView.getText().toString(), Integer.valueOf(newAssignmentPrioritySpinner.getSelectedItem().toString()),
+                               dateView.getText().toString(), newAssignmentPrioritySpinner.getSelectedItemPosition()+1,
                                Integer.valueOf(newAssignmentHour.getText().toString()));
                             break;
                     }

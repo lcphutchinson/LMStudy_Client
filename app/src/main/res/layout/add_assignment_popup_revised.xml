@@ -70,16 +70,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/r_newAssignmentName_input" />
 
             <Spinner
-                android:id="@+id/course_spinner"
-                android:layout_width="210dp"
-                android:layout_height="42dp"
-                android:layout_marginTop="24dp"
-                android:autofillHints="@string/word_course"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/assignment_type_spinner" />
-
-            <Spinner
                 android:id="@+id/priority_spinner"
                 android:layout_width="130dp"
                 android:layout_height="42dp"
@@ -88,7 +78,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.288"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/course_spinner" />
+                app:layout_constraintTop_toBottomOf="@+id/assignment_type_spinner" />
 
             <TextView
                 android:id="@+id/due_date_text"
@@ -111,6 +101,7 @@
                 android:gravity="center"
                 android:text="@string/default_txt"
                 android:textSize="16sp"
+                android:editable="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/due_date_text"
@@ -130,7 +121,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.163"
                 app:layout_constraintStart_toEndOf="@+id/priority_spinner"
-                app:layout_constraintTop_toBottomOf="@+id/course_spinner" />
+                app:layout_constraintTop_toBottomOf="@+id/assignment_type_spinner" />
 
             <Button
                 android:id="@+id/calendar_btn"

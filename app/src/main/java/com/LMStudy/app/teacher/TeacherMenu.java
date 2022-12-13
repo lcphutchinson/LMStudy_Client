@@ -10,6 +10,7 @@ import com.LMStudy.app.CanvasConnect;
 import com.LMStudy.app.MainActivity;
 import com.LMStudy.app.R;
 import com.LMStudy.app.SharedMenu;
+import com.LMStudy.app.io.CanvasCall;
 import com.LMStudy.app.io.SyncService;
 import com.LMStudy.app.structures.NewCourse;
 import com.LMStudy.app.structures.WorkFlow;
@@ -86,7 +87,7 @@ public class TeacherMenu extends AppCompatActivity {
    /**
     * Singleton instance for the SyncService. Used for launching server calls.
     */
-   private SyncService caller = SyncService.getInstance();
+   private final SyncService caller = SyncService.getInstance();
 
    /**
     * Singleton instance for the WorkFlow data structure. Used for data operations.
@@ -166,6 +167,7 @@ public class TeacherMenu extends AppCompatActivity {
       show_course.setText(R.string.course_show);
       show_course.setOnClickListener(view -> {
          Intent launchTeacherList = new Intent(context, TeacherAssignmentHome.class);
+         restart();
          launchTeacherList.putExtra(COURSE_FLAG, course.getCId());
          startActivity(launchTeacherList);
       });
@@ -202,7 +204,8 @@ public class TeacherMenu extends AppCompatActivity {
       drop_course.setText(R.string.course_drop);
       drop_course.setOnClickListener(view -> {
          if (caller.dropCourse(course.getData()[1])) {
-            flowLink.populateCourses(caller.pullCourses());
+            flowLink.getCourseList().remove(course);
+            courses.remove(course);
             restart();
          }
       });
@@ -239,7 +242,11 @@ public class TeacherMenu extends AppCompatActivity {
       lms_canvasLogin = new TextView(context);
       lms_canvasLogin.setText(R.string.lms_canvasLogin);
       lms_canvasLogin.setOnClickListener(view -> {
-         startActivity(new Intent(context, CanvasConnect.class));
+         if(CanvasCall.MY_TOKEN.isEmpty()) {
+            Toast.makeText(this, R.string.canvas_err, Toast.LENGTH_SHORT).show();
+         } else {
+            startActivity(new Intent(context, CanvasConnect.class));
+         }
       });
 
       //subMenu2 Course Menu
@@ -256,6 +263,7 @@ public class TeacherMenu extends AppCompatActivity {
          if(!savedInput.isEmpty()) {
             if(caller.open(savedInput)) {
                flowLink.populateCourses(caller.pullCourses());
+               flowLink.populateItems(caller.pullItems());
                restart();
                }
             else Toast.makeText(
@@ -284,6 +292,7 @@ public class TeacherMenu extends AppCompatActivity {
                String content = innerField.getText().toString();
                if(!content.isEmpty()) if (caller.join(savedInput, content)) {
                   flowLink.populateCourses(caller.pullCourses());
+                  flowLink.populateItems(caller.pullItems());
                   restart();
                } else Toast.makeText(
                   SharedMenu.getContext(), R.string.join_err, Toast.LENGTH_SHORT).show();
@@ -319,5 +328,6 @@ public class TeacherMenu extends AppCompatActivity {
       startActivity(restart);
       finish();
    }
+
 }
 

@@ -136,7 +136,7 @@ public class StudentMenu extends AppCompatActivity {
       TextView[] options;
       switch(menuId) {
          case ITEM_MENU:
-            menuTitle = nextItem.getText().toString();
+            menuTitle = (flowLink).hasItems() ? flowLink.getFirst().getName() : getString(R.string.default_forecast);
             options = new TextView[]{item_list, item_log, item_complete};
             break;
          case LMS_MENU:
@@ -190,26 +190,30 @@ public class StudentMenu extends AppCompatActivity {
     */
    private TextView[] buildCourseMenu() {
       ArrayList<NewCourse> courses = new ArrayList<>(flowLink.getCourseList());
-      if(courses.isEmpty()) return new TextView[]{course_default, course_add};
+      if(courses.size() < 2) return new TextView[]{course_default, course_add};
       else {
          ArrayList<TextView> courseOptions = new ArrayList<>();
          courses.forEach(course -> {
-            TextView view = new TextView(context);
-            view.setText(course.toString());
-            view.setOnClickListener(click -> {
-               AlertDialog.Builder confirmUnenroll = new AlertDialog.Builder(SharedMenu.getContext());
-               confirmUnenroll.setTitle(R.string.course_confirm_unenroll);
-               String message = getString(R.string.course_unenroll_prefix) + course + "?";
-               confirmUnenroll.setMessage(message);
-               confirmUnenroll.setPositiveButton(android.R.string.ok, (dialogInterface, i) -> {
-                  caller.dropCourse(courses.get(i).getData()[1]);
+            if(!course.equals(NewCourse.SELF_ASSIGNED)) {
+               TextView view = new TextView(context);
+               view.setText(course.toString());
+               view.setOnClickListener(click -> {
+                  AlertDialog.Builder confirmUnenroll = new AlertDialog.Builder(SharedMenu.getContext());
+                  confirmUnenroll.setTitle(R.string.course_confirm_unenroll);
+                  String message = getString(R.string.course_unenroll_prefix) + course + "?";
+                  confirmUnenroll.setMessage(message);
+                  confirmUnenroll.setPositiveButton(android.R.string.ok, (dialogInterface, i) -> {
+                     caller.dropCourse(course.getData()[1]);
+                     courses.remove(course);
+                     restart();
+                  });
+                  confirmUnenroll.setNegativeButton(android.R.string.cancel, (dialogInterface, i) -> {
+                  });
+                  AlertDialog window = confirmUnenroll.create();
+                  window.show();
                });
-               confirmUnenroll.setNegativeButton(android.R.string.cancel, (dialogInterface, i) -> {
-               });
-               AlertDialog window = confirmUnenroll.create();
-               window.show();
-            });
-            courseOptions.add(view);
+               courseOptions.add(view);
+            }
          });
          courseOptions.add(course_add);
          int len = courseOptions.size();
@@ -227,6 +231,7 @@ public class StudentMenu extends AppCompatActivity {
       item_list = new TextView(context);
       item_list.setText(R.string.item_list);
       item_list.setOnClickListener(view -> {
+         restart();
          context.startActivity(new Intent(context, StudentHome.class));
       });
 

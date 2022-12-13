@@ -1,34 +1,23 @@
 package com.LMStudy.app.student;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.widget.*;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.LMStudy.app.AccountActivity;
 import com.LMStudy.app.R;
+import com.LMStudy.app.SharedMenu;
 import com.LMStudy.app.io.SyncService;
 import com.LMStudy.app.structures.NewCourse;
 import com.LMStudy.app.structures.WorkFlow;
-import com.LMStudy.app.structures.workitems.Exam;
-import com.LMStudy.app.structures.workitems.Homework;
-import com.LMStudy.app.structures.workitems.Project;
-import com.LMStudy.app.structures.workitems.Quiz;
-import com.LMStudy.app.structures.workitems.WorkItem;
+import com.LMStudy.app.structures.workitems.*;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -49,13 +38,13 @@ public class StudentHome extends AppCompatActivity {
 
    private AccountActivity.RecyclerAdapter studentHomeAdapter;
    private RecyclerView rcSchedule;
-   private Button refreshButton, addAssignmentBtn, confirmAssignmentBtn;
+   private Button addAssignmentBtn, confirmAssignmentBtn;
 
    private TextView assignmentNameInfo, assignmentTypeInfo, assignmentCourseInfo, assignmentDueDateInfo,
            assignmentPrioInfo;
 
    private TextView newAssignmentName, newAssignmentHour, dateView;
-   private Spinner newAssignmentTypeSpinner, newAssignmentCourseSpinner, newAssignmentPrioritySpinner;
+   private Spinner newAssignmentTypeSpinner, newAssignmentPrioritySpinner;
 
    private DatePicker datePicker;
    private Calendar calendar;
@@ -90,7 +79,6 @@ public class StudentHome extends AppCompatActivity {
       setContentView(R.layout.activity_student_home);
 
       rcSchedule = findViewById(R.id.assignment_work_queue);
-      refreshButton = findViewById(R.id.refresh_Btn);
       addAssignmentBtn = findViewById(R.id.addAssignment_Btn);
       currentAssignment = findViewById(R.id.current_assignment_text);
 
@@ -136,6 +124,7 @@ public class StudentHome extends AppCompatActivity {
 
             completeAssignmentBtn = popupView.findViewById(R.id.completeAssignment_btn);
             removeAssignmentBtn = popupView.findViewById(R.id.rmvAssignment_btn);
+            removeAssignmentBtn.setText(R.string.log_btn);
 
             assignmentNameInfo.setText(studentHomeAdapter.getItemName(position));
             assignmentTypeInfo.setText(studentHomeAdapter.getItemType(position));
@@ -175,6 +164,7 @@ public class StudentHome extends AppCompatActivity {
                      setDisplay();
                      Toast.makeText(getBaseContext(), R.string.complete_success, Toast.LENGTH_SHORT).show();
                      popupWindow.dismiss();
+                     popupWindow1.dismiss();
                   } else {
                      Toast.makeText(getBaseContext(), R.string.complete_fail, Toast.LENGTH_SHORT).show();
                   }
@@ -183,6 +173,36 @@ public class StudentHome extends AppCompatActivity {
                   popupWindow1.dismiss();
                });
             });
+
+            removeAssignmentBtn.setOnClickListener(view12 -> {
+               AlertDialog.Builder builder = new AlertDialog.Builder(view12.getContext());
+               builder.setTitle(R.string.progress_prompt);
+               final View singleInputWindow = getLayoutInflater().inflate(R.layout.single_input_dialogue, null);
+               builder.setView(singleInputWindow);
+               builder.setPositiveButton(android.R.string.ok, (dialogInterface, i) -> {
+                  EditText inputfield = singleInputWindow.findViewById(R.id.single_input);
+                  String savedInput = inputfield.getText().toString();
+                  if (!savedInput.isEmpty()) {
+                     try {
+                        int newProgress = Integer.parseInt(savedInput);
+                        if (newProgress < 0 || newProgress > 100) {
+                           Toast.makeText(
+                              SharedMenu.getContext(), R.string.badprogress_prompt, Toast.LENGTH_SHORT).show();
+                        } else {
+                           caller.progress(flowLink.getFirst().getIID(), newProgress);
+                           flowLink.populateCourses(caller.pullCourses());
+                           flowLink.addSelfCourse();
+                           flowLink.populateItems(caller.pullItems());
+                           setDisplay();
+                        }
+                     } catch (NumberFormatException e) {
+                        Toast.makeText(
+                           SharedMenu.getContext(), R.string.badprogress_prompt, Toast.LENGTH_SHORT).show();
+                     }
+                  }
+               });
+               builder.create().show();
+            });
          }
 
          @Override
@@ -190,14 +210,6 @@ public class StudentHome extends AppCompatActivity {
 
          }
       }));
-
-      /**
-       * Refreshes the student home activity.
-       */
-      refreshButton.setOnClickListener(view -> {
-         finish();
-         startActivity(getIntent());
-      });
 
       /**
        * Opens an add assignment popup with textviews, spinners and calendars for options to
@@ -222,8 +234,8 @@ public class StudentHome extends AppCompatActivity {
 
          newAssignmentName = popupView.findViewById(R.id.r_newAssignmentName_input);
          newAssignmentTypeSpinner = popupView.findViewById(R.id.assignment_type_spinner);
-         newAssignmentCourseSpinner = popupView.findViewById(R.id.course_spinner);
          newAssignmentPrioritySpinner = popupView.findViewById(R.id.priority_spinner);
+         newAssignmentPrioritySpinner.setSelection(2);
          newAssignmentHour = popupView.findViewById(R.id.hours_input);
 
          dateView = (TextView) popupView.findViewById(R.id.dateText);
@@ -241,15 +253,12 @@ public class StudentHome extends AppCompatActivity {
          }
 
          ArrayAdapter<CharSequence> typeAdapter = ArrayAdapter.createFromResource(this, R.array.assignment_types, android.R.layout.simple_spinner_item);
-         ArrayAdapter<String> courseAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, enrolledCourseNameList);
          ArrayAdapter<CharSequence> priorityAdapter = ArrayAdapter.createFromResource(this, R.array.priority_levels, android.R.layout.simple_spinner_item);
 
          typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
-         courseAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
          priorityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
 
          newAssignmentTypeSpinner.setAdapter(typeAdapter);
-         newAssignmentCourseSpinner.setAdapter(courseAdapter);
          newAssignmentPrioritySpinner.setAdapter(priorityAdapter);
 
          /**
@@ -261,35 +270,26 @@ public class StudentHome extends AppCompatActivity {
             }
             else {
                String workType = newAssignmentTypeSpinner.getSelectedItem().toString();
-               NewCourse courseSelection = new NewCourse(newAssignmentCourseSpinner.getSelectedItem().toString());
                WorkItem item;
-
-               for (NewCourse c : enrolledCourseList) {
-                  if (c.toString().equals(newAssignmentCourseSpinner.getSelectedItem().toString())) {
-                     courseSelection = c;
-                     break;
-                  }
-               }
-
                switch (workType) {
                   case "Exam":
                      item = new Exam(NewCourse.SELF_ASSIGNED, newAssignmentName.getText().toString(),
-                             dateView.getText().toString(), Integer.valueOf(newAssignmentPrioritySpinner.getSelectedItem().toString()),
+                             dateView.getText().toString(), newAssignmentPrioritySpinner.getSelectedItemPosition()+1,
                              Integer.valueOf(newAssignmentHour.getText().toString()));
                      break;
                   case "Project":
                      item = new Project(NewCourse.SELF_ASSIGNED, newAssignmentName.getText().toString(),
-                             dateView.getText().toString(), Integer.valueOf(newAssignmentPrioritySpinner.getSelectedItem().toString()),
+                             dateView.getText().toString(), newAssignmentPrioritySpinner.getSelectedItemPosition()+1,
                              Integer.valueOf(newAssignmentHour.getText().toString()));
                      break;
                   case "Quiz":
                      item = new Quiz(NewCourse.SELF_ASSIGNED, newAssignmentName.getText().toString(),
-                             dateView.getText().toString(), Integer.valueOf(newAssignmentPrioritySpinner.getSelectedItem().toString()),
+                             dateView.getText().toString(), newAssignmentPrioritySpinner.getSelectedItemPosition()+1,
                              Integer.valueOf(newAssignmentHour.getText().toString()));
                      break;
                   default: // Homework Case
                      item = new Homework(NewCourse.SELF_ASSIGNED, newAssignmentName.getText().toString(),
-                             dateView.getText().toString(), Integer.valueOf(newAssignmentPrioritySpinner.getSelectedItem().toString()),
+                             dateView.getText().toString(), newAssignmentPrioritySpinner.getSelectedItemPosition()+1,
                              Integer.valueOf(newAssignmentHour.getText().toString()));
                      break;
                }
