@@ -30,9 +30,9 @@
                 android:layout_height="82dp"
                 android:layout_marginTop="16dp"
                 android:gravity="center"
-                android:text="Are you sure you want to remove this assignment?"
+                android:text="@string/remove_question_text"
                 android:textColor="#FFFFFF"
-                android:textSize="20dp"
+                android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.507"
                 app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +44,7 @@
                 android:layout_height="38dp"
                 android:layout_marginStart="32dp"
                 android:layout_marginBottom="16dp"
-                android:text="Yes"
+                android:text="@string/yes"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
@@ -54,7 +54,7 @@
                 android:layout_height="38dp"
                 android:layout_marginEnd="32dp"
                 android:layout_marginBottom="16dp"
-                android:text="No"
+                android:text="@string/no"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>

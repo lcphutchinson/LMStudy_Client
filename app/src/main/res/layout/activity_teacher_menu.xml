@@ -6,26 +6,52 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/teacher_menu_background"
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:background="@color/black"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
-            android:id="@+id/teacher_logo"
-            android:text="@string/TeacherLogo"
-            android:textStyle="bold"
-            android:textSize="34sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+        android:id="@+id/teacher_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:text="@string/LMSLogo"
+        android:textColor="#FFFFFF"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
-            android:id="@+id/course_list_label"
-            android:text="@string/course_list"
-            android:layout_width="360dp"
-            android:layout_height="20dp"
-            android:layout_marginTop="24dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/teacher_logo"/>
+        android:id="@+id/teacher_welcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/TeacherWelcome"
+        android:textColor="#C5C5C5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/teacher_logo" />
+
+    <TextView
+        android:id="@+id/course_list_label"
+        android:layout_width="358dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="30dp"
+        android:gravity="center"
+        android:text="@string/course_list"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/teacher_welcome" />
+
     <ListView
             android:id="@+id/course_list"
             android:layout_width="260dp"
@@ -33,35 +59,71 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/course_list_label"/>
+
     <Button
             android:id="@+id/canvas_btn"
-            android:text="A"
-            android:background="@drawable/ergo_button"
-            android:layout_width="50dp"
+            android:layout_width="310dp"
             android:layout_height="50dp"
-            android:layout_margin="32dp"
+            android:background="@drawable/ergo_button"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="@string/canvas"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:layout_marginBottom="14dp"
+            app:icon="@drawable/canvas_logo"
+            app:iconGravity="textStart"
+            app:iconPadding="10dp"
+            app:iconSize="30dp"
+            app:iconTint="#FF0000"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/course_btn"/>
+            app:layout_constraintBottom_toTopOf="@+id/course_btn"/>
+
     <Button
 
             android:id="@+id/course_btn"
-            android:text="B"
-            android:background="@drawable/ergo_button"
-            android:layout_width="50dp"
+            android:layout_width="310dp"
             android:layout_height="50dp"
-            android:layout_margin="32dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@drawable/ergo_button"
+            android:text="@string/course_options"
+            android:textSize="20sp"
+            android:layout_marginBottom="14dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/settings_btn"/>
+
     <Button
             android:id="@+id/settings_btn"
-            android:text="C"
-            android:background="@drawable/ergo_button"
-            android:layout_width="50dp"
+            android:layout_width="310dp"
             android:layout_height="50dp"
-            android:layout_margin="32dp"
+            android:background="@drawable/ergo_button"
+            android:text="@string/settings"
+            android:textSize="20sp"
+            android:layout_marginBottom="14dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/course_btn"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/teacher_bottom"/>
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/teacher_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/black"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/teacher_reminder_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="18dp"
+        android:text="@string/default_reminder_txt"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

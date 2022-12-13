@@ -4,6 +4,8 @@ import com.LMStudy.app.structures.NewCourse;
 
 /**
  * Basic concrete object for task management--represents the generic assignment.
+ * Sorted before assessments and before other assignments.
+ * @author: Larson Pushard Hutchinson
  */
 public class Homework extends WorkItem implements Comparable<WorkItem> {
 
@@ -33,6 +35,10 @@ public class Homework extends WorkItem implements Comparable<WorkItem> {
       super(course,id,name,due,priority,hours,progress);
    }
 
+   /**
+    * Display method for fetching item type
+    * @return a String label for type.
+    */
    @Override
    public String getType() {
       return "Homework";

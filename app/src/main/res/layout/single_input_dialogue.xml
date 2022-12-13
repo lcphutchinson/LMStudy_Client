@@ -21,7 +21,8 @@
                 android:id="@+id/single_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
+                android:inputType="textNoSuggestions|textVisiblePassword"
+                android:maxLength="40"
                 android:text=""
                 android:ems="40"/>
     </LinearLayout>

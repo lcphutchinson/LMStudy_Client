@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Basic data blueprint for a scheduling item. Forms the basis of the WorkItem class family.
+ * @author Larson Pushard Hutchinson, Yulie Ying
  */
 public abstract class WorkItem implements Comparable<WorkItem>{
    /**
@@ -17,13 +18,44 @@ public abstract class WorkItem implements Comparable<WorkItem>{
     */
    private static Date benchmark = new Date();
 
+   /**
+    * Course reference for the assigning course
+    */
    protected NewCourse course;
+
+   /**
+    * Server-assigned identifier string
+    */
    protected String id;
+
+   /**
+    * Display name for this WorkItem
+    */
    protected String name;
+
+   /**
+    * String representation of due date, for display
+    */
    protected String due;
+
+   /**
+    * The due date for this WorkItem
+    */
    protected Date dueDate;
+
+   /**
+    * User-assigned priority value, used in sorting
+    */
    protected Integer priority;
+
+   /**
+    * User-defined expected workload, in hours
+    */
    protected Integer hours;
+
+   /**
+    * User-defined progress value, read as a percentage (0-100)
+    */
    protected Integer progress;
 
    /**
@@ -62,13 +94,6 @@ public abstract class WorkItem implements Comparable<WorkItem>{
       this.priority = priority;
       this.hours = hours;
       this.progress = progress;
-   }
-
-   /**
-    * Utility method for updating the static reference date.
-    */
-   public static void resetBenchmark(){
-      benchmark = new Date();
    }
 
    /**

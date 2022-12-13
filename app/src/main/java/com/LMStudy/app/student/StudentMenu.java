@@ -12,19 +12,51 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.LMStudy.app.CanvasConnect;
+import com.LMStudy.app.MainActivity;
 import com.LMStudy.app.R;
 import com.LMStudy.app.SharedMenu;
+import com.LMStudy.app.io.CanvasCall;
 import com.LMStudy.app.io.SyncService;
 import com.LMStudy.app.structures.NewCourse;
 import com.LMStudy.app.structures.WorkFlow;
 
 import java.util.ArrayList;
 
+/**
+ * Main Menu controller for the Student User. Prepares various submenus and displays a
+ * summary of the first item in the WorkFlow.
+ * @author: Larson Pushard Hutchinson, Yulie Ying
+ */
 public class StudentMenu extends AppCompatActivity {
+
+   /**
+    * Static String containing the forecast threshold preferences flag.
+    */
+   public static final String FORECAST_FLAG = "forecastThreshold";
+
+   /**
+    * Static Switch Case marker for the Items Menu. Used in submenu population.
+    */
    private static final int ITEM_MENU = 0;
+
+   /**
+    * Static Switch Case marker for the LMS_Menu. Used in submenu population.
+    */
    private static final int LMS_MENU = 1;
+
+   /**
+    * Static Switch Case marker for the Course Menu. Used in submenu population.
+    */
    private static final int COURSE_MENU = 2;
+
+   /**
+    * Static Switch Case marker for the Settings Menu. Used in submenu population.
+    */
    private static final int SETTINGS_MENU = 3;
+
+   /**
+    * String container for variable Menu options text. Used in submenu population.
+    */
    private String savedInput;
 
    //subMenu1 Items Menu
@@ -40,21 +72,42 @@ public class StudentMenu extends AppCompatActivity {
    private TextView settings_forecast;
    private TextView settings_logout;
 
-   //Activity Components
+   /**
+    * Reference field for passing context information between methods and submenus
+    */
    private Context context;
+
+   /**
+    * Reference field for the User's SharedPreferences file.
+    */
    private SharedPreferences userPrefs;
+
+   /**
+    * Singleton instance for the Sync Service
+    */
    private SyncService caller = SyncService.getInstance();
+
+   /**
+    * Singleton instance for the WorkFlow Structure.
+    */
    private final WorkFlow flowLink = WorkFlow.getInstance();
    private Button nextItem, canvas_btn, course_btn, settings_btn;
    private TextView forecast;
+
+   /**
+    * Container field for building and launching new menus.
+    */
    Intent launchMenu;
 
-
+   /**
+    * OnCreate for the StudentMenu. Prepares the various subMenus and initializes the display.
+    * @param savedInstanceState
+    */
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       context = this;
-      userPrefs = this.getApplicationContext().getSharedPreferences("userPrefs", MODE_PRIVATE);
+      userPrefs = this.getApplicationContext().getSharedPreferences(MainActivity.PREFS_FILE, MODE_PRIVATE);
       launchMenu = new Intent(this,SharedMenu.class);
       setContentView(R.layout.activity_student_menu);
 
@@ -73,12 +126,17 @@ public class StudentMenu extends AppCompatActivity {
 
    }
 
+   /**
+    * Builds an on-click listener for the submenu corresponding to the provided input flag.
+    * @param menuId Input flag for designating menu path
+    * @return a menu configuration packaged in an OnClickListener.
+    */
    private View.OnClickListener getMenuLauncher(Integer menuId) {
       String menuTitle;
       TextView[] options;
       switch(menuId) {
          case ITEM_MENU:
-            menuTitle = nextItem.getText().toString();
+            menuTitle = (flowLink).hasItems() ? flowLink.getFirst().getName() : getString(R.string.default_forecast);
             options = new TextView[]{item_list, item_log, item_complete};
             break;
          case LMS_MENU:
@@ -109,7 +167,7 @@ public class StudentMenu extends AppCompatActivity {
    private void setDisplay() {
       if (flowLink.hasItems()) {
          nextItem.setText(flowLink.getFirst().toString());
-         int forecastThreshold = userPrefs.getInt("forecastThreshold",1);
+         int forecastThreshold = userPrefs.getInt(FORECAST_FLAG,1);
          int forecastItems = flowLink.getForecast(forecastThreshold);
          String[] prefixes = getString(R.string.forecast_prefix).split("%");
          String prefix = prefixes[0] + forecastItems + prefixes[1];
@@ -132,26 +190,30 @@ public class StudentMenu extends AppCompatActivity {
     */
    private TextView[] buildCourseMenu() {
       ArrayList<NewCourse> courses = new ArrayList<>(flowLink.getCourseList());
-      if(courses.isEmpty()) return new TextView[]{course_default, course_add};
+      if(courses.size() < 2) return new TextView[]{course_default, course_add};
       else {
          ArrayList<TextView> courseOptions = new ArrayList<>();
          courses.forEach(course -> {
-            TextView view = new TextView(context);
-            view.setText(course.toString());
-            view.setOnClickListener(click -> {
-               AlertDialog.Builder confirmUnenroll = new AlertDialog.Builder(SharedMenu.getContext());
-               confirmUnenroll.setTitle(R.string.course_confirm_unenroll);
-               String message = getString(R.string.course_unenroll_prefix) + course + "?";
-               confirmUnenroll.setMessage(message);
-               confirmUnenroll.setPositiveButton(android.R.string.ok, (dialogInterface, i) -> {
-                  caller.dropCourse(courses.get(i).getData()[1]);
+            if(!course.equals(NewCourse.SELF_ASSIGNED)) {
+               TextView view = new TextView(context);
+               view.setText(course.toString());
+               view.setOnClickListener(click -> {
+                  AlertDialog.Builder confirmUnenroll = new AlertDialog.Builder(SharedMenu.getContext());
+                  confirmUnenroll.setTitle(R.string.course_confirm_unenroll);
+                  String message = getString(R.string.course_unenroll_prefix) + course + "?";
+                  confirmUnenroll.setMessage(message);
+                  confirmUnenroll.setPositiveButton(android.R.string.ok, (dialogInterface, i) -> {
+                     caller.dropCourse(course.getData()[1]);
+                     courses.remove(course);
+                     restart();
+                  });
+                  confirmUnenroll.setNegativeButton(android.R.string.cancel, (dialogInterface, i) -> {
+                  });
+                  AlertDialog window = confirmUnenroll.create();
+                  window.show();
                });
-               confirmUnenroll.setNegativeButton(android.R.string.cancel, (dialogInterface, i) -> {
-               });
-               AlertDialog window = confirmUnenroll.create();
-               window.show();
-            });
-            courseOptions.add(view);
+               courseOptions.add(view);
+            }
          });
          courseOptions.add(course_add);
          int len = courseOptions.size();
@@ -169,6 +231,7 @@ public class StudentMenu extends AppCompatActivity {
       item_list = new TextView(context);
       item_list.setText(R.string.item_list);
       item_list.setOnClickListener(view -> {
+         restart();
          context.startActivity(new Intent(context, StudentHome.class));
       });
 
@@ -185,13 +248,19 @@ public class StudentMenu extends AppCompatActivity {
             if(!savedInput.isEmpty()) {
                try {
                   int newProgress = Integer.parseInt(savedInput);
-                  caller.progress(flowLink.getFirst().getIID(), newProgress);
-                  flowLink.populateCourses(caller.pullCourses());
-                  flowLink.populateItems(caller.pullItems());
-                  restart();
+                  if (newProgress < 0 || newProgress > 100) {
+                     Toast.makeText(
+                        SharedMenu.getContext(), R.string.badprogress_prompt, Toast.LENGTH_SHORT).show();
+                  } else {
+                     caller.progress(flowLink.getFirst().getIID(), newProgress);
+                     flowLink.populateCourses(caller.pullCourses());
+                     flowLink.addSelfCourse();
+                     flowLink.populateItems(caller.pullItems());
+                     restart();
+                  }
                } catch (NumberFormatException e) {
                   Toast.makeText(
-                     SharedMenu.getContext(), "Enter a Numeric Value (0-100)", Toast.LENGTH_SHORT).show();
+                     SharedMenu.getContext(), R.string.badprogress_prompt, Toast.LENGTH_SHORT).show();
                }
             }
          });
@@ -200,12 +269,14 @@ public class StudentMenu extends AppCompatActivity {
 
       item_complete = new TextView(context);
       item_complete.setText(R.string.item_complete);
-      item_complete.setOnClickListener(new View.OnClickListener() {
-         @Override
-         public void onClick(View view) {
-            //call Caller to launch Complete
-            //call WorkFlow.remove
-            //setDisplay();
+      item_complete.setOnClickListener(view -> {
+         String firstId = flowLink.getFirst().getIID();
+         if(caller.complete(firstId)) {
+            flowLink.removeById(firstId);
+            setDisplay();
+            Toast.makeText(getBaseContext(), R.string.complete_success, Toast.LENGTH_SHORT).show();
+         } else {
+            Toast.makeText(getBaseContext(), R.string.complete_fail, Toast.LENGTH_SHORT).show();
          }
       });
 
@@ -213,7 +284,11 @@ public class StudentMenu extends AppCompatActivity {
       lms_canvasLogin = new TextView(context);
       lms_canvasLogin.setText(R.string.lms_canvasLogin);
       lms_canvasLogin.setOnClickListener(view -> {
-         startActivity(new Intent(context, CanvasConnect.class));
+         if(CanvasCall.MY_TOKEN.isEmpty()) {
+            Toast.makeText(this, R.string.canvas_err, Toast.LENGTH_SHORT).show();
+         } else {
+            startActivity(new Intent(context, CanvasConnect.class));
+         }
       });
 
       //subMenu3 Course Menu
@@ -233,17 +308,18 @@ public class StudentMenu extends AppCompatActivity {
                if(!savedInput.isEmpty()) {
                   caller.enroll(savedInput);
                   flowLink.populateCourses(caller.pullCourses());
+                  flowLink.addSelfCourse();
                   flowLink.populateItems(caller.pullItems());
                   restart();
                } else Toast.makeText(
-                  SharedMenu.getContext(), "Unable to Complete Enroll", Toast.LENGTH_SHORT).show();
+                  SharedMenu.getContext(), R.string.enroll_fail, Toast.LENGTH_SHORT).show();
             });
          builder.create().show();
       });
 
       //subMenu4 Settings Menu
       settings_forecast = new TextView(context);
-      int forecastThreshold = userPrefs.getInt("forecastThreshold",1);
+      int forecastThreshold = userPrefs.getInt(FORECAST_FLAG,1);
       String forecastSetting = getString(R.string.settings_forecast) + forecastThreshold;
       settings_forecast.setText(forecastSetting);
       settings_forecast.setOnClickListener(view -> {
@@ -256,11 +332,16 @@ public class StudentMenu extends AppCompatActivity {
             savedInput = inputField.getText().toString();
             try {
                int newForecast = Integer.parseInt(savedInput);
-               userPrefs.edit().putInt("forecastThreshold", newForecast).commit();
-               restart();
+               if(newForecast > 0){
+                  userPrefs.edit().putInt(FORECAST_FLAG, newForecast).commit();
+                  restart();
+               } else {
+                  Toast.makeText(
+                     SharedMenu.getContext(), R.string.forecast_err, Toast.LENGTH_SHORT).show();
+               }
             } catch (NumberFormatException e) {
                Toast.makeText(
-                  SharedMenu.getContext(), "Input must be a positive integer", Toast.LENGTH_SHORT).show();
+                  SharedMenu.getContext(), R.string.forecast_err, Toast.LENGTH_SHORT).show();
             }
          });
          builder.create().show();
@@ -280,6 +361,9 @@ public class StudentMenu extends AppCompatActivity {
 
    }
 
+   /**
+    * (Zealously) resets the activity, preventing back navigation.
+    */
    private void restart() {
       Intent restart = new Intent (this, StudentMenu.class);
       restart.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

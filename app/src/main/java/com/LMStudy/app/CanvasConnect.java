@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.SparseBooleanArray;
-import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import com.LMStudy.app.io.CanvasCall;
@@ -19,39 +18,97 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+/**
+ * UI Manager for the Canvas UI Demo Features. Presents an example platform upon which
+ * Canvas API interactions could be built, given a proper token infrastructure.
+ */
 public class CanvasConnect extends AppCompatActivity {
 
+   /**
+    * Static String id flag. Used in JSON operations
+    */
+   private static final String ID_FLAG = "id";
+
+   /**
+    * Static String name flag. Used in JSON operations
+    */
+   private static final String NAME_FLAG = "name";
+
+   /**
+    * Reference field for context passing
+    */
    private Context context;
+
+   /**
+    * Reference field for passing User Preferences
+    */
    private SharedPreferences userPrefs;
+
+   /**
+    * Singleton instance for the WorkFlow data structure. Used for data operations
+    */
    private WorkFlow flowLink = WorkFlow.getInstance();
+
+   /**
+    * Reusable String array for storing id values from various queries.
+    */
    private String[] ids;
+
+   /**
+    * Reusable String array for storing name values from various queries. Used for menu displays.
+    */
    private String[] items;
+
+   /**
+    * Counter for looping operations
+    */
    private int cycleCount;
 
+   /**
+    * Storage array for pulled courseIds. Persistent between queries.
+    */
    private String[] courseIds;
+
+   /**
+    * Storage array for pulled course names. Persistent between queries.
+    */
    private String[] courses;
+
+   /**
+    * Storage arrayList for reducing course results based on user selection.
+    */
    private ArrayList<String> chosenIds;
+
+   /**
+    * Storage arrayList for reducing course results based on user selection.
+    */
    private ArrayList<String> chosenCourses;
 
    private ListView menuOptions;
    private ArrayAdapter<String> menuAdapter;
    private Button confirm_btn;
 
+   /**
+    * OnCreate for the CanvasConnect menu. Sets initial values and preps the initial filter query.
+    * @param savedInstanceState
+    */
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.canvas_selector);
       context = this;
-      userPrefs = this.getApplicationContext().getSharedPreferences("userPrefs", MODE_PRIVATE);
+      userPrefs = this.getApplicationContext().getSharedPreferences(MainActivity.PREFS_FILE, MODE_PRIVATE);
       menuOptions = findViewById(R.id.selector);
       confirm_btn = findViewById(R.id.confirm_button);
       confirm_btn.setText(R.string.confirm);
 
-      teacherQuery();
+      initialQuery();
    }
 
-
-   private void teacherQuery() {
+   /**
+    * Launch method for the first selection menu. Performs a course query and populates a list for selection.
+    */
+   private void initialQuery() {
       this.setTitle(R.string.select_courses);
       String courseCall = CanvasCall.API_URL + CanvasCall.COURSE_QUERY;
       fillFromCall(getResponse(courseCall));
@@ -65,6 +122,10 @@ public class CanvasConnect extends AppCompatActivity {
       });
    }
 
+   /**
+    * Filter method for initial selection results. Isolates user-selected courses and preps followup queries.
+    * @param selection a SparseBooleanArray indicating selected options from the previous selection menu.
+    */
    private void getSelection(SparseBooleanArray selection) {
       int len = this.ids.length;
       chosenIds = new ArrayList<>();
@@ -79,11 +140,16 @@ public class CanvasConnect extends AppCompatActivity {
       associateCourse(0);
    }
 
+   /**
+    * Handles a Teacher-specific example menu for associating incoming items with existing course objects.
+    * Preps for Assignment queries to the extent that such preparation is possible.
+    * @param cycle cycle count marking progress among selected courses.
+    */
    private void associateCourse(int cycle) {
       if (cycle == cycleCount) {
          Intent back;
-         String userRole = userPrefs.getString("role", "");
-         if(userRole.equals("STUDENT")) back = new Intent(getBaseContext(), StudentMenu.class);
+         String userRole = userPrefs.getString(MainActivity.ROLE_FLAG, "");
+         if(userRole.equals(MainActivity.STUDENT_ROLE)) back = new Intent(getBaseContext(), StudentMenu.class);
          else back = new Intent(getBaseContext(), TeacherMenu.class);
          finish();
          startActivity(back);
@@ -114,12 +180,19 @@ public class CanvasConnect extends AppCompatActivity {
       }
    }
 
+   /**
+    * Display method for cases where a query returns no items
+    */
    private void setEmpty() {
       this.items = new String[] { getString(R.string.no_items) };
       menuAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, this.items);
       menuOptions.setAdapter(menuAdapter);
    }
 
+   /**
+    * Populates the id and item arrays from an input JSONArray
+    * @param response a JSONArray retrieved as a Canvas API response.
+    */
    private void fillFromCall(JSONArray response) {
       int len = response.length();
       this.ids = new String[len];
@@ -127,12 +200,17 @@ public class CanvasConnect extends AppCompatActivity {
       try {
          for (int i = 0; i < len; i++) {
             JSONObject item = response.getJSONObject(i);
-            this.ids[i] = item.getString("id");
-            this.items[i] = item.getString("name");
+            this.ids[i] = item.getString(ID_FLAG);
+            this.items[i] = item.getString(NAME_FLAG);
          }
       } catch (JSONException j) { j.printStackTrace(); }
    }
 
+   /**
+    * Preps and Launches a CanvasCall thread to retrieve courses or items
+    * @param url target Url string constructed from static CanvasCall components
+    * @return a JSONArray returned by the Canvas API
+    */
    private JSONArray getResponse(String url) {
       CanvasCall caller = new CanvasCall();
       caller.setUrl(url);
